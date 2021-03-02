@@ -2,56 +2,51 @@
 
 ### Created on 2020.03.01 by wyn
 ```
-********/sim***************************************************
-******/src**
-Simulation.cpp
-SimControlPanel.cpp
-RobotInterface.cpp
-MiniCheetahDebug.cpp
-MiniCheetahDebug.h
-Graphics3D.cpp
-DrawList.cpp
-
-
-********/robot*************************************************
-******/src**
-main_helper.cpp
-RobotRunner.cpp
+********/resources*********************************************
+need to add 4 model files:       done   doing    todo 
+milab_body.obj                                     *
+milab_abad.obj                                     *
+milab_upper_link.obj                               *
+milab_lower_link.obj                               *
 
 
 ********/common************************************************
-******/src**
+******/src**                     done   doing    todo 
 ****/Dynamics**
-Quadruped.cpp
-FloatingBaseModel.cpp
+Quadruped.cpp                                      *
+FloatingBaseModel.cpp                              * 
 
 
-********/resources*********************************************
-need to add 4 model files: 
-milab_body.obj
-milab_abad.obj
-milab_upper_link.obj
-milab_lower_link.obj
+********/sim***************************************************
+******/src**                     done   doing    todo   
+Simulation.cpp                                     *
+SimControlPanel.cpp                                *
+RobotInterface.cpp                                 *
+MiniCheetahDebug.cpp                               *
+MiniCheetahDebug.h                                 *
+Graphics3D.cpp                                     *
+DrawList.cpp                                       *  
 
 
 ********/user**************************************************
-******/MIT_Controller**
+******/MIT_Controller**          done   doing    todo 
 ****/Controllers**
 **/convexMPC**
-RobotState.cpp
-ConvexMPCLocomotion.cpp
-**/WBC_Ctrl**
+RobotState.cpp                                     *
+ConvexMPCLocomotion.cpp                            *
+**/WBC_Ctrl** 
 */LocomotionCtrl
-LocomotionCtrl.cpp
+LocomotionCtrl.cpp                                 *
 */TaskSet
-BodyOriTask.cpp
-BodyPosTask.cpp
-LinkPosTask.cpp
+BodyOriTask.cpp                                    *
+BodyPosTask.cpp                                    *
+LinkPosTask.cpp                                    *
 ****/FSM_States**
-FSM_State_Locomotion.cpp
-FSM_State_RecoveryStand.cpp
-FSM_State_StandUp.cpp
+FSM_State_Locomotion.cpp                           *
+FSM_State_RecoveryStand.cpp                        *
+FSM_State_StandUp.cpp                              *
 ```
+
 ## Cheetah-Software
 This repository contains the Robot and Simulation software project.  For a getting started guide, see the documentation folder.
 
