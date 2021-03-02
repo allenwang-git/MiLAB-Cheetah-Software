@@ -1,6 +1,6 @@
-# This file lists several files that we need to modify or create in MIT CHEETAH project for our own quadrupedal. Remember to check  corresponding include file of following source files. 
+## This file lists several files that we need to modify or create in MIT CHEETAH project for our own quadrupedal. Remember to check  corresponding include file of following source files. 
 
-## Created on 2020.03.01 by wyn
+### Created on 2020.03.01 by wyn
 
 ********/sim***************************************************
 ******/src**
