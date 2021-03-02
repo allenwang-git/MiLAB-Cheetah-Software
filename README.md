@@ -1,3 +1,59 @@
+# This file lists several files that we need to modify or create 
+# in MIT CHEETAH project for our own quadrupedal. Remember to check 
+# corresponding include file of following source files. 
+
+# Created on 2020.03.01 by wyn
+
+********/sim***************************************************
+******/src**
+Simulation.cpp
+SimControlPanel.cpp
+RobotInterface.cpp
+MiniCheetahDebug.cpp
+MiniCheetahDebug.h
+Graphics3D.cpp
+DrawList.cpp
+
+
+********/robot*************************************************
+******/src**
+main_helper.cpp
+RobotRunner.cpp
+
+
+********/common************************************************
+******/src**
+****/Dynamics**
+Quadruped.cpp
+FloatingBaseModel.cpp
+
+
+********/resources*********************************************
+need to add 4 model files: 
+milab_body.obj
+milab_abad.obj
+milab_upper_link.obj
+milab_lower_link.obj
+
+
+********/user**************************************************
+******/MIT_Controller**
+****/Controllers**
+**/convexMPC**
+RobotState.cpp
+ConvexMPCLocomotion.cpp
+**/WBC_Ctrl**
+*/LocomotionCtrl
+LocomotionCtrl.cpp
+*/TaskSet
+BodyOriTask.cpp
+BodyPosTask.cpp
+LinkPosTask.cpp
+****/FSM_States**
+FSM_State_Locomotion.cpp
+FSM_State_RecoveryStand.cpp
+FSM_State_StandUp.cpp
+
 ## Cheetah-Software
 This repository contains the Robot and Simulation software project.  For a getting started guide, see the documentation folder.
 
