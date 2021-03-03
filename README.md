@@ -24,14 +24,14 @@ need to create file according to MiniCheetah.h:
 Milab.h                                            *
 
 ********/sim***************************************************
-******/src**                     done   doing    todo   
+******/src**                     done   doing    todo  
 Simulation.cpp                                     *
 SimControlPanel.cpp                                *
 RobotInterface.cpp                                 *
 MiniCheetahDebug.cpp                               *
 MiniCheetahDebug.h                                 *
 Graphics3D.cpp                                     *
-DrawList.cpp                                       *  
+DrawList.cpp                                       * 
 
 
 ********/user**************************************************
