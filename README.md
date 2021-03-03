@@ -3,10 +3,12 @@
 ### Created on 2020.03.01 by wyn
 ```
 ********/resources*********************************************
-need to add 4 model files:       done   doing    todo 
+need to create model files:       done   doing    todo 
 milab_body.obj                                     *
-milab_abad.obj                                     *
-milab_upper_link.obj                               *
+milab_hip03.obj                                    *
+milab_hip12.obj                                    *
+milab_upper_link03.obj                             *
+milab_upper_link12.obj                             *
 milab_lower_link.obj                               *
 
 
@@ -15,7 +17,11 @@ milab_lower_link.obj                               *
 ****/Dynamics**
 Quadruped.cpp                                      *
 FloatingBaseModel.cpp                              * 
-
+******/include**
+****/Dynamics**
+ActuatorModel.h                                    *
+need to create file according to MiniCheetah.h:
+Milab.h                                            *
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo   
