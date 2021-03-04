@@ -37,8 +37,8 @@ void RobotRunner::init() {
   // Build the appropriate Quadruped object
   if (robotType == RobotType::MINI_CHEETAH) {
     _quadruped = buildMiniCheetah<float>();
-  } else {
-    _quadruped = buildCheetah3<float>();
+  } else if (robotType == RobotType::MILAB){
+    _quadruped = buildMilab<float>();
   }
 
   // Initialize the model and robot data
