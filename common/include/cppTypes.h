@@ -116,6 +116,6 @@ using D3Mat = typename Eigen::Matrix<T, 3, Eigen::Dynamic>;
 template <typename T>
 using vectorAligned = typename std::vector<T, Eigen::aligned_allocator<T>>;
 
-enum class RobotType { CHEETAH_3, MINI_CHEETAH };
+enum class RobotType { CHEETAH_3, MINI_CHEETAH, MILAB };
 
 #endif  // PROJECT_CPPTYPES_H

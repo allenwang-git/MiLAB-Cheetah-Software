@@ -18,10 +18,11 @@ milab_lower_link.obj                               *
 Quadruped.cpp                                      *
 FloatingBaseModel.cpp                              * 
 ******/include**
+cppTypes.h                                 *
 ****/Dynamics**
 ActuatorModel.h                                    *
 need to create file according to MiniCheetah.h:
-Milab.h                                            *
+Milab.h                                    *
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo  
