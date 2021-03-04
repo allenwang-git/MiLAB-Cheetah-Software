@@ -5,8 +5,7 @@
 ********/resources*********************************************
 need to create model files:       done   doing    todo 
 milab_body.obj                                     *
-milab_hip03.obj                                    *
-milab_hip12.obj                                    *
+milab_hip.obj                                    *
 milab_upper_link03.obj                             *
 milab_upper_link12.obj                             *
 milab_lower_link.obj                               *
