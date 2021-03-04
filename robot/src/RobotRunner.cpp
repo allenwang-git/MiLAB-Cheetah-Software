@@ -2,7 +2,9 @@
  * @file RobotRunner.cpp
  * @brief Common framework for running robot controllers.
  * This code is a common interface between control code and hardware/simulation
- * for mini cheetah and cheetah 3
+ * for mini cheetah and cheetah 3 and milab robot
+ *
+ * todo: modify kp kd for milab robot (130-131)
  */
 
 #include <unistd.h>
@@ -12,6 +14,7 @@
 #include "Controllers/OrientationEstimator.h"
 #include "Dynamics/Cheetah3.h"
 #include "Dynamics/MiniCheetah.h"
+#include "Dynamics/Milab.h"
 #include "Utilities/Utilities_print.h"
 #include "ParamHandler.hpp"
 #include "Utilities/Timer.h"
@@ -39,6 +42,9 @@ void RobotRunner::init() {
     _quadruped = buildMiniCheetah<float>();
   } else if (robotType == RobotType::MILAB){
     _quadruped = buildMilab<float>();
+  }
+  else{
+      _quadruped = buildCheetah3<float>();
   }
 
   // Initialize the model and robot data
@@ -120,7 +126,10 @@ void RobotRunner::run() {
         } else if (robotType == RobotType::CHEETAH_3) {
           kpMat << 50, 0, 0, 0, 50, 0, 0, 0, 50;
           kdMat << 1, 0, 0, 0, 1, 0, 0, 0, 1;
-        } else {
+        } else if (robotType == RobotType::MILAB){
+            kpMat << 5, 0, 0, 0, 5, 0, 0, 0, 5;
+            kdMat << 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1;
+        } else{
           assert(false);
         } 
 
@@ -167,6 +176,8 @@ void RobotRunner::setupStep() {
     _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateData(tiBoardData);
+  } else if (robotType == RobotType::MILAB) {
+      _legController->updateData(spiData);
   } else {
     assert(false);
   }
@@ -206,6 +217,8 @@ void RobotRunner::finalizeStep() {
     _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateCommand(tiBoardCommand);
+  } else if (robotType == RobotType::MILAB) {
+      _legController->updateCommand(spiCommand);
   } else {
     assert(false);
   }
