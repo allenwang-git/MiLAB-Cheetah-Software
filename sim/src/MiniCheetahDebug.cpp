@@ -1,6 +1,6 @@
 #include "MiniCheetahDebug.h"
-#include "ui_MiniCheetahDebug.h"
-//#include "../../build/sim/sim_autogen/include/ui_MiniCheetahDebug.h" // todo, remove me
+#include "../build/sim/ui_MiniCheetahDebug.h"
+
 
 constexpr float KP_MAX = 10;
 constexpr float KD_MAX = 0.5;

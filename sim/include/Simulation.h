@@ -11,6 +11,7 @@
 #include "ControlParameters/SimulatorParameters.h"
 #include "Dynamics/Cheetah3.h"
 #include "Dynamics/MiniCheetah.h"
+#include "Dynamics/Milab.h"
 #include "Dynamics/Quadruped.h"
 #include "Graphics3D.h"
 #include "SimUtilities/ImuSimulator.h"

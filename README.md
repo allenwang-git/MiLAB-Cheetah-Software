@@ -11,6 +11,11 @@ milab_upper_link_mirror.obj                        *
 milab_lower_link.obj                               *
 
 
+********/config************************************************
+need to create milab robot parameters for QT simulator:
+milab-defaults.yaml                        *
+
+
 ********/common************************************************
 ******/src**                     done   doing    todo 
 ****/Dynamics**
@@ -19,10 +24,10 @@ FloatingBaseModel.cpp                              *
 ******/include**
 cppTypes.h                         *
 ****/Dynamics**
-ActuatorModel.h                                    *
 need to create file according to MiniCheetah.h:
 Milab.h                                    *
-
+****/ControlParameters
+SimulatorParameters.h                      *
 
 ********/robot*************************************************
 ******/src**
@@ -31,11 +36,10 @@ main_helper.cpp                                    *
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo  
-Simulation.cpp                                     *
-SimControlPanel.cpp                                *
-RobotInterface.cpp                                 *
-MiniCheetahDebug.cpp                               *
-MiniCheetahDebug.h                                 *
+Simulation.cpp                             *
+SimControlPanel.cpp                *
+SimControlPanel.ui                 *
+RobotInterface.cpp                 *
 Graphics3D.cpp                                     *
 DrawList.cpp                                       * 
 

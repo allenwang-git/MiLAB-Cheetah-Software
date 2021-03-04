@@ -88,6 +88,16 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
+           <widget class="QRadioButton" name="MilabButton">
+            <property name="text">
+             <string>Milab</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QRadioButton" name="cheetah3Button">
             <property name="text">
              <string>Cheetah 3</string>
@@ -117,6 +127,9 @@
            <widget class="QRadioButton" name="simulatorButton">
             <property name="text">
              <string>Simulator</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -488,7 +501,7 @@
      <x>0</x>
      <y>0</y>
      <width>1312</width>
-     <height>22</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

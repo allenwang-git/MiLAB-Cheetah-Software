@@ -190,7 +190,10 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
 
   // load robot control parameters
   printf("[Simulation] Load control parameters...\n");
-  if (_robot == RobotType::MINI_CHEETAH) {
+  if (_robot == RobotType::MILAB) {
+      _robotParams.initializeFromYamlFile(getConfigDirectoryPath() +
+                                          MILAB_DEFAULT_PARAMETERS);
+  } else if (_robot == RobotType::MINI_CHEETAH) {
     _robotParams.initializeFromYamlFile(getConfigDirectoryPath() +
                                         MINI_CHEETAH_DEFAULT_PARAMETERS);
   } else if (_robot == RobotType::CHEETAH_3) {

@@ -1,12 +1,19 @@
+/*
+ *  This file corresponds to SimControlPanel.ui and sets everything about
+ *  the simulator control panel.
+ *  The default mode and robot have been set to Simulator and Milab robot,
+ *  users can click the start button directly to start the simulation.
+ */
 #include "SimControlPanel.h"
 #include <ControlParameters/ControlParameters.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <ParamHandler.hpp>
 #include <leg_control_command_lcmt.hpp>
-#include "ui_SimControlPanel.h"
+#include "../build/sim/ui_SimControlPanel.h"
 #include "JoystickTest.h"
 
+// Todo: the Milab robot default joint angles for go-home button
 
 /*!
  * Display an error messagebox with the given text
@@ -41,7 +48,9 @@ static void updateQtableWithParameters(ControlParameters& params,
     i++;
   }
 }
-
+/*
+ * load User Control Parameters
+ */
 std::string SimControlPanel::getDefaultUserParameterFileName() {
   std::string path = getConfigDirectoryPath() + DEFAULT_USER_FILE;
   ParamHandler paramHandler(path);
@@ -74,7 +83,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
     : QMainWindow(parent),
       ui(new Ui::SimControlPanel),
       _userParameters("user-parameters"),
-      _terrainFileName(getConfigDirectoryPath() + DEFAULT_TERRAIN_FILE),
+      _terrainFileName(getConfigDirectoryPath() + DEFAULT_TERRAIN_FILE),//get default terrain file name
       _heightmapLCM(getLcmUrl(255)),
       _pointsLCM(getLcmUrl(255)),
       _indexmapLCM(getLcmUrl(255)),
@@ -86,9 +95,9 @@ SimControlPanel::SimControlPanel(QWidget* parent)
   updateUiEnable();  // enable/disable buttons as needed.
   updateTerrainLabel(); // display name of loaded terrain file
 
-  // attempt to load default user settings.
-  _loadedUserSettings = true;
 
+  _loadedUserSettings = true;
+  // attempt to load User Control Parameters.
   try {
     _userParameters.defineAndInitializeFromYamlFile(getConfigDirectoryPath() + getDefaultUserParameterFileName());
   } catch (std::runtime_error& ex) {
@@ -103,7 +112,7 @@ SimControlPanel::SimControlPanel(QWidget* parent)
     loadUserParameters(_userParameters);
   }
 
-  // load simulator parameters
+  // load Simulator Control Parameters
   printf("[SimControlPanel] Init simulator parameters...\n");
   _parameters.initializeFromYamlFile(getConfigDirectoryPath() +
                                      SIMULATOR_DEFAULT_PARAMETERS);
@@ -345,11 +354,13 @@ void SimControlPanel::errorCallback(std::string errorMessage) {
 void SimControlPanel::on_startButton_clicked() {
   // get robot type
   RobotType robotType;
-
+  // default set to Milab
   if (ui->cheetah3Button->isChecked()) {
-    robotType = RobotType::CHEETAH_3;
+      robotType = RobotType::CHEETAH_3;
   } else if (ui->miniCheetahButton->isChecked()) {
-    robotType = RobotType::MINI_CHEETAH;
+      robotType = RobotType::MINI_CHEETAH;
+  } else if (ui->MilabButton->isChecked()) {
+      robotType = RobotType::MILAB;
   } else {
     createErrorMessage("Error: you must select a robot");
     return;
@@ -361,14 +372,14 @@ void SimControlPanel::on_startButton_clicked() {
         "Error: you must select either robot or simulation mode");
     return;
   }
-
+  //default set to simulator
   _simulationMode = ui->simulatorButton->isChecked();
 
   // graphics
   printf("[SimControlPanel] Initialize Graphics...\n");
   _graphicsWindow = new Graphics3D();
   _graphicsWindow->show();
-  _graphicsWindow->resize(1280, 720);
+  _graphicsWindow->resize(1920, 1080);
 
   if (_simulationMode) {
     // run a simulation
@@ -505,7 +516,9 @@ void SimControlPanel::on_joystickButton_clicked() {
     delete window;
   }
 }
-
+/*
+ * display mini cheeath debug panel
+ */
 void SimControlPanel::on_driverButton_clicked() {
   _mcDebugWindow.show();
 }
@@ -606,7 +619,9 @@ void SimControlPanel::on_loadSimulatorButton_clicked() {
   loadSimulationParameters(_parameters);
   _parameters.unlockMutex();
 }
-
+/*
+ * Change simulator and robot parameters in panel
+ */
 void SimControlPanel::on_robotTable_cellChanged(int row, int column) {
   if (_ignoreTableCallbacks) return;
   if (column != 1) {
@@ -663,7 +678,9 @@ void SimControlPanel::on_robotTable_cellChanged(int row, int column) {
     }
   }
 }
-
+/*!
+ * Save robot config to file
+ */
 void SimControlPanel::on_saveRobotButton_clicked() {
   QString fileName = QFileDialog::getSaveFileName(
       nullptr, ("Save Robot Table Values"), "../config", "All Files (*)");
@@ -673,7 +690,9 @@ void SimControlPanel::on_saveRobotButton_clicked() {
   }
   _simulation->getRobotParams().writeToYamlFile(fileName.toStdString());
 }
-
+/*!
+ * Load robot config from file
+ */
 void SimControlPanel::on_loadRobotButton_clicked() {
   QString fileName = QFileDialog::getOpenFileName(
       nullptr, ("Load Quadruped Table Values"), "../config", "All Files (*)");
@@ -726,7 +745,9 @@ void SimControlPanel::on_loadRobotButton_clicked() {
     _robotInterface->getParams().unlockMutex();
   }
 }
-
+/*!
+ * Load terrain from file
+ */
 void SimControlPanel::on_setTerrainButton_clicked() {
   QString fileName = QFileDialog::getOpenFileName(
       nullptr, ("Load Terrain Definition"), "../config", "All Files (*)");
@@ -738,7 +759,9 @@ void SimControlPanel::on_setTerrainButton_clicked() {
   _terrainFileName = fileName.toStdString();
   updateTerrainLabel();
 }
-
+/*
+ * Change user control parameters in panel
+ */
 void SimControlPanel::on_userControlTable_cellChanged(int row, int column) {
   if (_ignoreTableCallbacks) return;
   if (column != 1) {
@@ -799,7 +822,9 @@ void SimControlPanel::on_userControlTable_cellChanged(int row, int column) {
     }
   }
 }
-
+/*!
+ * Load user config from file
+ */
 void SimControlPanel::on_loadUserButton_clicked() {
   QString fileName = QFileDialog::getOpenFileName(
       nullptr, ("Load User Table Values"), "../config", "All Files (*)");
@@ -833,7 +858,9 @@ void SimControlPanel::on_loadUserButton_clicked() {
     }
   }
 }
-
+/*!
+ * Save user config to file
+ */
 void SimControlPanel::on_saveUserButton_clicked() {
   QString fileName = QFileDialog::getSaveFileName(
       nullptr, ("Save User Table Values"), "../config", "All Files (*)");
@@ -843,7 +870,9 @@ void SimControlPanel::on_saveUserButton_clicked() {
   }
   _userParameters.writeToYamlFile(fileName.toStdString());
 }
-
+/*!
+ * Reset robot state to default joint angles
+ */
 void SimControlPanel::on_goHomeButton_clicked() {
   printf("go home\n");
   FBModelState<double> homeState;
@@ -856,7 +885,9 @@ void SimControlPanel::on_goHomeButton_clicked() {
 
   _simulation->setRobotState(homeState);
 }
-
+/*!
+ * Simulate external force work on the robot body
+ */
 void SimControlPanel::on_kickButton_clicked() {
   // velocity of the floating base:
   SVec<double> kickVelocity;

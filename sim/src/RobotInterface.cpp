@@ -2,6 +2,7 @@
 #include <ControlParameters/ControlParameterInterface.h>
 #include <Dynamics/Cheetah3.h>
 #include <Dynamics/MiniCheetah.h>
+#include <Dynamics/Milab.h>
 #include <unistd.h>
 #include "ControlParameters/SimulatorParameters.h"
 
@@ -14,7 +15,10 @@ RobotInterface::RobotInterface(RobotType robotType, Graphics3D *gfx,
   _gfx = gfx;
   _robotType = robotType;
   printf("[RobotInterface] Load parameters...\n");
-  if (_robotType == RobotType::MINI_CHEETAH) {
+  if (_robotType == RobotType::MILAB) {
+      _controlParameters.initializeFromYamlFile(getConfigDirectoryPath() +
+                                                  MILAB_DEFAULT_PARAMETERS);
+  } else if (_robotType == RobotType::MINI_CHEETAH) {
     _controlParameters.initializeFromYamlFile(getConfigDirectoryPath() +
                                               MINI_CHEETAH_DEFAULT_PARAMETERS);
   } else if (_robotType == RobotType::CHEETAH_3) {
@@ -49,7 +53,7 @@ RobotInterface::RobotInterface(RobotType robotType, Graphics3D *gfx,
 
   printf("[RobotInterface] Init dynamics\n");
   _quadruped = robotType == RobotType::MINI_CHEETAH ? buildMiniCheetah<double>()
-                                                    : buildCheetah3<double>();
+                                                    : buildMilab<double>();
   _model = _quadruped.buildModel();
   _simulator = new DynamicsSimulator<double>(_model, false);
   DVec<double> zero12(12);
