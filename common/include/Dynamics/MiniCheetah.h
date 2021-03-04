@@ -100,7 +100,8 @@ Quadruped<T> buildMiniCheetah() {
     cheetah._bodyInertia = bodyInertia;
 
     // locations
-    cheetah._abadRotorLocation = Vec3<T>(0.125, 0.049, 0);
+    cheetah._abadRotorLocation =
+            Vec3<T>(cheetah._bodyLength, cheetah._bodyWidth, 0) * 0.5;
     cheetah._abadLocation =
             Vec3<T>(cheetah._bodyLength, cheetah._bodyWidth, 0) * 0.5;
     cheetah._hipLocation = Vec3<T>(0, cheetah._abadLinkLength, 0);

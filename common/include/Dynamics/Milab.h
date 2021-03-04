@@ -21,29 +21,28 @@ template<typename T>
 Quadruped<T> buildMilab() {
     Quadruped<T> milab;
     milab._robotType = RobotType::MILAB;
-
-    milab._bodyMass = 3.3;
-    milab._bodyLength = 0.19 * 2;
-    milab._bodyWidth = 0.049 * 2;
-    milab._bodyHeight = 0.05 * 2;
+//  todo: modify following parameters according to real robot measurements:
+    milab._bodyMass = 8.69;
+    milab._bodyLength = 0.789;
+    milab._bodyWidth = 0.253;
+    milab._bodyHeight = 0.1515;
     milab._abadGearRatio = 6;
     milab._hipGearRatio = 6;
-    milab._kneeGearRatio = 9.33;
-    milab._abadLinkLength = 0.062;
-    milab._hipLinkLength = 0.209;
+    milab._kneeGearRatio = 6;
+    milab._abadLinkLength = 0.0536;
+    milab._hipLinkLength = 0.370;
     milab._kneeLinkY_offset = 0.004;
-    milab._kneeLinkLength = 0.195;
-    milab._maxLegLength = 0.409;
+    milab._kneeLinkLength = 0.3932;
+    milab._maxLegLength = 0.7632;
 
 
-    milab._motorTauMax = 3.f;
-    milab._batteryV = 24;
-    milab._motorKT = .05;  // this is flux linkage * pole pairs
-    milab._motorR = 0.173;
-    milab._jointDamping = .01;
-    milab._jointDryFriction = .2;
-    //milab._jointDamping = .0;
-    //milab._jointDryFriction = .0;
+    milab._motorTauMax = 16.f;
+    milab._batteryV = 36;
+    milab._motorKT = 0.09;  // this is flux linkage * pole pairs
+    milab._motorR = 0.3;
+    milab._jointDamping = 0.05;
+    milab._jointDryFriction = 0.6;
+
 
 
     // rotor inertia if the rotor is oriented so it spins around the z-axis
