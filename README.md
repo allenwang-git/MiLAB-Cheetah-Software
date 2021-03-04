@@ -24,6 +24,12 @@ ActuatorModel.h                                    *
 need to create file according to MiniCheetah.h:
 Milab.h                                    *
 
+
+********/robot*************************************************
+******/src**
+RobotRunner.cpp                                    *
+main_helper.cpp                                    *
+
 ********/sim***************************************************
 ******/src**                     done   doing    todo  
 Simulation.cpp                                     *
@@ -52,6 +58,7 @@ LinkPosTask.cpp                                    *
 FSM_State_Locomotion.cpp                           *
 FSM_State_RecoveryStand.cpp                        *
 FSM_State_StandUp.cpp                              *
+SafetyChecker.cpp                                  *
 ```
 
 ## Cheetah-Software
