@@ -40,6 +40,7 @@ class Graphics3D : public QOpenGLWidget, protected QOpenGLFunctions {
   void setAnimating(bool animating);
   size_t setupCheetah3(Vec4<float> color, bool useOld, bool canHide);
   size_t setupMiniCheetah(Vec4<float> color, bool useOld, bool canHide);
+  size_t setupMilab(Vec4<float> color, bool useOld, bool canHide);
 
   void lockGfxMutex() { _gfxMutex.lock(); }
 

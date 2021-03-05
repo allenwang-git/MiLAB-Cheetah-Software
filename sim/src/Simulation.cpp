@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <fstream>
 
+// Todo: provide the joint angles when the Milab robot lies on the ground (138-152)
+
 // if DISABLE_HIGH_LEVEL_CONTROL is defined, the simulator will run freely,
 // without trying to connect to a robot
 //#define DISABLE_HIGH_LEVEL_CONTROL
@@ -21,8 +23,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   _uiUpdate = uiUpdate;
   // init parameters
   printf("[Simulation] Load parameters...\n");
-  _simParams
-      .lockMutex();  // we want exclusive access to the simparams at this point
+  _simParams.lockMutex();  // we want exclusive access to the simparams at this point
   if (!_simParams.isFullyInitialized()) {
     printf(
         "[ERROR] Simulator parameters are not fully initialized.  You forgot: "
@@ -45,7 +46,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   printf("[Simulation] Build quadruped...\n");
   _robot = robot;
   _quadruped = _robot == RobotType::MINI_CHEETAH ? buildMiniCheetah<double>()
-                                                 : buildCheetah3<double>();
+                                                 : buildMilab<double>();
   printf("[Simulation] Build actuator model...\n");
   _actuatorModels = _quadruped.buildActuatorModels();
   _window = window;
@@ -57,10 +58,10 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
     truthColor << 0.2, 0.4, 0.2, 0.6;
     seColor << .75,.75,.75, 1.0;
     _simRobotID = _robot == RobotType::MINI_CHEETAH ? window->setupMiniCheetah(truthColor, true, true)
-                                                    : window->setupCheetah3(truthColor, true, true);
+                                                    : window->setupMilab(truthColor, true, true);
     _controllerRobotID = _robot == RobotType::MINI_CHEETAH
                              ? window->setupMiniCheetah(seColor, false, false)
-                             : window->setupCheetah3(seColor, false, false);
+                             : window->setupMilab(seColor, false, false);
   }
 
   // init rigid body dynamics
@@ -89,50 +90,51 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   x0.q = zero12;
   x0.qd = zero12;
 
-  // Mini Cheetah Initial Posture
-  // x0.bodyPosition[2] = -0.49;
-  // Cheetah 3
-  // x0.bodyPosition[2] = -0.34;
-  // x0.q[0] = -0.807;
-  // x0.q[1] = -1.2;
-  // x0.q[2] = 2.4;
+  /*Mini Cheetah Initial Posture
+   x0.bodyPosition[2] = -0.49;
+   Cheetah 3
+   x0.bodyPosition[2] = -0.34;
+   x0.q[0] = -0.807;
+   x0.q[1] = -1.2;
+   x0.q[2] = 2.4;
 
-  // x0.q[3] = 0.807;
-  // x0.q[4] = -1.2;
-  // x0.q[5] = 2.4;
+   x0.q[3] = 0.807;
+   x0.q[4] = -1.2;
+   x0.q[5] = 2.4;
 
-  // x0.q[6] = -0.807;
-  // x0.q[7] = -1.2;
-  // x0.q[8] = 2.4;
+   x0.q[6] = -0.807;
+   x0.q[7] = -1.2;
+   x0.q[8] = 2.4;
 
-  // x0.q[9] = 0.807;
-  // x0.q[10] = -1.2;
-  // x0.q[11] = 2.4;
+   x0.q[9] = 0.807;
+   x0.q[10] = -1.2;
+   x0.q[11] = 2.4;
 
-  // Initial (Mini Cheetah stand)
-  // x0.bodyPosition[2] = -0.185;
-  // Cheetah 3
-  // x0.bodyPosition[2] = -0.075;
+   Initial (Mini Cheetah stand)
+   x0.bodyPosition[2] = -0.185;
+   Cheetah 3
+   x0.bodyPosition[2] = -0.075;
 
-  // x0.q[0] = -0.03;
-  // x0.q[1] = -0.79;
-  // x0.q[2] = 1.715;
+   x0.q[0] = -0.03;
+   x0.q[1] = -0.79;
+   x0.q[2] = 1.715;
 
-  // x0.q[3] = 0.03;
-  // x0.q[4] = -0.79;
-  // x0.q[5] = 1.715;
+   x0.q[3] = 0.03;
+   x0.q[4] = -0.79;
+   x0.q[5] = 1.715;
 
-  // x0.q[6] = -0.03;
-  // x0.q[7] = -0.72;
-  // x0.q[8] = 1.715;
+   x0.q[6] = -0.03;
+   x0.q[7] = -0.72;
+   x0.q[8] = 1.715;
 
-  // x0.q[9] = 0.03;
-  // x0.q[10] = -0.72;
-  // x0.q[11] = 1.715;
-
-  // Cheetah lies on the ground
-  //x0.bodyPosition[2] = -0.45;
-  x0.bodyPosition[2] = 0.05;
+   x0.q[9] = 0.03;
+   x0.q[10] = -0.72;
+   x0.q[11] = 1.715;
+*/
+  // Initial (Mini Cheetah lies on the ground )
+  //  x0.bodyPosition[2] = 0.05;
+  //  Milab robot
+  x0.bodyPosition[2]=0.076;
   x0.q[0] = -0.7;
   x0.q[1] = 1.;
   x0.q[2] = 2.715;
@@ -155,7 +157,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
 
   printf("[Simulation] Setup low-level control...\n");
   // init spine:
-  if (_robot == RobotType::MINI_CHEETAH) {
+  if (_robot == RobotType::MILAB) {
     for (int leg = 0; leg < 4; leg++) {
       _spineBoards[leg].init(Quadruped<float>::getSideSign(leg), leg);
       _spineBoards[leg].data = &_spiData;
@@ -163,7 +165,15 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
       _spineBoards[leg].resetData();
       _spineBoards[leg].resetCommand();
     }
-  } else if (_robot == RobotType::CHEETAH_3) {
+  }else if (_robot == RobotType::MINI_CHEETAH) {
+        for (int leg = 0; leg < 4; leg++) {
+            _spineBoards[leg].init(Quadruped<float>::getSideSign(leg), leg);
+            _spineBoards[leg].data = &_spiData;
+            _spineBoards[leg].cmd = &_spiCommand;
+            _spineBoards[leg].resetData();
+            _spineBoards[leg].resetCommand();
+        }
+    }else if (_robot == RobotType::CHEETAH_3) {
     // init ti board
     for (int leg = 0; leg < 4; leg++) {
       _tiBoards[leg].init(Quadruped<float>::getSideSign(leg));
@@ -341,7 +351,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
   }
 
   // actuator model:
-  if (_robot == RobotType::MINI_CHEETAH) {
+  if (_robot == RobotType::MILAB) {
     for (int leg = 0; leg < 4; leg++) {
       for (int joint = 0; joint < 3; joint++) {
         _tau[leg * 3 + joint] = _actuatorModels[joint].getTorque(
@@ -349,7 +359,15 @@ void Simulation::step(double dt, double dtLowLevelControl,
             _simulator->getState().qd[leg * 3 + joint]);
       }
     }
-  } else if (_robot == RobotType::CHEETAH_3) {
+  } else if (_robot == RobotType::MINI_CHEETAH) {
+        for (int leg = 0; leg < 4; leg++) {
+            for (int joint = 0; joint < 3; joint++) {
+                _tau[leg * 3 + joint] = _actuatorModels[joint].getTorque(
+                        _spineBoards[leg].torque_out[joint],
+                        _simulator->getState().qd[leg * 3 + joint]);
+            }
+        }
+    } else if (_robot == RobotType::CHEETAH_3) {
     for (int leg = 0; leg < 4; leg++) {
       for (int joint = 0; joint < 3; joint++) {
         _tau[leg * 3 + joint] = _actuatorModels[joint].getTorque(
@@ -379,41 +397,58 @@ void Simulation::step(double dt, double dtLowLevelControl,
 }
 
 void Simulation::lowLevelControl() {
-  if (_robot == RobotType::MINI_CHEETAH) {
-    // update spine board data:
-    for (int leg = 0; leg < 4; leg++) {
-      _spiData.q_abad[leg] = _simulator->getState().q[leg * 3 + 0];
-      _spiData.q_hip[leg] = _simulator->getState().q[leg * 3 + 1];
-      _spiData.q_knee[leg] = _simulator->getState().q[leg * 3 + 2];
+    if (_robot == RobotType::MILAB) {
+        // update spine board data:
+        for (int leg = 0; leg < 4; leg++) {
+            _spiData.q_abad[leg] = _simulator->getState().q[leg * 3 + 0];
+            _spiData.q_hip[leg] = _simulator->getState().q[leg * 3 + 1];
+            _spiData.q_knee[leg] = _simulator->getState().q[leg * 3 + 2];
 
-      _spiData.qd_abad[leg] = _simulator->getState().qd[leg * 3 + 0];
-      _spiData.qd_hip[leg] = _simulator->getState().qd[leg * 3 + 1];
-      _spiData.qd_knee[leg] = _simulator->getState().qd[leg * 3 + 2];
-    }
+            _spiData.qd_abad[leg] = _simulator->getState().qd[leg * 3 + 0];
+            _spiData.qd_hip[leg] = _simulator->getState().qd[leg * 3 + 1];
+            _spiData.qd_knee[leg] = _simulator->getState().qd[leg * 3 + 2];
+        }
 
-    // run spine board control:
-    for (auto& spineBoard : _spineBoards) {
-      spineBoard.run();
-    }
+        // run spine board control:
+        for (auto& spineBoard : _spineBoards) {
+            spineBoard.run();
+        }
 
-  } else if (_robot == RobotType::CHEETAH_3) {
-    // update data
-    for (int leg = 0; leg < 4; leg++) {
-      for (int joint = 0; joint < 3; joint++) {
-        _tiBoards[leg].data->q[joint] =
-            _simulator->getState().q[leg * 3 + joint];
-        _tiBoards[leg].data->dq[joint] =
-            _simulator->getState().qd[leg * 3 + joint];
-      }
-    }
+    } else if (_robot == RobotType::MINI_CHEETAH) {
+        // update spine board data:
+        for (int leg = 0; leg < 4; leg++) {
+            _spiData.q_abad[leg] = _simulator->getState().q[leg * 3 + 0];
+            _spiData.q_hip[leg] = _simulator->getState().q[leg * 3 + 1];
+            _spiData.q_knee[leg] = _simulator->getState().q[leg * 3 + 2];
 
-    // run control
-    for (auto& tiBoard : _tiBoards) {
-      tiBoard.run_ti_board_iteration();
+            _spiData.qd_abad[leg] = _simulator->getState().qd[leg * 3 + 0];
+            _spiData.qd_hip[leg] = _simulator->getState().qd[leg * 3 + 1];
+            _spiData.qd_knee[leg] = _simulator->getState().qd[leg * 3 + 2];
+        }
+
+        // run spine board control:
+        for (auto& spineBoard : _spineBoards) {
+            spineBoard.run();
+        }
+
+    } else if (_robot == RobotType::CHEETAH_3) {
+        // update data
+        for (int leg = 0; leg < 4; leg++) {
+            for (int joint = 0; joint < 3; joint++) {
+                _tiBoards[leg].data->q[joint] =
+                        _simulator->getState().q[leg * 3 + joint];
+                _tiBoards[leg].data->dq[joint] =
+                        _simulator->getState().qd[leg * 3 + joint];
+            }
+        }
+
+        // run control
+        for (auto& tiBoard : _tiBoards) {
+            tiBoard.run_ti_board_iteration();
+        }
+    } else {
+        assert(false);
     }
-  } else {
-    assert(false);
-  }
 }
 
 
@@ -435,7 +470,7 @@ void Simulation::highLevelControl() {
 
 
   // send leg data to robot
-  if (_robot == RobotType::MINI_CHEETAH) {
+  if (_robot == RobotType::MINI_CHEETAH || _robot == RobotType::MILAB ) {
     _sharedMemory().simToRobot.spiData = _spiData;
   } else if (_robot == RobotType::CHEETAH_3) {
     for (int i = 0; i < 4; i++) {
@@ -471,7 +506,7 @@ void Simulation::highLevelControl() {
   _robotMutex.unlock();
 
   // update
-  if (_robot == RobotType::MINI_CHEETAH) {
+  if (_robot == RobotType::MINI_CHEETAH || _robot == RobotType::MILAB ) {
     _spiCommand = _sharedMemory().robotToSim.spiCommand;
 
     // pretty_print(_spiCommand.q_des_abad, "q des abad", 4);
@@ -660,169 +695,173 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
 
 void Simulation::loadTerrainFile(const std::string& terrainFileName,
                                  bool addGraphics) {
-  printf("load terrain %s\n", terrainFileName.c_str());
-  ParamHandler paramHandler(terrainFileName);
+    printf("load terrain %s\n", terrainFileName.c_str());
+    ParamHandler paramHandler(terrainFileName);
 
-  if (!paramHandler.fileOpenedSuccessfully()) {
-    printf("[ERROR] could not open yaml file for terrain\n");
-    throw std::runtime_error("yaml bad");
-  }
-
-  std::vector<std::string> keys = paramHandler.getKeys();
-
-  for (auto& key : keys) {
-    auto load = [&](double& val, const std::string& name) {
-      if (!paramHandler.getValue<double>(key, name, val))
-        throw std::runtime_error("terrain read bad: " + key + " " + name);
-    };
-
-    auto loadVec = [&](double& val, const std::string& name, size_t idx) {
-      std::vector<double> v;
-      if (!paramHandler.getVector<double>(key, name, v))
-        throw std::runtime_error("terrain read bad: " + key + " " + name);
-      val = v.at(idx);
-    };
-
-    auto loadArray = [&](double* val, const std::string& name, size_t idx) {
-      std::vector<double> v;
-      if (!paramHandler.getVector<double>(key, name, v))
-        throw std::runtime_error("terrain read bad: " + key + " " + name);
-      assert(v.size() == idx);
-      for (size_t i = 0; i < idx; i++) val[i] = v[i];
-    };
-
-    printf("terrain element %s\n", key.c_str());
-    std::string typeName;
-    paramHandler.getString(key, "type", typeName);
-    if (typeName == "infinite-plane") {
-      double mu, resti, height, gfxX, gfxY, checkerX, checkerY;
-      load(mu, "mu");
-      load(resti, "restitution");
-      load(height, "height");
-      loadVec(gfxX, "graphicsSize", 0);
-      loadVec(gfxY, "graphicsSize", 1);
-      loadVec(checkerX, "checkers", 0);
-      loadVec(checkerY, "checkers", 1);
-      addCollisionPlane(mu, resti, height, gfxX, gfxY, checkerX, checkerY,
-                        addGraphics);
-    } else if (typeName == "box") {
-      double mu, resti, depth, width, height, transparent;
-      double pos[3];
-      double ori[3];
-      load(mu, "mu");
-      load(resti, "restitution");
-      load(depth, "depth");
-      load(width, "width");
-      load(height, "height");
-      loadArray(pos, "position", 3);
-      loadArray(ori, "orientation", 3);
-      load(transparent, "transparent");
-
-      Mat3<double> R_box = ori::rpyToRotMat(Vec3<double>(ori));
-      R_box.transposeInPlace();  // collisionBox uses "rotation" matrix instead
-                                 // of "transformation"
-      addCollisionBox(mu, resti, depth, width, height, Vec3<double>(pos), R_box,
-                      addGraphics, transparent != 0.);
-    } else if (typeName == "stairs") {
-      double mu, resti, rise, run, stepsDouble, width, transparent;
-      double pos[3];
-      double ori[3];
-      load(mu, "mu");
-      load(resti, "restitution");
-      load(rise, "rise");
-      load(width, "width");
-      load(run, "run");
-      load(stepsDouble, "steps");
-      loadArray(pos, "position", 3);
-      loadArray(ori, "orientation", 3);
-      load(transparent, "transparent");
-
-      Mat3<double> R = ori::rpyToRotMat(Vec3<double>(ori));
-      Vec3<double> pOff(pos);
-      R.transposeInPlace();  // "graphics" rotation matrix
-
-      size_t steps = (size_t)stepsDouble;
-
-      double heightOffset = rise / 2;
-      double runOffset = run / 2;
-      for (size_t step = 0; step < steps; step++) {
-        Vec3<double> p(runOffset, 0, heightOffset);
-        p = R * p + pOff;
-
-        addCollisionBox(mu, resti, run, width, heightOffset * 2, p, R,
-                        addGraphics, transparent != 0.);
-
-        heightOffset += rise / 2;
-        runOffset += run;
-      }
-    } else if (typeName == "mesh") {
-      double mu, resti, transparent, grid;
-      Vec3<double> left_corner;
-      std::vector<std::vector<double> > height_map_2d;
-      load(mu, "mu");
-      load(resti, "restitution");
-      load(transparent, "transparent");
-      load(grid, "grid");
-      loadVec(left_corner[0], "left_corner_loc", 0);
-      loadVec(left_corner[1], "left_corner_loc", 1);
-      loadVec(left_corner[2], "left_corner_loc", 2);
-
-      int x_len(0);
-      int y_len(0);
-      bool file_input(false);
-      paramHandler.getBoolean(key, "heightmap_file", file_input);
-      if (file_input) {
-        // Read from text file
-        std::string file_name;
-        paramHandler.getString(key, "heightmap_file_name", file_name);
-        std::ifstream f_height;
-        f_height.open(THIS_COM "/config/" + file_name);
-        if (!f_height.good()) {
-          std::cout << "file reading error: "
-                    << THIS_COM "../config/" + file_name << std::endl;
-        }
-        int i(0);
-        int j(0);
-        double tmp;
-
-        std::string line;
-        std::vector<double> height_map_vec;
-        while (getline(f_height, line)) {
-          std::istringstream iss(line);
-          j = 0;
-          while (iss >> tmp) {
-            height_map_vec.push_back(tmp);
-            ++j;
-          }
-          y_len = j;
-          height_map_2d.push_back(height_map_vec);
-          height_map_vec.clear();
-          // printf("y len: %d\n", y_len);
-          ++i;
-        }
-        x_len = i;
-
-      } else {
-        paramHandler.get2DArray(key, "height_map", height_map_2d);
-        x_len = height_map_2d.size();
-        y_len = height_map_2d[0].size();
-        // printf("x, y len: %d, %d\n", x_len, y_len);
-      }
-
-      DMat<double> height_map(x_len, y_len);
-      for (int i(0); i < x_len; ++i) {
-        for (int j(0); j < y_len; ++j) {
-          height_map(i, j) = height_map_2d[i][j];
-          // printf("height (%d, %d) : %f\n", i, j, height_map(i,j) );
-        }
-      }
-      addCollisionMesh(mu, resti, grid, left_corner, height_map, addGraphics,
-                       transparent != 0.);
-
-    } else {
-      throw std::runtime_error("unknown terrain " + typeName);
+    if (!paramHandler.fileOpenedSuccessfully()) {
+        printf("[ERROR] could not open yaml file for terrain\n");
+        throw std::runtime_error("yaml bad");
     }
-  }
+
+    std::vector<std::string> keys = paramHandler.getKeys();
+
+    for (auto& key : keys) {
+        auto load = [&](double& val, const std::string& name) {
+            if (!paramHandler.getValue<double>(key, name, val))
+                throw std::runtime_error("terrain read bad: " + key + " " + name);
+        };
+
+        auto loadVec = [&](double& val, const std::string& name, size_t idx) {
+            std::vector<double> v;
+            if (!paramHandler.getVector<double>(key, name, v))
+                throw std::runtime_error("terrain read bad: " + key + " " + name);
+            val = v.at(idx);
+        };
+
+        auto loadArray = [&](double* val, const std::string& name, size_t idx) {
+            std::vector<double> v;
+            if (!paramHandler.getVector<double>(key, name, v))
+                throw std::runtime_error("terrain read bad: " + key + " " + name);
+            assert(v.size() == idx);
+            for (size_t i = 0; i < idx; i++) val[i] = v[i];
+        };
+
+        printf("terrain element %s\n", key.c_str());
+        std::string typeName;
+        paramHandler.getString(key, "type", typeName);
+        if (typeName == "infinite-plane") {
+            double mu, resti, height, gfxX, gfxY, checkerX, checkerY;
+            load(mu, "mu");
+            load(resti, "restitution");
+            load(height, "height");
+            loadVec(gfxX, "graphicsSize", 0);
+            loadVec(gfxY, "graphicsSize", 1);
+            loadVec(checkerX, "checkers", 0);
+            loadVec(checkerY, "checkers", 1);
+            addCollisionPlane(mu, resti, height, gfxX, gfxY, checkerX, checkerY,
+                              addGraphics);
+        }
+        else if (typeName == "box") {
+            double mu, resti, depth, width, height, transparent;
+            double pos[3];
+            double ori[3];
+            load(mu, "mu");
+            load(resti, "restitution");
+            load(depth, "depth");
+            load(width, "width");
+            load(height, "height");
+            loadArray(pos, "position", 3);
+            loadArray(ori, "orientation", 3);
+            load(transparent, "transparent");
+
+            Mat3<double> R_box = ori::rpyToRotMat(Vec3<double>(ori));
+            R_box.transposeInPlace();  // collisionBox uses "rotation" matrix instead
+            // of "transformation"
+            addCollisionBox(mu, resti, depth, width, height, Vec3<double>(pos), R_box,
+                            addGraphics, transparent != 0.);
+        }
+        else if (typeName == "stairs") {
+            double mu, resti, rise, run, stepsDouble, width, transparent;
+            double pos[3];
+            double ori[3];
+            load(mu, "mu");
+            load(resti, "restitution");
+            load(rise, "rise");
+            load(width, "width");
+            load(run, "run");
+            load(stepsDouble, "steps");
+            loadArray(pos, "position", 3);
+            loadArray(ori, "orientation", 3);
+            load(transparent, "transparent");
+
+            Mat3<double> R = ori::rpyToRotMat(Vec3<double>(ori));
+            Vec3<double> pOff(pos);
+            R.transposeInPlace();  // "graphics" rotation matrix
+
+            size_t steps = (size_t)stepsDouble;
+
+            double heightOffset = rise / 2;
+            double runOffset = run / 2;
+            for (size_t step = 0; step < steps; step++) {
+                Vec3<double> p(runOffset, 0, heightOffset);
+                p = R * p + pOff;
+
+                addCollisionBox(mu, resti, run, width, heightOffset * 2, p, R,
+                                addGraphics, transparent != 0.);
+
+                heightOffset += rise / 2;
+                runOffset += run;
+            }
+        }
+        else if (typeName == "mesh") {
+            double mu, resti, transparent, grid;
+            Vec3<double> left_corner;
+            std::vector<std::vector<double> > height_map_2d;
+            load(mu, "mu");
+            load(resti, "restitution");
+            load(transparent, "transparent");
+            load(grid, "grid");
+            loadVec(left_corner[0], "left_corner_loc", 0);
+            loadVec(left_corner[1], "left_corner_loc", 1);
+            loadVec(left_corner[2], "left_corner_loc", 2);
+
+            int x_len(0);
+            int y_len(0);
+            bool file_input(false);
+            paramHandler.getBoolean(key, "heightmap_file", file_input);
+            if (file_input) {
+                // Read from text file
+                std::string file_name;
+                paramHandler.getString(key, "heightmap_file_name", file_name);
+                std::ifstream f_height;
+                f_height.open(THIS_COM "/config/" + file_name);
+                if (!f_height.good()) {
+                    std::cout << "file reading error: "
+                              << THIS_COM "../config/" + file_name << std::endl;
+                }
+                int i(0);
+                int j(0);
+                double tmp;
+
+                std::string line;
+                std::vector<double> height_map_vec;
+                while (getline(f_height, line)) {
+                    std::istringstream iss(line);
+                    j = 0;
+                    while (iss >> tmp) {
+                        height_map_vec.push_back(tmp);
+                        ++j;
+                    }
+                    y_len = j;
+                    height_map_2d.push_back(height_map_vec);
+                    height_map_vec.clear();
+                    // printf("y len: %d\n", y_len);
+                    ++i;
+                }
+                x_len = i;
+
+            } else {
+                paramHandler.get2DArray(key, "height_map", height_map_2d);
+                x_len = height_map_2d.size();
+                y_len = height_map_2d[0].size();
+                // printf("x, y len: %d, %d\n", x_len, y_len);
+            }
+
+            DMat<double> height_map(x_len, y_len);
+            for (int i(0); i < x_len; ++i) {
+                for (int j(0); j < y_len; ++j) {
+                    height_map(i, j) = height_map_2d[i][j];
+                    // printf("height (%d, %d) : %f\n", i, j, height_map(i,j) );
+                }
+            }
+            addCollisionMesh(mu, resti, grid, left_corner, height_map, addGraphics,
+                             transparent != 0.);
+
+        }
+        else {
+            throw std::runtime_error("unknown terrain " + typeName);
+        }
+    }
 }
 
 void Simulation::updateGraphics() {

@@ -133,6 +133,12 @@ size_t Graphics3D::setupCheetah3(Vec4<float> color, bool useOld, bool canHide) {
 size_t Graphics3D::setupMiniCheetah(Vec4<float> color, bool useOld, bool canHide) { return _drawList.addMiniCheetah(color, useOld, canHide); }
 
 /*!
+ * Configure the window for displaying MILAB robot
+ */
+size_t Graphics3D::setupMilab(Vec4<float> color, bool useOld, bool canHide) { return _drawList.addMilab(color, useOld, canHide); }
+
+
+/*!
  * Update the camera matrix for the current zoom/orbit
  */
 

@@ -34,8 +34,8 @@
 /*!
  * Top-level control of a simulation.
  * A simulation includes 1 robot and 1 controller
- * It does not include the graphics window: this must be set with the setWindow
- * method
+ * It does not include the graphics window: this must be set with
+ * the setWindow method
  */
 class Simulation {
   friend class SimControlPanel;
