@@ -25,23 +25,23 @@ FloatingBaseModel.cpp                              *
 cppTypes.h                         *
 ****/Dynamics**
 need to create file according to MiniCheetah.h:
-Milab.h                                    *
+Milab.h                                    * todo
 ****/ControlParameters
-SimulatorParameters.h                      *
+SimulatorParameters.h              *
 
 ********/robot*************************************************
-******/src**
-RobotRunner.cpp                            *
+******/src**                     done   doing    todo  
+RobotRunner.cpp                    * todo
 main_helper.cpp                                    *
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo  
-Simulation.cpp                             *
-SimControlPanel.cpp                *
+Simulation.cpp                     * todo
+SimControlPanel.cpp                * todo
 SimControlPanel.ui                 *
 RobotInterface.cpp                 *
-Graphics3D.cpp                                     *
-DrawList.cpp                                       * 
+Graphics3D.cpp                     *
+DrawList.cpp                                * todo
 
 
 ********/user**************************************************
