@@ -13,7 +13,7 @@
 #include "../build/sim/ui_SimControlPanel.h"
 #include "JoystickTest.h"
 
-// Todo: the Milab robot default joint angles for go-home button
+// Todo: the Milab robot default joint angles for go-home button (883)
 
 /*!
  * Display an error messagebox with the given text
