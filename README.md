@@ -1,6 +1,7 @@
 ## This file lists several files that we need to modify or create in MIT CHEETAH project for our own quadrupedal. Remember to check  corresponding include file of following source files. 
 
-### Created on 2020.03.01 by wyn
+## Workload List
+Created on 2020.03.01 by wyn
 ```
 ********/resources*********************************************
 need to create model files:       done   doing    todo 
@@ -137,3 +138,4 @@ s: simulation, r: robot
 - `libblas-dev liblapack-dev`
 
 To use Ipopt, use CMake Ipopt option. Ex) cmake -DIPOPT_OPTION=ON ..
+
