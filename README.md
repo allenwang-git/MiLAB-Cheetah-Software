@@ -116,7 +116,7 @@ s: simulation, r: robot
 
 
 
-## Dependencies:
+## Dependencies
 - Qt 5.10 - https://www.qt.io/download-qt-installer
 - LCM - https://lcm-proj.github.io/ (Please make it sure that you have a java to let lcm compile java-extension together)
 - Eigen - http://eigen.tuxfamily.org
