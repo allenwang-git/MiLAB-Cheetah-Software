@@ -1,4 +1,5 @@
 # Generated on Fri Mar 4 10:18:45 2021
+# Modified on mini-cheetah-defaults.yaml
 __collection-name__: robot-parameters
 
 controller_dt     : 0.002
