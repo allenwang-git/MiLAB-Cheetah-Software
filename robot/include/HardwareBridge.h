@@ -83,7 +83,28 @@ class HardwareBridge {
 
   int _port;
 };
+/*!
+ * Interface between robot and hardware specialized for Milab robot
+ */
+class MilabHardwareBridge : public HardwareBridge {
+public:
+    MilabHardwareBridge(RobotController* rc, bool load_parameters_from_file);
+    void runSpi();
+    void initHardware();
+    void run();
+    void runMicrostrain();
+    void logMicrostrain();
 
+private:
+    VectorNavData _vectorNavData;
+    lcm::LCM _spiLcm;
+    lcm::LCM _microstrainLcm;
+    std::thread _microstrainThread;
+    LordImu _microstrainImu;
+    microstrain_lcmt _microstrainData;
+    bool _microstrainInit = false;
+    bool _load_parameters_from_file;
+};
 /*!
  * Interface between robot and hardware specialized for Mini Cheetah
  */
@@ -108,7 +129,9 @@ class MiniCheetahHardwareBridge : public HardwareBridge {
   bool _microstrainInit = false;
   bool _load_parameters_from_file;
 };
-
+/*!
+ * Interface between robot and hardware specialized for Cheetah 3
+ */
 class Cheetah3HardwareBridge : public HardwareBridge {
 public:
   Cheetah3HardwareBridge(RobotController* rc);

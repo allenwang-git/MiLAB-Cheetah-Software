@@ -9,7 +9,7 @@
 #include <Utilities/Timer.h>
 #include <Controllers/WBC_Ctrl/LocomotionCtrl/LocomotionCtrl.hpp>
 //#include <rt/rt_interface_lcm.h>
-
+// Todo: iterations_between_mpc, locomotion safety conditions need to be tuned(27, 199-236)
 /**
  * Constructor for the FSM State that passes in state specific info to
  * the generic FSM State constructor.
@@ -20,7 +20,14 @@ template <typename T>
 FSM_State_Locomotion<T>::FSM_State_Locomotion(ControlFSMData<T>* _controlFSMData)
     : FSM_State<T>(_controlFSMData, FSM_StateName::LOCOMOTION, "LOCOMOTION")
 {
-  if(_controlFSMData->_quadruped->_robotType == RobotType::MINI_CHEETAH){
+    if(_controlFSMData->_quadruped->_robotType == RobotType::MILAB){
+        cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
+                //30 / (1000. * _controlFSMData->controlParameters->controller_dt),
+                //22 / (1000. * _controlFSMData->controlParameters->controller_dt),
+                27 / (1000. * _controlFSMData->controlParameters->controller_dt),
+                _controlFSMData->userParameters);
+
+    }else if(_controlFSMData->_quadruped->_robotType == RobotType::MINI_CHEETAH){
     cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
         //30 / (1000. * _controlFSMData->controlParameters->controller_dt),
         //22 / (1000. * _controlFSMData->controlParameters->controller_dt),
@@ -212,7 +219,7 @@ bool FSM_State_Locomotion<T>::locomotionSafe() {
       return false;
     }
 
-    if(std::fabs(p_leg[1] > 0.18)) {
+    if(std::fabs(p_leg[1] > 0.20)) {
       printf("Unsafe locomotion: leg %d's y-position is bad (%.3f m)\n", leg, p_leg[1]);
       return false;
     }

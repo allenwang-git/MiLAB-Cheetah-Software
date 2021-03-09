@@ -5,6 +5,8 @@
 
 #include "FSM_State.h"
 
+// Todo: kp, kd in joint PD controller for recovery stand need to be tuned. (37-38) now kp=80,kd=1
+
 /**
  * Constructor for the FSM State class.
  *
@@ -24,7 +26,7 @@ FSM_State<T>::FSM_State(ControlFSMData<T>* _controlFSMData,
 }
 
 /**
- * Cartesian impedance control for a given leg.
+ * Joint PD control for a given leg. Used in RecoveryStand & Vision & BackFlip.
  *
  * @param leg the leg number to control
  * @param qDes desired joint position
@@ -195,8 +197,8 @@ void FSM_State<T>::runControls() {
   }
 }
 
-/**
- *
+/*
+ * Abandoned now !!
  */
 template <typename T>
 void FSM_State<T>::runBalanceController() {

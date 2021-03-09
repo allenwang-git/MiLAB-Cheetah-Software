@@ -3,6 +3,8 @@
  * Transitionary state that is called for the robot to stand up into
  * balance control mode.
  */
+// Todo: kpCartesian and kdCartesian need to be tuned (57-58). now kp=500, kd=8
+// Todo: stand height target need to be decided(53). now = 0.4
 
 #include "FSM_State_StandUp.h"
 
@@ -48,7 +50,7 @@ template <typename T>
 void FSM_State_StandUp<T>::run() {
 
   if(this->_data->_quadruped->_robotType == RobotType::MINI_CHEETAH) {
-    T hMax = 0.25;
+    T hMax = 0.4;
     T progress = 2 * iter * this->_data->controlParameters->controller_dt;
 
     if (progress > 1.){ progress = 1.; }

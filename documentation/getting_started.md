@@ -46,7 +46,7 @@ We use the Logitech F310 controller.  There's a switch in the back, which should
 
 
 # Simulation Example
-The simulator default settings can be configured with `config/simulator-defaults.yaml` and `config/default-terrain.yaml`.  The default settings should be good for most uses, and the `default-terrain` file has commented out examples of how to add a mesh, box, and stairs.  The friction of the floor can be set from within the terrain file.
+The simulator default settings can be configured with `config/default-simulator-parameters.yaml` and `config/default-terrain.yaml`.  The default settings should be good for most uses, and the `default-terrain` file has commented out examples of how to add a mesh, box, and stairs.  The friction of the floor can be set from within the terrain file.
 
 To launch the simulator, first plug in your joystick, then run `sim/sim` from within the `build` folder.    Select "Mini Cheetah" and "Simulator", then click "Start".  Somewhere in the output, you should see
 

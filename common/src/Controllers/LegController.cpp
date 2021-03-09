@@ -58,6 +58,8 @@ void LegController<T>::zeroCommand() {
  * emergency damp command using the given gain. For the mini-cheetah, the edamp
  * gain is Nm/(rad/s), and for the Cheetah 3 it is N/m. You still must call
  * updateCommand for this command to end up in the low-level command data!
+ *
+ * This function is not used yet! by wyn
  */
 template <typename T>
 void LegController<T>::edampCommand(RobotType robot, T gain) {
@@ -68,7 +70,7 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
         commands[leg].kdCartesian(axis, axis) = gain;
       }
     }
-  } else {  // mini-cheetah
+  } else {  // mini-cheetah and MiLAB robot
     for (int leg = 0; leg < 4; leg++) {
       for (int axis = 0; axis < 3; axis++) {
         commands[leg].kdJoint(axis, axis) = gain;
