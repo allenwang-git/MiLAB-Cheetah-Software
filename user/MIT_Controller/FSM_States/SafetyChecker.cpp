@@ -8,14 +8,14 @@
  */
 
 #include "SafetyChecker.h"
-
+// Todo: safety condition of robot posture, foot position and foot feedforward force (17-18, 35, 132-133)
 /**
- * @return safePDesFoot true if safe desired foot placements
+ * @return  true if safe roll & pitch angles
  */
 template <typename T>
-bool SafetyChecker<T>::checkSafeOrientation() {
-  if (abs(data->_stateEstimator->getResult().rpy(0)) >= 0.5 ||
-      abs(data->_stateEstimator->getResult().rpy(1)) >= 0.5) {
+bool SafetyChecker<T>::checkSafeOrientation() { // check roll and pitch < 30 degrees
+  if (abs(data->_stateEstimator->getResult().rpy(0)) >= 0.523 ||
+      abs(data->_stateEstimator->getResult().rpy(1)) >= 0.523) {
         printf("Orientation safety check failed!\n");
     return false;
   } else {
@@ -32,7 +32,7 @@ bool SafetyChecker<T>::checkPDesFoot() {
   bool safePDesFoot = true;
 
   // Safety parameters
-  T maxAngle = 1.0472;  // 60 degrees (should be changed)
+  T maxAngle = 0.785;  // 45 degrees
   T maxPDes = data->_quadruped->_maxLegLength * sin(maxAngle);
 
   // Check all of the legs
@@ -83,7 +83,7 @@ bool SafetyChecker<T>::checkPDesFoot() {
 
     // Keep the leg under the motor module (don't raise above body or crash into
     // module)
-    if (data->_legController->commands[leg].pDes(2) >
+    if (data->_legController->commands[leg].pDes(2) >=
         -data->_quadruped->_maxLegLength / 4) {
       std::cout << "[CONTROL FSM] Safety: PDes leg: " << leg
                 << " | coordinate: " << 2 << "\n";
@@ -97,7 +97,7 @@ bool SafetyChecker<T>::checkPDesFoot() {
     }
 
     // Keep the foot within the kinematic limits
-    if (data->_legController->commands[leg].pDes(2) <
+    if (data->_legController->commands[leg].pDes(2) <=
         -data->_quadruped->_maxLegLength) {
       std::cout << "[CONTROL FSM] Safety: PDes leg: " << leg
                 << " | coordinate: " << 2 << "\n";
@@ -116,7 +116,7 @@ bool SafetyChecker<T>::checkPDesFoot() {
 }
 
 /**
- * @return safePDesFoot true if safe desired foot placements
+ * @return  true if safe feedforward force of feet
  */
 template <typename T>
 bool SafetyChecker<T>::checkForceFeedForward() {
@@ -128,7 +128,11 @@ bool SafetyChecker<T>::checkForceFeedForward() {
   T maxVerticalForce = 0;
 
   // Maximum force limits for each robot
-  if (data->_quadruped->_robotType == RobotType::CHEETAH_3) {
+  if (data->_quadruped->_robotType == RobotType::MILAB) {
+      maxLateralForce = 800;
+      maxVerticalForce = 800;
+
+  }else if (data->_quadruped->_robotType == RobotType::CHEETAH_3) {
     maxLateralForce = 1800;
     maxVerticalForce = 1800;
 

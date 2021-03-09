@@ -6,7 +6,8 @@
 
 #include "FSM_State_BalanceStand.h"
 #include <Controllers/WBC_Ctrl/LocomotionCtrl/LocomotionCtrl.hpp>
-
+// Todo: robot height in balance stand state needs to be tuned.(48-49),
+//  and maybe gamepad command scales need to be modified. (223-244)
 /**
  * Constructor for the FSM State that passes in state specific info to
  * the generic FSM State constructor.
@@ -45,8 +46,8 @@ void FSM_State_BalanceStand<T>::onEnter() {
   
   _ini_body_pos = (this->_data->_stateEstimator->getResult()).position;
 
-  if(_ini_body_pos[2] < 0.2) {
-    _ini_body_pos[2] = 0.3;
+  if(_ini_body_pos[2] < 0.4) {
+    _ini_body_pos[2] = 0.45;
   }
 
   last_height_command = _ini_body_pos[2];
@@ -219,7 +220,7 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   _wbc_data->aBody_des.setZero();
 
   _wbc_data->pBody_RPY_des = _ini_body_ori_rpy;
-  if(this->_data->controlParameters->use_rc){
+  if(this->_data->controlParameters->use_rc){ // remote controller in reality
     const rc_control_settings* rc_cmd = this->_data->_desiredStateCommand->rcCommand;
     // Orientation
     _wbc_data->pBody_RPY_des[0] = rc_cmd->rpy_des[0]*1.4;
@@ -228,7 +229,7 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
 
     // Height
     _wbc_data->pBody_des[2] += 0.12 * rc_cmd->height_variation;
-  }else{
+  }else{ // in simulation
     // Orientation
     _wbc_data->pBody_RPY_des[0] = 
      0.6* this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0];
