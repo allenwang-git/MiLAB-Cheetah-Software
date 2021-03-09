@@ -12,12 +12,14 @@
 void DrawList::loadFiles() {
   printf("[DrawList] Load object files...\n");
   std::vector<std::string> names = {
-      "milab_body.obj",        "c3_body.obj",         "mini_body.obj",
-      "milab_hip.obj",         "c3_upper_link.obj",   "mini_abad.obj",
-      "milab_upper_link.obj",  "c3_lower_link.obj",   "mini_upper_link.obj",
-      "milab_upper_link_mirror.obj",                  "mini_lower_link.obj",
-      "milab_lower_link.obj",  "sphere.obj",          "cube.obj"
-  };
+      "c3_body.obj",            "mini_abad.obj",
+      "c3_upper_link.obj",      "c3_lower_link.obj",
+      "mini_body.obj",          "mini_abad.obj",
+      "mini_upper_link.obj",    "mini_lower_link.obj",
+      "sphere.obj",             "cube.obj",
+      "milab_body.obj",         "milab_hip.obj",
+      "milab_upper_link.obj",   "milab_upper_link_mirror.obj",
+      "milab_lower_link.obj" };
   for (const auto& name : names) {
     std::string filename = _baseFileName + name;
     _vertexData.emplace_back();
@@ -42,7 +44,7 @@ void DrawList::loadFiles() {
   _cubeLoadIndex = 9;
   _miniCheetahLoadIndex = 4;
   _cheetah3LoadIndex = 0;
-  _milabLoadIndex = 10;
+  _milabLoadIndex = 0;
 }
 /*!
  * Load the cheetah 3 model and build the draw list.
