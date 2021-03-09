@@ -222,10 +222,235 @@ void HardwareBridge::handleControlParameter(
   _interfaceLCM.publish("interface_response", &_parameter_response_lcmt);
 }
 
+/*!
+ * Receive RC with SBUS
+ */
+void HardwareBridge::run_sbus() {
+    if (_port > 0) {
+        int x = receive_sbus(_port);
+        if (x) {
+            sbus_packet_complete();
+        }
+    }
+}
 
+/*!
+ * Send LCM visualization data
+ */
+void HardwareBridge::publishVisualizationLCM() {
+    cheetah_visualization_lcmt visualization_data;
+    for (int i = 0; i < 3; i++) {
+        visualization_data.x[i] = _mainCheetahVisualization.p[i];
+    }
+
+    for (int i = 0; i < 4; i++) {
+        visualization_data.quat[i] = _mainCheetahVisualization.quat[i];
+        visualization_data.rgba[i] = _mainCheetahVisualization.color[i];
+    }
+
+    for (int i = 0; i < 12; i++) {
+        visualization_data.q[i] = _mainCheetahVisualization.q[i];
+    }
+
+    _visualizationLCM.publish("main_cheetah_visualization", &visualization_data);
+}
+
+
+/*
+ * ======================================================================================
+ * Following class functions are specifically defined for Milab robot
+ */
+MilabHardwareBridge::MilabHardwareBridge(RobotController* robot_ctrl, bool load_parameters_from_file)
+        : HardwareBridge(robot_ctrl), _spiLcm(getLcmUrl(255)), _microstrainLcm(getLcmUrl(255)) {
+    _load_parameters_from_file = load_parameters_from_file;
+}
+/*!
+ * Initialize Milab specific hardware
+ */
+void MilabHardwareBridge::initHardware() {
+    _vectorNavData.quat << 1, 0, 0, 0;
+#ifndef USE_MICROSTRAIN
+    printf("[MilabHardware] Init vectornav\n");
+  if (!init_vectornav(&_vectorNavData)) {
+    printf("Vectornav failed to initialize\n");
+    //initError("failed to initialize vectornav!\n", false);
+  }
+#endif
+
+    init_spi();
+    _microstrainInit = _microstrainImu.tryInit(0, 921600);
+}
+/*!
+ * Main method for Milab robot hardware
+ */
+void MilabHardwareBridge::run() {
+    initCommon();
+    initHardware();
+
+    if(_load_parameters_from_file) {
+        printf("[Hardware Bridge] Loading parameters from file...\n");
+
+        try {
+            _robotParams.initializeFromYamlFile(THIS_COM "config/milab-robot-parameters.yaml");
+        } catch(std::exception& e) {
+            printf("Failed to initialize robot parameters from yaml file: %s\n", e.what());
+            exit(1);
+        }
+
+        if(!_robotParams.isFullyInitialized()) {
+            printf("Failed to initialize all robot parameters\n");
+            exit(1);
+        }
+
+        printf("Loaded robot parameters\n");
+
+        if(_userControlParameters) {
+            try {
+                _userControlParameters->initializeFromYamlFile(THIS_COM "config/milab-user-parameters.yaml");
+            } catch(std::exception& e) {
+                printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
+                exit(1);
+            }
+
+            if(!_userControlParameters->isFullyInitialized()) {
+                printf("Failed to initialize all user parameters\n");
+                exit(1);
+            }
+
+            printf("Loaded user parameters\n");
+        } else {
+            printf("Did not load user parameters because there aren't any\n");
+        }
+    } else {
+        printf("[Hardware Bridge] Loading parameters over LCM...\n");
+        while (!_robotParams.isFullyInitialized()) {
+            printf("[Hardware Bridge] Waiting for robot parameters...\n");
+            usleep(1000000);
+        }
+
+        if(_userControlParameters) {
+            while (!_userControlParameters->isFullyInitialized()) {
+                printf("[Hardware Bridge] Waiting for user parameters...\n");
+                usleep(1000000);
+            }
+        }
+    }
+
+
+
+    printf("[Hardware Bridge] Got all parameters, starting up!\n");
+
+    _robotRunner =
+            new RobotRunner(_controller, &taskManager, _robotParams.controller_dt, "robot-control");
+
+    _robotRunner->driverCommand = &_gamepadCommand;
+    _robotRunner->spiData = &_spiData;
+    _robotRunner->spiCommand = &_spiCommand;
+    _robotRunner->robotType = RobotType::MILAB;
+    _robotRunner->vectorNavData = &_vectorNavData;
+    _robotRunner->controlParameters = &_robotParams;
+    _robotRunner->visualizationData = &_visualizationData;
+    _robotRunner->cheetahMainVisualization = &_mainCheetahVisualization;
+
+    _firstRun = false;
+
+    // init control thread
+
+    statusTask.start();
+
+    // spi Task start
+    PeriodicMemberFunction<MilabHardwareBridge> spiTask(
+            &taskManager, .002, "spi", &MilabHardwareBridge::runSpi, this);
+    spiTask.start();
+
+    // microstrain
+    if(_microstrainInit)
+        _microstrainThread = std::thread(&MilabHardwareBridge::runMicrostrain, this);
+
+    // robot controller start
+    _robotRunner->start();
+
+    // visualization start
+    PeriodicMemberFunction<MilabHardwareBridge> visualizationLCMTask(
+            &taskManager, .0167, "lcm-vis",
+            &MilabHardwareBridge::publishVisualizationLCM, this);
+    visualizationLCMTask.start();
+
+    // rc controller
+    _port = init_sbus(false);  // Not Simulation
+    PeriodicMemberFunction<HardwareBridge> sbusTask(
+            &taskManager, .005, "rc_controller", &HardwareBridge::run_sbus, this);
+    sbusTask.start();
+
+    // temporary hack: microstrain logger
+    PeriodicMemberFunction<MilabHardwareBridge> microstrainLogger(
+            &taskManager, .001, "microstrain-logger", &MilabHardwareBridge::logMicrostrain, this);
+    microstrainLogger.start();
+
+    for (;;) {
+        usleep(1000000);
+        // printf("joy %f\n", _robotRunner->driverCommand->leftStickAnalog[0]);
+    }
+}
+
+void MilabHardwareBridge::runMicrostrain() {
+    while (true) {
+        _microstrainImu.run();
+
+#ifdef USE_MICROSTRAIN
+        _vectorNavData.accelerometer = _microstrainImu.acc;
+        _vectorNavData.quat[0] = _microstrainImu.quat[1];
+        _vectorNavData.quat[1] = _microstrainImu.quat[2];
+        _vectorNavData.quat[2] = _microstrainImu.quat[3];
+        _vectorNavData.quat[3] = _microstrainImu.quat[0];
+        _vectorNavData.gyro = _microstrainImu.gyro;
+#endif
+    }
+}
+
+void MilabHardwareBridge::logMicrostrain() {
+    _microstrainImu.updateLCM(&_microstrainData);
+    _microstrainLcm.publish("microstrain", &_microstrainData);
+}
+/*!
+ * Run Milab Cheetah SPI
+ */
+void MilabHardwareBridge::runSpi() {
+    spi_command_t* cmd = get_spi_command();
+    spi_data_t* data = get_spi_data();
+
+    memcpy(cmd, &_spiCommand, sizeof(spi_command_t));
+    spi_driver_run();
+    memcpy(&_spiData, data, sizeof(spi_data_t));
+
+    _spiLcm.publish("spi_data", data);
+    _spiLcm.publish("spi_command", cmd);
+}
+
+
+/*
+ * ======================================================================================
+ * Following class functions are specifically defined for Mini Cheetah
+ */
 MiniCheetahHardwareBridge::MiniCheetahHardwareBridge(RobotController* robot_ctrl, bool load_parameters_from_file)
-    : HardwareBridge(robot_ctrl), _spiLcm(getLcmUrl(255)), _microstrainLcm(getLcmUrl(255)) {
-  _load_parameters_from_file = load_parameters_from_file;
+        : HardwareBridge(robot_ctrl), _spiLcm(getLcmUrl(255)), _microstrainLcm(getLcmUrl(255)) {
+    _load_parameters_from_file = load_parameters_from_file;
+}
+/*!
+ * Initialize Mini Cheetah specific hardware
+ */
+void MiniCheetahHardwareBridge::initHardware() {
+    _vectorNavData.quat << 1, 0, 0, 0;
+#ifndef USE_MICROSTRAIN
+    printf("[MiniCheetahHardware] Init vectornav\n");
+  if (!init_vectornav(&_vectorNavData)) {
+    printf("Vectornav failed to initialize\n");
+    //initError("failed to initialize vectornav!\n", false);
+  }
+#endif
+
+    init_spi();
+    _microstrainInit = _microstrainImu.tryInit(0, 921600);
 }
 
 /*!
@@ -341,18 +566,6 @@ void MiniCheetahHardwareBridge::run() {
   }
 }
 
-/*!
- * Receive RC with SBUS
- */
-void HardwareBridge::run_sbus() {
-  if (_port > 0) {
-    int x = receive_sbus(_port);
-    if (x) {
-      sbus_packet_complete();
-    }
-  }
-}
-
 void MiniCheetahHardwareBridge::runMicrostrain() {
   while(true) {
     _microstrainImu.run();
@@ -366,46 +579,12 @@ void MiniCheetahHardwareBridge::runMicrostrain() {
     _vectorNavData.gyro = _microstrainImu.gyro;
 #endif
   }
-
-
 }
 
 void MiniCheetahHardwareBridge::logMicrostrain() {
   _microstrainImu.updateLCM(&_microstrainData);
   _microstrainLcm.publish("microstrain", &_microstrainData);
 }
-
-/*!
- * Initialize Mini Cheetah specific hardware
- */
-void MiniCheetahHardwareBridge::initHardware() {
-  _vectorNavData.quat << 1, 0, 0, 0;
-#ifndef USE_MICROSTRAIN
-  printf("[MiniCheetahHardware] Init vectornav\n");
-  if (!init_vectornav(&_vectorNavData)) {
-    printf("Vectornav failed to initialize\n");
-    //initError("failed to initialize vectornav!\n", false);
-  }
-#endif
-
-  init_spi();
-  _microstrainInit = _microstrainImu.tryInit(0, 921600);
-}
-
-void Cheetah3HardwareBridge::initHardware() {
-  _vectorNavData.quat << 1, 0, 0, 0;
-  printf("[Cheetah 3 Hardware] Init vectornav\n");
-  if (!init_vectornav(&_vectorNavData)) {
-    printf("Vectornav failed to initialize\n");
-    printf_color(PrintColor::Red, "****************\n"
-                                  "**  WARNING!  **\n"
-                                  "****************\n"
-                                  "  IMU DISABLED  \n"
-                                  "****************\n\n");
-    //initError("failed to initialize vectornav!\n", false);
-  }
-}
-
 /*!
  * Run Mini Cheetah SPI
  */
@@ -419,6 +598,25 @@ void MiniCheetahHardwareBridge::runSpi() {
 
   _spiLcm.publish("spi_data", data);
   _spiLcm.publish("spi_command", cmd);
+}
+
+
+/*
+ * ======================================================================================
+ * Following class functions are specifically defined for Cheetah 3
+ */
+void Cheetah3HardwareBridge::initHardware() {
+    _vectorNavData.quat << 1, 0, 0, 0;
+    printf("[Cheetah 3 Hardware] Init vectornav\n");
+    if (!init_vectornav(&_vectorNavData)) {
+        printf("Vectornav failed to initialize\n");
+        printf_color(PrintColor::Red, "****************\n"
+                                      "**  WARNING!  **\n"
+                                      "****************\n"
+                                      "  IMU DISABLED  \n"
+                                      "****************\n\n");
+        //initError("failed to initialize vectornav!\n", false);
+    }
 }
 
 void Cheetah3HardwareBridge::runEcat() {
@@ -495,27 +693,6 @@ void Cheetah3HardwareBridge::publishEcatLCM() {
 
   _ecatLCM.publish("ecat_cmd", &ecatCmdLcm);
   _ecatLCM.publish("ecat_data", &ecatDataLcm);
-}
-
-/*!
- * Send LCM visualization data
- */
-void HardwareBridge::publishVisualizationLCM() {
-  cheetah_visualization_lcmt visualization_data;
-  for (int i = 0; i < 3; i++) {
-    visualization_data.x[i] = _mainCheetahVisualization.p[i];
-  }
-
-  for (int i = 0; i < 4; i++) {
-    visualization_data.quat[i] = _mainCheetahVisualization.quat[i];
-    visualization_data.rgba[i] = _mainCheetahVisualization.color[i];
-  }
-
-  for (int i = 0; i < 12; i++) {
-    visualization_data.q[i] = _mainCheetahVisualization.q[i];
-  }
-
-  _visualizationLCM.publish("main_cheetah_visualization", &visualization_data);
 }
 
 Cheetah3HardwareBridge::Cheetah3HardwareBridge(RobotController *rc) : HardwareBridge(rc),  _ecatLCM(getLcmUrl(255)) {
