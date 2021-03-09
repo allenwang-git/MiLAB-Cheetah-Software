@@ -13,7 +13,7 @@
 #include "RobotInterface.h"
 #include "Simulation.h"
 
-#define DEFAULT_TERRAIN_FILE "/default-terrain.yaml"
+#define DEFAULT_TERRAIN_FILE "default-terrain.yaml"
 #define DEFAULT_USER_FILE "/default-user-parameters-file.yaml"
 
 #include <lcm-cpp.hpp>
