@@ -33,7 +33,10 @@ SimulatorParameters.h              *
 ********/robot*************************************************
 ******/src**                     done   doing    todo  
 RobotRunner.cpp                    * todo
-main_helper.cpp                                    *
+main_helper.cpp                    *
+HardwareBridge.cpp                 *
+******/include**
+HardwareBridge.h                   *
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo  
@@ -59,10 +62,12 @@ BodyOriTask.cpp                                    *
 BodyPosTask.cpp                                    *
 LinkPosTask.cpp                                    *
 ****/FSM_States**
-FSM_State_Locomotion.cpp                           *
+FSM_State.cpp                      * todo
+FSM_State_Locomotion.cpp           * todo
 FSM_State_RecoveryStand.cpp                        *
-FSM_State_StandUp.cpp                              *
-SafetyChecker.cpp                                  *
+FSM_State_StandUp.cpp              * todo
+FSM_BalanceStand.cpp               * todo
+SafetyChecker.cpp                  *
 ```
 
 ## Cheetah-Software
