@@ -49,7 +49,7 @@ DrawList.cpp                                * todo
 ******/MIT_Controller**          done   doing    todo 
 ****/Controllers**
 **/convexMPC**
-RobotState.cpp                                     *
+RobotState.cpp                     *
 ConvexMPCLocomotion.cpp                            *
 **/WBC_Ctrl** 
 */LocomotionCtrl
