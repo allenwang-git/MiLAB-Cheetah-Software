@@ -3,7 +3,7 @@
  *
  *  This class contains all the ControlParameters for the simulator.
  *  In most cases, the simulator just loads the control parameters in
- * simulator-defaults.ini and this is okay
+ *  simulator-defaults.ini and this is okay
  */
 
 #ifndef PROJECT_SIMULATORPARAMETERS_H

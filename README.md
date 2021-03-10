@@ -5,23 +5,23 @@ Created on 2020.03.01 by wyn
 ```
 ********/resources*********************************************
 need to create model files:       done   doing    todo 
-milab_body.obj                                     *
-milab_hip.obj                                      *
-milab_upper_link.obj                               *
-milab_upper_link_mirror.obj                        *
-milab_lower_link.obj                               *
+milab_body.obj                              *
+milab_hip.obj                               *
+milab_upper_link.obj                        *
+milab_upper_link_mirror.obj                 *
+milab_lower_link.obj                        *
 
 
 ********/config************************************************
-need to create milab robot parameters for QT simulator:
-milab-defaults.yaml                        *
-
+need to create milab robot and user parameters for QT simulator:
+milab-robot-defaults.yaml          *
+milab-user-defaults.yaml           *
 
 ********/common************************************************
 ******/src**                     done   doing    todo 
 ****/Dynamics**
-Quadruped.cpp                                      *
-FloatingBaseModel.cpp                              * 
+Quadruped.cpp                               *
+FloatingBaseModel.cpp                       * 
 ******/include**
 cppTypes.h                         *
 ****/Dynamics**
