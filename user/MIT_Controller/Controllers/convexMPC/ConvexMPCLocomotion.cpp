@@ -8,7 +8,7 @@
 
 #include "Gait.h"
 
-// Todo: maxforce(48,630), iteration_between_mpc(46), kp kd of foot when locomotion(321-331)
+// Todo: maxforce(48,630), iteration_between_mpc(46), kp kd of cartesian when locomotion(321-331)
 // Todo: mpc parameters Q[12], alpha(598,603,722,727) , robot parameters(709-714)
 
 //#define DRAW_DEBUG_SWINGS
