@@ -4,7 +4,9 @@
 #include <WBC_Ctrl/TaskSet/BodyPosTask.hpp>
 //#include <WBC_Ctrl/TaskSet/BodyPostureTask.hpp>
 #include <WBC_Ctrl/TaskSet/LinkPosTask.hpp>
-
+/*
+ * Todo: If you want to change kp / kd of WBC-Tasks or leg joints, go to milab-user-defaults.yaml !!
+ */
 template<typename T>
 LocomotionCtrl<T>::LocomotionCtrl(FloatingBaseModel<T> model):
   WBC_Ctrl<T>(model)
@@ -35,6 +37,9 @@ LocomotionCtrl<T>::~LocomotionCtrl(){
   }
 }
 
+/*
+ * First read parameters from Sim-panel and then use correct tasks' kp/kd to update tasks
+ */
 template<typename T>
 void LocomotionCtrl<T>::_ContactTaskUpdate(void* input, ControlFSMData<T> & data){
   _input_data = static_cast<LocomotionCtrlData<T>* >(input);
@@ -72,7 +77,9 @@ void LocomotionCtrl<T>::_ContactTaskUpdate(void* input, ControlFSMData<T> & data
     }
   }
 }
-
+/*
+ * Just test. Not used any more
+ */
 template<typename T>
 void LocomotionCtrl<T>::_ContactTaskUpdateTEST(void* input, ControlFSMData<T> & data){
   (void)data;
@@ -121,6 +128,9 @@ void LocomotionCtrl<T>::_ContactTaskUpdateTEST(void* input, ControlFSMData<T> & 
     }
   }
 }
+/*
+ * Read kp kd parameters from user parameters table!
+ */
 template<typename T>
 void LocomotionCtrl<T>::_ParameterSetup(const MIT_UserParameters* param){
 
