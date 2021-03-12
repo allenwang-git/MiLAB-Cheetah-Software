@@ -165,7 +165,7 @@ int init_sbus(int is_simulator) {
 
   int fd1 = open(port1.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   if (fd1 < 0) {
-    printf("Error opening %s: %s\n", port1.c_str(), strerror(errno));
+    printf("[Warning: RemoteCommander] Opening %s: %s%d\n", port1.c_str(), strerror(errno),fd1);
   } else {
     init_serial_for_sbus(fd1, 100000);
 #ifdef linux
