@@ -6,28 +6,28 @@
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
 Remember to check corresponding include files of following source files. \
 Whenever you change or add other project files, please update this list. \
-**done**: have submitted final modification\
-**doing**: working on it now\
-**todo**: plan to modify recently or still have *TODO* tips in the file
-
+**done**: have submitted final modification \
+**doing**: working on it now \
+**todo**: plan to modify recently or still have *TODO* tips in the file \
+**new**: new file specifically for Milab robot
 ```
 ********/resources*********************************************
-need to create model files:       done   doing    todo 
-milab_body.obj                              *
-milab_hip.obj                               *
-milab_upper_link.obj                        *
-milab_upper_link_mirror.obj                 *
-milab_lower_link.obj                        *
+                                  done   doing    todo    new
+milab_body.obj                              *              *
+milab_hip.obj                               *              *
+milab_upper_link.obj                        *              *
+milab_upper_link_mirror.obj                 *              *
+milab_lower_link.obj                        *              *
 
 
 ********/config************************************************
-need to create milab robot and user parameters for QT simulator:
-milab-robot-defaults.yaml          *
-milab-user-defaults.yaml           *
+                                  done   doing    todo    new
+milab-robot-defaults.yaml          *                       *
+milab-user-defaults.yaml           *                       *
 
 
 ********/common************************************************
-******/src**                     done   doing    todo 
+******/src**                     done   doing    todo     new
 ****/Dynamics**
 Quadruped.cpp                              *
 FloatingBaseModel.cpp                      * 
@@ -35,13 +35,13 @@ FloatingBaseModel.cpp                      *
 cppTypes.h                         *
 ****/Dynamics**
 need to create file according to MiniCheetah.h:
-Milab.h                                    * todo
+Milab.h                                    * todo           *
 ****/ControlParameters
 SimulatorParameters.h              *
 
 
 ********/robot*************************************************
-******/src**                     done   doing    todo  
+******/src**                     done   doing    todo     new
 RobotRunner.cpp                    * todo
 main_helper.cpp                    *
 HardwareBridge.cpp                 *
@@ -50,7 +50,7 @@ HardwareBridge.h                   *
 
 
 ********/sim***************************************************
-******/src**                     done   doing    todo  
+******/src**                     done   doing    todo     new
 Simulation.cpp                     * todo
 SimControlPanel.cpp                * todo
 SimControlPanel.ui                 *
@@ -60,18 +60,15 @@ DrawList.cpp                                * todo
 
 
 ********/user**************************************************
-******/MIT_Controller**          done   doing    todo 
+******/MIT_Controller**          done   doing    todo     new
 ****/Controllers**
 **/convexMPC**
-RobotState.cpp                     *
+RobotState.cpp                     * todo
 ConvexMPCLocomotion.cpp            * todo
 **/WBC_Ctrl** 
+WBC_Ctrl.cpp                       * todo
 */LocomotionCtrl
-LocomotionCtrl.cpp                                 *
-*/TaskSet
-BodyOriTask.cpp                                    *
-BodyPosTask.cpp                                    *
-LinkPosTask.cpp                                    *
+LocomotionCtrl.cpp                 * todo
 ****/FSM_States**
 FSM_State.cpp                      * todo
 FSM_State_Locomotion.cpp           * todo
