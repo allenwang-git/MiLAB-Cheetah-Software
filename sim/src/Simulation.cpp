@@ -45,8 +45,13 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   // init quadruped info
   printf("[Simulation] Build quadruped...\n");
   _robot = robot;
-  _quadruped = _robot == RobotType::MINI_CHEETAH ? buildMiniCheetah<double>()
-                                                 : buildMilab<double>();
+  if (_robot == RobotType::MINI_CHEETAH){
+      _quadruped =  buildMiniCheetah<double>();
+  }else if (_robot == RobotType::MILAB){
+      _quadruped =  buildMilab<double>();
+  }else{
+      _quadruped =  buildCheetah3<double>();
+  }
   printf("[Simulation] Build actuator model...\n");
   _actuatorModels = _quadruped.buildActuatorModels();
   _window = window;
@@ -57,11 +62,20 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
     Vec4<float> truthColor, seColor;
     truthColor << 0.2, 0.4, 0.2, 0.6;
     seColor << .75,.75,.75, 1.0;
-    _simRobotID = _robot == RobotType::MINI_CHEETAH ? window->setupMiniCheetah(truthColor, true, true)
-                                                    : window->setupMilab(truthColor, true, true);
-    _controllerRobotID = _robot == RobotType::MINI_CHEETAH
-                             ? window->setupMiniCheetah(seColor, false, false)
-                             : window->setupMilab(seColor, false, false);
+    if (_robot == RobotType::MINI_CHEETAH){
+        _simRobotID =  window->setupMiniCheetah(truthColor, true, true);
+    }else if (_robot == RobotType::MILAB){
+        _simRobotID =  window->setupMilab(truthColor, true, true);
+    }else{
+        _simRobotID =  window->setupCheetah3(truthColor, true, true);
+    }
+    if (_robot == RobotType::MINI_CHEETAH){
+        _controllerRobotID =  window->setupMiniCheetah(seColor, false, false);
+    }else if (_robot == RobotType::MILAB){
+        _controllerRobotID =  window->setupMilab(seColor, false, false);
+    }else{
+        _controllerRobotID =  window->setupCheetah3(seColor, false, false);
+    }
   }
 
   // init rigid body dynamics
