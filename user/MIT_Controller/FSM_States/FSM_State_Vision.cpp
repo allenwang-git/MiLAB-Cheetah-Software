@@ -24,8 +24,8 @@ FSM_State_Vision<T>::FSM_State_Vision(
                 _controlFSMData->userParameters),
         cMPCOld(_controlFSMData->controlParameters->controller_dt,
                 30 / (1000. * _controlFSMData->controlParameters->controller_dt),
-                _controlFSMData->userParameters),
-         _visionLCM(getLcmUrl(255))
+                _controlFSMData->userParameters,120),
+                _visionLCM(getLcmUrl(255))
 {
   // Set the safety checks
   this->turnOnAllSafetyChecks();

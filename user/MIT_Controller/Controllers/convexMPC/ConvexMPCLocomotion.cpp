@@ -19,7 +19,7 @@
 // Controller
 ////////////////////
 
-ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters) :
+ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters, float fmax) :
   iterationsBetweenMPC(_iterations_between_mpc),
   horizonLength(10),
   dt(_dt),
@@ -43,15 +43,8 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc,
   _parameters = parameters;
   dtMPC = dt * iterationsBetweenMPC;
   default_iterations_between_mpc = iterationsBetweenMPC;
-  printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.3f\n", dt, iterationsBetweenMPC, dtMPC);
-  if (_iterations_between_mpc == 30/2){        //MILAB
-      setup_problem(dtMPC, horizonLength, 0.4, 300);
-  } else if (_iterations_between_mpc == 27/2){ // MINI-CHEETAH
-      setup_problem(dtMPC, horizonLength, 0.4, 120);
-  } else{                                    //CHEETAH3
-      setup_problem(dtMPC, horizonLength, 0.4, 650); // DH
-  }
-
+  printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.4f, maxforce: %.1f\n", dt, iterationsBetweenMPC, dtMPC,fmax);
+  setup_problem(dtMPC, horizonLength, 0.4, fmax);
   rpy_comp[0] = 0;
   rpy_comp[1] = 0;
   rpy_comp[2] = 0;
