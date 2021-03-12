@@ -36,7 +36,7 @@ Quadruped<T> buildMilab() {
     milab._maxLegLength = 0.7632;
 
 
-    milab._motorTauMax = 16.f;
+    milab._motorTauMax = 8.f;
     milab._batteryV = 36;
     milab._motorKT = 0.09;  // this is flux linkage * pole pairs
     milab._motorR = 0.3;
