@@ -19,12 +19,12 @@ VisionGait::VisionGait(int nMPC_segments, Vec4<int> offsets,
   _offsetsFloat = offsets.cast<float>() / (float) nMPC_segments;
   _durationsFloat = durations.cast<float>() / (float) nMPC_segments;
   std::cout << "VisionGait " << name << "\n";
-  std::cout << "nMPC_segments    : " << _nIterations << "\n";
-  std::cout << "offsets (int)    : " << _offsets.transpose() << "\n";
-  std::cout << "durations (int)  : " << _durations.transpose() << "\n";
-  std::cout << "offsets (float)  : " << _offsetsFloat.transpose() << "\n";
-  std::cout << "durations (float): " << _durationsFloat.transpose() << "\n";
-  std::cout << "\n\n";
+//  std::cout << "nMPC_segments    : " << _nIterations << "\n";
+//  std::cout << "offsets (int)    : " << _offsets.transpose() << "\n";
+//  std::cout << "durations (int)  : " << _durations.transpose() << "\n";
+//  std::cout << "offsets (float)  : " << _offsetsFloat.transpose() << "\n";
+//  std::cout << "durations (float): " << _durationsFloat.transpose() << "\n";
+//  std::cout << "\n\n";
 
   _stance = durations[0];
   _swing = nMPC_segments - durations[0];
