@@ -89,7 +89,7 @@ Graphics3D::Graphics3D(QWidget *parent)
       _v0(0, 0, 0),
       _freeCamFilter(1, 60, _v0)
 {
-  std::cout << "[SIM GRAPHICS] New graphics window. \n";
+  std::cout << "[Graphics 3D] New graphics window. \n";
 
   _r[0] = 0.2422;
   _g[0] = 0.1504;

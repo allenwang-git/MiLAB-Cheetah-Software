@@ -58,7 +58,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
 
   // init graphics
   if (_window) {
-    printf("[Simulation] Setup Cheetah graphics...\n");
+    printf("[Simulation] Setup Robot graphics...\n");
     Vec4<float> truthColor, seColor;
     truthColor << 0.2, 0.4, 0.2, 0.6;
     seColor << .75,.75,.75, 1.0;
@@ -164,7 +164,7 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   x0.q[9] = 0.7;
   x0.q[10] = -1.0;
   x0.q[11] = -2.715;
-
+  x0.q.setZero();
 
   setRobotState(x0);
   _robotDataSimulator->setState(x0);
@@ -259,7 +259,8 @@ void Simulation::sendControlParameter(const std::string& name,
   strcpy(request.name, name.c_str());
   request.value = value;
   request.parameterKind = kind;
-  printf("%s\n", request.toString().c_str());
+//  print robot and user parameters to terminal
+//  printf("%s\n", request.toString().c_str());
 
   // run robot:
   _robotMutex.lock();
@@ -709,7 +710,7 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
 
 void Simulation::loadTerrainFile(const std::string& terrainFileName,
                                  bool addGraphics) {
-    printf("load terrain %s\n", terrainFileName.c_str());
+    printf("[Simulation] load terrain file: %s\n", terrainFileName.c_str());
     ParamHandler paramHandler(terrainFileName);
 
     if (!paramHandler.fileOpenedSuccessfully()) {
@@ -740,7 +741,7 @@ void Simulation::loadTerrainFile(const std::string& terrainFileName,
             for (size_t i = 0; i < idx; i++) val[i] = v[i];
         };
 
-        printf("terrain element %s\n", key.c_str());
+        printf("[Simulation] terrain element: %s\n", key.c_str());
         std::string typeName;
         paramHandler.getString(key, "type", typeName);
         if (typeName == "infinite-plane") {
@@ -830,7 +831,7 @@ void Simulation::loadTerrainFile(const std::string& terrainFileName,
                 std::ifstream f_height;
                 f_height.open(THIS_COM "/config/" + file_name);
                 if (!f_height.good()) {
-                    std::cout << "file reading error: "
+                    std::cout << "[Simulation] file reading error: "
                               << THIS_COM "../config/" + file_name << std::endl;
                 }
                 int i(0);

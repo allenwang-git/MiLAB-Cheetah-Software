@@ -37,16 +37,16 @@ void GameController::findNewController() {
   printf("[Gamepad] Done searching for gamepads.\n");
   if (gamepadList.empty()) {
     printf(
-        "[ERROR: GameController] No controller was connected! All joystick "
+        "[ERROR: GamePad] No controller was connected! All joystick "
         "commands will be zero!\n");
   } else {
     if (gamepadList.size() > 1) {
       printf(
-          "[ERROR: GameController] There are %d joysticks connected.  Using "
+          "[ERROR: GamePad] There are %d joysticks connected.  Using "
           "the first one.\n",
           gamepadList.size());
     } else {
-      printf("[GameController] Found 1 joystick\n");
+      printf("[GamePad] Found 1 joystick\n");
     }
 
     _qGamepad = new QGamepad(*gamepadList.begin());
