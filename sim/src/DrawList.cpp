@@ -12,14 +12,15 @@
 void DrawList::loadFiles() {
   printf("[DrawList] Load object files...\n");
   std::vector<std::string> names = {
-      "c3_body.obj",            "mini_abad.obj",
-      "c3_upper_link.obj",      "c3_lower_link.obj",
-      "mini_body.obj",          "mini_abad.obj",
-      "mini_upper_link.obj",    "mini_lower_link.obj",
-      "sphere.obj",             "cube.obj",
-      "milab_body.obj",         "milab_hip.obj",
-      "milab_upper_link.obj",   "milab_upper_link_mirror.obj",
-      "milab_lower_link.obj" };
+      "c3_body.obj",                  "mini_abad.obj",
+      "c3_upper_link.obj",            "c3_lower_link.obj",
+      "mini_body.obj",                "mini_abad.obj",
+      "mini_upper_link.obj",          "mini_lower_link.obj",
+      "sphere.obj",                   "cube.obj",
+      "milab_body.obj",               "milab_abad.obj",
+      "milab_upper_link_mirror.obj",  "milab_upper_link.obj",
+      "milab_lower_link.obj"
+  };
   for (const auto& name : names) {
     std::string filename = _baseFileName + name;
     _vertexData.emplace_back();
@@ -138,7 +139,7 @@ size_t DrawList::addCheetah3(Vec4<float> color, bool useOld, bool canHide) {
  */
 size_t DrawList::addMiniCheetah(Vec4<float> color, bool useOld, bool canHide) {
   
-  size_t i0 = _miniCheetahLoadIndex;  // todo don't hard code this
+  size_t i0 = _miniCheetahLoadIndex;
   size_t j0 = _nTotal;
 
   // set model offsets:
@@ -149,7 +150,7 @@ size_t DrawList::addMiniCheetah(Vec4<float> color, bool useOld, bool canHide) {
   // body
   bodyOffset.setToIdentity();
 
-  // abads (todo, check these)
+  // abads
   abadOffsets[0].setToIdentity();  // n
   abadOffsets[0].rotate(-90, 0, 0, 1);
   abadOffsets[0].translate(0, -.0565f, 0);
@@ -247,54 +248,42 @@ size_t DrawList::addMilab(Vec4<float> color, bool useOld, bool canHide) {
     bodyOffset.setToIdentity();
 
     // abads
-    abadOffsets[0].setToIdentity();  // n
-    abadOffsets[0].rotate(-90, 0, 0, 1);
-    abadOffsets[0].translate(0, -.0565f, 0);
-    abadOffsets[0].rotate(180, 0, 1, 0);
+    abadOffsets[0].setToIdentity();  // FR
+    abadOffsets[0].rotate(180,1,0, 0);
 
-    abadOffsets[1].setToIdentity();  // p
-    abadOffsets[1].rotate(-90, 0, 0, 1);
-    abadOffsets[1].translate(0, -.0565f, 0);
-    abadOffsets[1].rotate(0, 0, 1, 0);
+    abadOffsets[1].setToIdentity();  // FL
 
-    abadOffsets[2].setToIdentity();  // n
-    abadOffsets[2].rotate(90, 0, 0, 1);
-    abadOffsets[2].translate(0, -.0565f, 0);
-    abadOffsets[2].rotate(0, 0, 1, 0);
+    abadOffsets[2].setToIdentity();  // RR
+    abadOffsets[2].rotate(180, 0, 0, 1);
 
-    abadOffsets[3].setToIdentity();  // p
-    abadOffsets[3].rotate(90, 0, 0, 1);
-    abadOffsets[3].translate(0, -.0565f, 0);
-    abadOffsets[3].rotate(180, 0, 1, 0);
+    abadOffsets[3].setToIdentity();  // RL
+    abadOffsets[3].rotate(180, 0, 0, 1);
+    abadOffsets[3].rotate(180, 1,0, 0);
 
     // upper
-    upperOffsets[0].setToIdentity();
-    upperOffsets[0].rotate(-90, 0, 1, 0);
-
-    upperOffsets[1].setToIdentity();
-    upperOffsets[1].rotate(-90, 0, 1, 0);
-    upperOffsets[1].rotate(180, 0, 0, 1);
+    upperOffsets[0].setToIdentity();//right
+    upperOffsets[1].setToIdentity();//left
 
     // lower
     lower.setToIdentity();
-    lower.rotate(180, 0, 1, 0);
 
     SolidColor bodyColor, abadColor, link1Color, link2Color;
-    bodyColor.rgba = useOld ? Vec4<float>(.2, .2, .4, .3) : color;
+    bodyColor.rgba = useOld ? Vec4<float>(.2, .2, .2, .3) : color;
     bodyColor.useSolidColor = true;
 
-    abadColor.rgba = useOld ? Vec4<float>(.2, .2, .4, .3) : color;
+    abadColor.rgba = useOld ? Vec4<float>(.2, .2, .2, .3) : color;
     abadColor.useSolidColor = true;
 
-    link1Color.rgba = useOld ? Vec4<float>(.2, .2, .4, .3) : color;
+    link1Color.rgba = useOld ? Vec4<float>(.2, .2, .2, .3) : color;
     link1Color.useSolidColor = true;
 
-    link2Color.rgba = useOld ? Vec4<float>(.2, .2, .4, .3) : color;
+    link2Color.rgba = useOld ? Vec4<float>(.2, .2, .2, .3) : color;
     link2Color.useSolidColor = true;
 
     _canBeHidden.push_back(canHide);
 
     // add objects
+    // BODY
     _objectMap.push_back(i0 + 0);
     _modelOffsets.push_back(bodyOffset);
     _kinematicXform.push_back(eye);
@@ -302,19 +291,28 @@ size_t DrawList::addMilab(Vec4<float> color, bool useOld, bool canHide) {
     _nTotal++;
 
     for (int i = 0; i < 4; i++) {
+    //  HIP
         _objectMap.push_back(i0 + 1);
         _canBeHidden.push_back(canHide);
         _modelOffsets.push_back(abadOffsets[i]);
         _kinematicXform.push_back(eye);
         _instanceColor.push_back(abadColor);
-
-        _objectMap.push_back(i0 + 2);
-        _canBeHidden.push_back(canHide);
-        _modelOffsets.push_back(upperOffsets[i % 2]);
-        _kinematicXform.push_back(eye);
-        _instanceColor.push_back(link1Color);
-
-        _objectMap.push_back(i0 + 3);
+    //  UPPER LINK
+        if (i%2==0){ //RIGHT
+            _objectMap.push_back(i0 + 2);
+            _canBeHidden.push_back(canHide);
+            _modelOffsets.push_back(upperOffsets[i % 2]);
+            _kinematicXform.push_back(eye);
+            _instanceColor.push_back(link1Color);
+        } else {  //LEFT
+            _objectMap.push_back(i0 + 3);
+            _canBeHidden.push_back(canHide);
+            _modelOffsets.push_back(upperOffsets[i % 2]);
+            _kinematicXform.push_back(eye);
+            _instanceColor.push_back(link1Color);
+        }
+    //  LOWER LINK
+        _objectMap.push_back(i0 + 4);
         _canBeHidden.push_back(canHide);
         _modelOffsets.push_back(lower);
         _kinematicXform.push_back(eye);
@@ -322,10 +320,6 @@ size_t DrawList::addMilab(Vec4<float> color, bool useOld, bool canHide) {
         _nTotal += 3;
     }
 
-    // printf("add milab robot (%d) id %ld\n", (int)canHide, j0);
-    // for(u32 i = 0; i < _canBeHidden.size(); i++) {
-    //   printf(" [%02d] %d\n", i, _canBeHidden[i]);
-    // }
     return j0;
 }
 

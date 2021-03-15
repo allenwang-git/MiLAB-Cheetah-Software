@@ -22,18 +22,18 @@ Quadruped<T> buildMilab() {
     Quadruped<T> milab;
     milab._robotType = RobotType::MILAB;
 //  todo: modify following parameters according to real robot measurements:
-    milab._bodyMass = 8.69;
-    milab._bodyLength = 0.789;
-    milab._bodyWidth = 0.253;
-    milab._bodyHeight = 0.1515;
+    milab._bodyMass = 15.905;
+    milab._bodyLength = 0.5779;
+    milab._bodyWidth = 0.152;
+    milab._bodyHeight = 0.153;
     milab._abadGearRatio = 6;
     milab._hipGearRatio = 6;
     milab._kneeGearRatio = 6;
-    milab._abadLinkLength = 0.0536;
-    milab._hipLinkLength = 0.370;
-    milab._kneeLinkY_offset = 0.004;
-    milab._kneeLinkLength = 0.3932;
-    milab._maxLegLength = 0.7632;
+    milab._abadLinkLength = 0.1;
+    milab._hipLinkLength = 0.3000;
+    milab._kneeLinkY_offset = 0.005;
+    milab._kneeLinkLength = 0.32126;
+    milab._maxLegLength = 0.62126;
 
 
     milab._motorTauMax = 8.f;
@@ -95,7 +95,8 @@ Quadruped<T> buildMilab() {
     milab._bodyInertia = bodyInertia;
 
     // locations
-    milab._abadRotorLocation = Vec3<T>(0.125, 0.049, 0);
+    milab._abadRotorLocation =
+            Vec3<T>(milab._bodyLength, milab._bodyWidth, 0) * 0.5;
     milab._abadLocation =
             Vec3<T>(milab._bodyLength, milab._bodyWidth, 0) * 0.5;
     milab._hipLocation = Vec3<T>(0, milab._abadLinkLength, 0);
