@@ -65,13 +65,15 @@ void FSM_State_StandUp<T>::run() {
     }
   }else if (this->_data->_quadruped->_robotType == RobotType::MILAB){
       T hMax = 0.4;
-      T progress = 2 * iter * this->_data->controlParameters->controller_dt;
+      T progress = 1 * iter * this->_data->controlParameters->controller_dt;
 
       if (progress > 1.){ progress = 1.; }
 
       for(int i = 0; i < 4; i++) {
-          this->_data->_legController->commands[i].kpCartesian = Vec3<T>(500, 500, 500).asDiagonal();
-          this->_data->_legController->commands[i].kdCartesian = Vec3<T>(8, 8, 8).asDiagonal();
+          float kp_cartesian = this->_data->controlParameters->stand_kp_cartesian[0];
+          float kd_cartesian = this->_data->controlParameters->stand_kd_cartesian[0];
+          this->_data->_legController->commands[i].kpCartesian = Vec3<T>(kp_cartesian,kp_cartesian,kp_cartesian).asDiagonal();
+          this->_data->_legController->commands[i].kdCartesian = Vec3<T>(kd_cartesian,kd_cartesian,kd_cartesian).asDiagonal();
 
           this->_data->_legController->commands[i].pDes = _ini_foot_pos[i];
           this->_data->_legController->commands[i].pDes[2] =

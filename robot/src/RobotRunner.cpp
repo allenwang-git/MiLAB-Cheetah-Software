@@ -108,7 +108,7 @@ void RobotRunner::run() {
     _legController->setEnabled(true);
 
     if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if(count_ini%1000 ==0)   printf("ESTOP!\n");
+      if(count_ini%10000 ==0)   printf("[RobotRunner]] use_rc = 1, turn it to 0 to start controller\n");
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }
