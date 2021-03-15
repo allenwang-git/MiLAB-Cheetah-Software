@@ -98,7 +98,7 @@ void LegController<T>::updateData(const SpiData* spiData) {
     // J and p
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
                                      &(datas[leg].p), leg);
-
+    std::cout<<leg<<" "<<datas[leg].p[2]<<std::endl;
     // v
     datas[leg].v = datas[leg].J * datas[leg].qd;
   }
@@ -175,7 +175,7 @@ void LegController<T>::updateCommand(SpiCommand* spiCommand) {
         legTorque +
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
-
+    std::cout<<leg<<" "<<datas[leg].tauEstimate<<std::endl;
     spiCommand->flags[leg] = _legsEnabled ? 1 : 0;
   }
 }

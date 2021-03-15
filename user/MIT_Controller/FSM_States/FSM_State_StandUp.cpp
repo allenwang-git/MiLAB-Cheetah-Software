@@ -40,6 +40,7 @@ void FSM_State_StandUp<T>::onEnter() {
 
   for(size_t leg(0); leg<4; ++leg){
     _ini_foot_pos[leg] = this->_data->_legController->datas[leg].p;
+    std::cout<<leg<<" "<<_ini_foot_pos[leg]<<std::endl;
   }
 }
 
