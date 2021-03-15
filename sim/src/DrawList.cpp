@@ -262,10 +262,12 @@ size_t DrawList::addMilab(Vec4<float> color, bool useOld, bool canHide) {
 
     // upper
     upperOffsets[0].setToIdentity();//right
+//    upperOffsets[0].rotate(180, 0, 0, 1);
     upperOffsets[1].setToIdentity();//left
-
+//    upperOffsets[1].rotate(180, 0, 0, 1);
     // lower
     lower.setToIdentity();
+//    lower.rotate(180, 0, 0, 1);
 
     SolidColor bodyColor, abadColor, link1Color, link2Color;
     bodyColor.rgba = useOld ? Vec4<float>(.2, .2, .2, .3) : color;
