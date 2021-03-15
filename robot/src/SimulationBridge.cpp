@@ -127,7 +127,7 @@ void SimulationBridge::handleControlParameters() {
              name.c_str());  // just for debugging print statements
       response.requestKind = request.requestKind;
 
-      printf("%s\n", response.toString().c_str());
+//      printf("%s\n", response.toString().c_str());
 
     } break;
 
@@ -161,7 +161,7 @@ void SimulationBridge::handleControlParameters() {
              name.c_str());  // just for debugging print statements
       response.requestKind = request.requestKind;
 
-      printf("%s\n", response.toString().c_str());
+//      printf("%s\n", response.toString().c_str());
 
     } break;
 
@@ -188,7 +188,7 @@ void SimulationBridge::handleControlParameters() {
       response.requestKind =
           request.requestKind;  // just for debugging print statements
 
-      printf("%s\n", response.toString().c_str());
+//      printf("%s\n", response.toString().c_str());
     } break;
     default:
       throw std::runtime_error("unhandled get/set");

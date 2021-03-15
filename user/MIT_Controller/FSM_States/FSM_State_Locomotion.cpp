@@ -20,24 +20,28 @@ template <typename T>
 FSM_State_Locomotion<T>::FSM_State_Locomotion(ControlFSMData<T>* _controlFSMData)
     : FSM_State<T>(_controlFSMData, FSM_StateName::LOCOMOTION, "LOCOMOTION")
 {
+        float fmax;
     if(_controlFSMData->_quadruped->_robotType == RobotType::MILAB){
+        fmax = 300;
         cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
                 //30 / (1000. * _controlFSMData->controlParameters->controller_dt),
                 //22 / (1000. * _controlFSMData->controlParameters->controller_dt),
-                27 / (1000. * _controlFSMData->controlParameters->controller_dt),
-                _controlFSMData->userParameters);
+                30 / (1000. * _controlFSMData->controlParameters->controller_dt),
+                _controlFSMData->userParameters,fmax);
 
     }else if(_controlFSMData->_quadruped->_robotType == RobotType::MINI_CHEETAH){
+        fmax = 120;
     cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
         //30 / (1000. * _controlFSMData->controlParameters->controller_dt),
         //22 / (1000. * _controlFSMData->controlParameters->controller_dt),
         27 / (1000. * _controlFSMData->controlParameters->controller_dt),
-        _controlFSMData->userParameters);
+        _controlFSMData->userParameters,fmax);
 
   }else if(_controlFSMData->_quadruped->_robotType == RobotType::CHEETAH_3){
+        fmax =650;
     cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
         33 / (1000. * _controlFSMData->controlParameters->controller_dt),
-        _controlFSMData->userParameters);
+        _controlFSMData->userParameters,fmax);
 
   }else{
     assert(false);

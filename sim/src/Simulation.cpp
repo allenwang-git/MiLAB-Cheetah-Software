@@ -45,23 +45,37 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   // init quadruped info
   printf("[Simulation] Build quadruped...\n");
   _robot = robot;
-  _quadruped = _robot == RobotType::MINI_CHEETAH ? buildMiniCheetah<double>()
-                                                 : buildMilab<double>();
+  if (_robot == RobotType::MINI_CHEETAH){
+      _quadruped =  buildMiniCheetah<double>();
+  }else if (_robot == RobotType::MILAB){
+      _quadruped =  buildMilab<double>();
+  }else{
+      _quadruped =  buildCheetah3<double>();
+  }
   printf("[Simulation] Build actuator model...\n");
   _actuatorModels = _quadruped.buildActuatorModels();
   _window = window;
 
   // init graphics
   if (_window) {
-    printf("[Simulation] Setup Cheetah graphics...\n");
+    printf("[Simulation] Setup Robot graphics...\n");
     Vec4<float> truthColor, seColor;
     truthColor << 0.2, 0.4, 0.2, 0.6;
     seColor << .75,.75,.75, 1.0;
-    _simRobotID = _robot == RobotType::MINI_CHEETAH ? window->setupMiniCheetah(truthColor, true, true)
-                                                    : window->setupMilab(truthColor, true, true);
-    _controllerRobotID = _robot == RobotType::MINI_CHEETAH
-                             ? window->setupMiniCheetah(seColor, false, false)
-                             : window->setupMilab(seColor, false, false);
+    if (_robot == RobotType::MINI_CHEETAH){
+        _simRobotID =  window->setupMiniCheetah(truthColor, true, true);
+    }else if (_robot == RobotType::MILAB){
+        _simRobotID =  window->setupMilab(truthColor, true, true);
+    }else{
+        _simRobotID =  window->setupCheetah3(truthColor, true, true);
+    }
+    if (_robot == RobotType::MINI_CHEETAH){
+        _controllerRobotID =  window->setupMiniCheetah(seColor, false, false);
+    }else if (_robot == RobotType::MILAB){
+        _controllerRobotID =  window->setupMilab(seColor, false, false);
+    }else{
+        _controllerRobotID =  window->setupCheetah3(seColor, false, false);
+    }
   }
 
   // init rigid body dynamics
@@ -84,73 +98,51 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   FBModelState<double> x0;
   x0.bodyOrientation = rotationMatrixToQuaternion(
       ori::coordinateRotation(CoordinateAxis::Z, 0.));
-  // Mini Cheetah
   x0.bodyPosition.setZero();
   x0.bodyVelocity.setZero();
   x0.q = zero12;
   x0.qd = zero12;
+  // Initial (lies on the ground )
+  if (_robot == RobotType::MILAB){
+      x0.bodyPosition[2] = 0.0752;
+      x0.q[0] = -0.5;
+      x0.q[1] = 1.25;
+      x0.q[2] = -2.8;
 
-  /*Mini Cheetah Initial Posture
-   x0.bodyPosition[2] = -0.49;
-   Cheetah 3
-   x0.bodyPosition[2] = -0.34;
-   x0.q[0] = -0.807;
-   x0.q[1] = -1.2;
-   x0.q[2] = 2.4;
+      x0.q[3] = 0.5;
+      x0.q[4] = 1.25;
+      x0.q[5] = -2.8;
 
-   x0.q[3] = 0.807;
-   x0.q[4] = -1.2;
-   x0.q[5] = 2.4;
+      x0.q[6] = -0.5;
+      x0.q[7] = 1.25;
+      x0.q[8] = -2.8;
 
-   x0.q[6] = -0.807;
-   x0.q[7] = -1.2;
-   x0.q[8] = 2.4;
+      x0.q[9] = 0.5;
+      x0.q[10] = 1.25;
+      x0.q[11] = -2.8;
+  } else{  //  MiNI CHEETAH & CHEETAH 3
+      x0.bodyPosition[2] = 0.05;
+      x0.q[0] = -0.7;
+      x0.q[1] = -1.;
+      x0.q[2] = 2.715;
 
-   x0.q[9] = 0.807;
-   x0.q[10] = -1.2;
-   x0.q[11] = 2.4;
+      x0.q[3] = 0.7;
+      x0.q[4] = -1.;
+      x0.q[5] = 2.715;
 
-   Initial (Mini Cheetah stand)
-   x0.bodyPosition[2] = -0.185;
-   Cheetah 3
-   x0.bodyPosition[2] = -0.075;
+      x0.q[6] = -0.7;
+      x0.q[7] = -1.0;
+      x0.q[8] = 2.715;
 
-   x0.q[0] = -0.03;
-   x0.q[1] = -0.79;
-   x0.q[2] = 1.715;
-
-   x0.q[3] = 0.03;
-   x0.q[4] = -0.79;
-   x0.q[5] = 1.715;
-
-   x0.q[6] = -0.03;
-   x0.q[7] = -0.72;
-   x0.q[8] = 1.715;
-
-   x0.q[9] = 0.03;
-   x0.q[10] = -0.72;
-   x0.q[11] = 1.715;
-*/
-  // Initial (Mini Cheetah lies on the ground )
-  //  x0.bodyPosition[2] = 0.05;
-  //  Milab robot
-  x0.bodyPosition[2]=0.076;
-  x0.q[0] = -0.7;
-  x0.q[1] = 1.;
-  x0.q[2] = 2.715;
-
-  x0.q[3] = 0.7;
-  x0.q[4] = 1.;
-  x0.q[5] = 2.715;
-
-  x0.q[6] = -0.7;
-  x0.q[7] = -1.0;
-  x0.q[8] = -2.715;
-
-  x0.q[9] = 0.7;
-  x0.q[10] = -1.0;
-  x0.q[11] = -2.715;
-
+      x0.q[9] = 0.7;
+      x0.q[10] = -1.0;
+      x0.q[11] = 2.715;
+      if (_robot==RobotType::CHEETAH_3){
+          x0.bodyPosition[2] = 0.075;
+      }
+  }
+//  Bebug
+//  x0.q.setZero();
 
   setRobotState(x0);
   _robotDataSimulator->setState(x0);
@@ -245,7 +237,8 @@ void Simulation::sendControlParameter(const std::string& name,
   strcpy(request.name, name.c_str());
   request.value = value;
   request.parameterKind = kind;
-  printf("%s\n", request.toString().c_str());
+//  print robot and user parameters to terminal
+//  printf("%s\n", request.toString().c_str());
 
   // run robot:
   _robotMutex.lock();
@@ -695,7 +688,7 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
 
 void Simulation::loadTerrainFile(const std::string& terrainFileName,
                                  bool addGraphics) {
-    printf("load terrain %s\n", terrainFileName.c_str());
+    printf("[Simulation] load terrain file: %s\n", terrainFileName.c_str());
     ParamHandler paramHandler(terrainFileName);
 
     if (!paramHandler.fileOpenedSuccessfully()) {
@@ -726,7 +719,7 @@ void Simulation::loadTerrainFile(const std::string& terrainFileName,
             for (size_t i = 0; i < idx; i++) val[i] = v[i];
         };
 
-        printf("terrain element %s\n", key.c_str());
+        printf("[Simulation] terrain element: %s\n", key.c_str());
         std::string typeName;
         paramHandler.getString(key, "type", typeName);
         if (typeName == "infinite-plane") {
@@ -816,7 +809,7 @@ void Simulation::loadTerrainFile(const std::string& terrainFileName,
                 std::ifstream f_height;
                 f_height.open(THIS_COM "/config/" + file_name);
                 if (!f_height.good()) {
-                    std::cout << "file reading error: "
+                    std::cout << "[Simulation] file reading error: "
                               << THIS_COM "../config/" + file_name << std::endl;
                 }
                 int i(0);

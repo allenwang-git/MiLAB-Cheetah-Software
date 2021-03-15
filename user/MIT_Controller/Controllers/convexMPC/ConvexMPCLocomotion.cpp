@@ -8,6 +8,9 @@
 
 #include "Gait.h"
 
+// Todo: maxforce(48,630), iteration_between_mpc(46), kp kd of cartesian when locomotion(321-331)
+// Todo: mpc parameters Q[12], alpha(598,603,722,727) , robot parameters(709-714)
+
 //#define DRAW_DEBUG_SWINGS
 //#define DRAW_DEBUG_PATH
 
@@ -16,7 +19,7 @@
 // Controller
 ////////////////////
 
-ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters) :
+ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters, float fmax) :
   iterationsBetweenMPC(_iterations_between_mpc),
   horizonLength(10),
   dt(_dt),
@@ -40,9 +43,8 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc,
   _parameters = parameters;
   dtMPC = dt * iterationsBetweenMPC;
   default_iterations_between_mpc = iterationsBetweenMPC;
-  printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.3f\n", dt, iterationsBetweenMPC, dtMPC);
-  setup_problem(dtMPC, horizonLength, 0.4, 120);
-  //setup_problem(dtMPC, horizonLength, 0.4, 650); // DH
+  printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.4f, maxforce: %.1f\n", dt, iterationsBetweenMPC, dtMPC,fmax);
+  setup_problem(dtMPC, horizonLength, 0.4, fmax);
   rpy_comp[0] = 0;
   rpy_comp[1] = 0;
   rpy_comp[2] = 0;
@@ -71,13 +73,15 @@ void ConvexMPCLocomotion::recompute_timing(int iterations_per_mpc) {
 }
 
 void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
-  if(data._quadruped->_robotType == RobotType::MINI_CHEETAH){
-    _body_height = 0.29;
-  }else if(data._quadruped->_robotType == RobotType::CHEETAH_3){
-    _body_height = 0.45;
-  }else{
-    assert(false);
-  }
+    if(data._quadruped->_robotType == RobotType::MILAB) {
+        _body_height = 0.45;
+    }else if(data._quadruped->_robotType == RobotType::MINI_CHEETAH){
+        _body_height = 0.29;
+    }else if(data._quadruped->_robotType == RobotType::CHEETAH_3){
+        _body_height = 0.45;
+    }else{
+        assert(false);
+    }
 
   float x_vel_cmd, y_vel_cmd;
   float filter(0.1);
@@ -88,7 +92,7 @@ void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
     x_vel_cmd = rc_cmd->v_des[0];
     y_vel_cmd = rc_cmd->v_des[1] * 0.5;
     _body_height += rc_cmd->height_variation * 0.08;
-  }else{
+  }else{ //simulation
     _yaw_turn_rate = data._desiredStateCommand->rightAnalogStick[0];
     x_vel_cmd = data._desiredStateCommand->leftAnalogStick[1];
     y_vel_cmd = data._desiredStateCommand->leftAnalogStick[0];
@@ -121,7 +125,10 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   {
     stand_traj[0] = seResult.position[0];
     stand_traj[1] = seResult.position[1];
-    stand_traj[2] = 0.21;
+    if(data._quadruped->_robotType == RobotType::MILAB) {
+        stand_traj[2] = 0.40;
+    }else if(data._quadruped->_robotType == RobotType::MINI_CHEETAH){
+        stand_traj[2] = 0.21;}
     stand_traj[3] = 0;
     stand_traj[4] = 0;
     stand_traj[5] = seResult.rpy[2];
@@ -150,6 +157,10 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   current_gait = gaitNumber;
 
   gait->setIterations(iterationsBetweenMPC, iterationCounter);
+
+  /*
+   * JUMPING IS NOT CONSIDERED NOW
+   *
   jumping.setIterations(iterationsBetweenMPC, iterationCounter);
 
 
@@ -173,11 +184,16 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     recompute_timing(default_iterations_between_mpc);
     currently_jumping = false;
   }
-
+   */
   if(_body_height < 0.02) {
-    _body_height = 0.29;
+      if (data._quadruped->_robotType == RobotType::MILAB) {
+          _body_height = 0.45;
+      } else if (data._quadruped->_robotType == RobotType::MINI_CHEETAH) {
+          _body_height = 0.29;
+      } else if (data._quadruped->_robotType == RobotType::CHEETAH_3) {
+          _body_height = 0.45;
+      }
   }
-
   // integrate position setpoint
   Vec3<float> v_des_robot(_x_vel_des, _y_vel_des, 0);
   Vec3<float> v_des_world = 
@@ -566,7 +582,7 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float>
   }
 
 }
-
+// Default MPC solver
 void ConvexMPCLocomotion::solveDenseMPC(int *mpcTable, ControlFSMData<float> &data) {
   auto seResult = data._stateEstimator->getResult();
 
@@ -603,8 +619,13 @@ void ConvexMPCLocomotion::solveDenseMPC(int *mpcTable, ControlFSMData<float> &da
 
   Timer t1;
   dtMPC = dt * iterationsBetweenMPC;
-  setup_problem(dtMPC,horizonLength,0.4,120);
-  //setup_problem(dtMPC,horizonLength,0.4,650); //DH
+    if(data._quadruped->_robotType == RobotType::MILAB) {
+        setup_problem(dtMPC,horizonLength,0.4,300);
+    }else if(data._quadruped->_robotType == RobotType::MINI_CHEETAH){
+        setup_problem(dtMPC,horizonLength,0.4,120);
+    }else if(data._quadruped->_robotType == RobotType::CHEETAH_3){
+        setup_problem(dtMPC,horizonLength,0.4,650); //DH
+    }
   update_x_drag(x_comp_integral);
   if(vxy[0] > 0.3 || vxy[0] < -0.3) {
     //x_comp_integral += _parameters->cmpc_x_drag * pxy_err[0] * dtMPC / vxy[0];

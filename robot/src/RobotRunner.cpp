@@ -4,7 +4,6 @@
  * This code is a common interface between control code and hardware/simulation
  * for mini cheetah and cheetah 3 and milab robot
  *
- * todo: modify kp kd for milab robot (130-131)
  */
 
 #include <unistd.h>
@@ -109,14 +108,20 @@ void RobotRunner::run() {
     _legController->setEnabled(true);
 
     if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if(count_ini%1000 ==0)   printf("ESTOP!\n");
+      if(count_ini%10000 ==0)   printf("[RobotRunner]] use_rc = 1, turn it to 0 to start controller\n");
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }
       _robot_ctrl->Estop();
     }else {
       // Controller
-      if (!_jpos_initializer->IsInitialized(_legController)) {
+      /*
+       * This configuration allows robot to stand from lying pose directly,
+       * so that robot won't move its legs when set use_rc = 0
+       */
+//      if (!_jpos_initializer->IsInitialized(_legController))
+        if (0)
+      {
         Mat3<float> kpMat;
         Mat3<float> kdMat;
         // Update the jpos feedback gains
@@ -192,7 +197,6 @@ void RobotRunner::setupStep() {
   if (!_cheaterModeEnabled && controlParameters->cheater_mode) {
     printf("[RobotRunner] Transitioning to Cheater Mode...\n");
     initializeStateEstimator(true);
-    // todo any configuration
     _cheaterModeEnabled = true;
   }
 
@@ -200,13 +204,11 @@ void RobotRunner::setupStep() {
   if (_cheaterModeEnabled && !controlParameters->cheater_mode) {
     printf("[RobotRunner] Transitioning from Cheater Mode...\n");
     initializeStateEstimator(false);
-    // todo any configuration
     _cheaterModeEnabled = false;
   }
 
   get_rc_control_settings(&rc_control);
 
-  // todo safety checks, sanity checks, etc...
 }
 
 /*!

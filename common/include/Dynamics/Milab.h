@@ -8,8 +8,8 @@
 *
 */
 
-#ifndef MILAB_CHEETAH_SOFTWARE_MILAB_H
-#define MILAB_CHEETAH_SOFTWARE_MILAB_H
+#ifndef MILAB_milab_SOFTWARE_MILAB_H
+#define MILAB_milab_SOFTWARE_MILAB_H
 
 #include "FloatingBaseModel.h"
 #include "Quadruped.h"
@@ -22,21 +22,21 @@ Quadruped<T> buildMilab() {
     Quadruped<T> milab;
     milab._robotType = RobotType::MILAB;
 //  todo: modify following parameters according to real robot measurements:
-    milab._bodyMass = 8.69;
-    milab._bodyLength = 0.789;
-    milab._bodyWidth = 0.253;
-    milab._bodyHeight = 0.1515;
+    milab._bodyMass = 15.905;
+    milab._bodyLength = 0.5779;
+    milab._bodyWidth = 0.152;
+    milab._bodyHeight = 0.153;
+    milab._abadLinkLength = 0.100;
+    milab._hipLinkLength = 0.3000;
+    milab._kneeLinkY_offset = 0.00;
+    milab._kneeLinkLength = 0.32126;
+    milab._maxLegLength = 0.62126;
+
+
+    milab._motorTauMax = 8.f;
     milab._abadGearRatio = 6;
     milab._hipGearRatio = 6;
     milab._kneeGearRatio = 6;
-    milab._abadLinkLength = 0.0536;
-    milab._hipLinkLength = 0.370;
-    milab._kneeLinkY_offset = 0.004;
-    milab._kneeLinkLength = 0.3932;
-    milab._maxLegLength = 0.7632;
-
-
-    milab._motorTauMax = 16.f;
     milab._batteryV = 36;
     milab._motorKT = 0.09;  // this is flux linkage * pole pairs
     milab._motorR = 0.3;
@@ -95,11 +95,12 @@ Quadruped<T> buildMilab() {
     milab._bodyInertia = bodyInertia;
 
     // locations
-    milab._abadRotorLocation = Vec3<T>(0.125, 0.049, 0);
+    milab._abadRotorLocation =
+            Vec3<T>(milab._bodyLength, milab._bodyWidth, 0) * 0.5;
     milab._abadLocation =
             Vec3<T>(milab._bodyLength, milab._bodyWidth, 0) * 0.5;
     milab._hipLocation = Vec3<T>(0, milab._abadLinkLength, 0);
-    milab._hipRotorLocation = Vec3<T>(0, 0.04, 0);
+    milab._hipRotorLocation = Vec3<T>(0,  milab._abadLinkLength - 0.03, 0);
     milab._kneeLocation = Vec3<T>(0, 0, -milab._hipLinkLength);
     milab._kneeRotorLocation = Vec3<T>(0, 0, 0);
 
