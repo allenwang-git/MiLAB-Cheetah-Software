@@ -13,11 +13,11 @@ Whenever you change or add other project files, please update this list. \
 ```
 ********/resources*********************************************
                                   done   doing    todo    new
-milab_body.obj                              *              *
-milab_hip.obj                               *              *
-milab_upper_link.obj                        *              *
-milab_upper_link_mirror.obj                 *              *
-milab_lower_link.obj                        *              *
+milab_body.obj                      *                      *
+milab_hip.obj                       *                      *
+milab_upper_link.obj                *                      *
+milab_upper_link_mirror.obj         *                      *
+milab_lower_link.obj                *                      *
 
 
 ********/config************************************************
@@ -29,7 +29,7 @@ milab-user-defaults.yaml           *                       *
 ********/common************************************************
 ******/src**                     done   doing    todo     new
 ****/Dynamics**
-Quadruped.cpp                              *
+Quadruped.cpp                      * todo
 FloatingBaseModel.cpp                      * 
 ******/include**
 cppTypes.h                         *
@@ -56,7 +56,7 @@ SimControlPanel.cpp                * todo
 SimControlPanel.ui                 *
 RobotInterface.cpp                 *
 Graphics3D.cpp                     *
-DrawList.cpp                                * todo
+DrawList.cpp                       * todo
 
 
 ********/user**************************************************
@@ -77,6 +77,9 @@ FSM_State_StandUp.cpp              * todo
 FSM_BalanceStand.cpp               * todo
 SafetyChecker.cpp                  *
 ```
+## Differences
+* The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.
+* The Milab Robot model in simulator needs to use at least 5 mesh parts, because our robot's upper link is mirror symmetrical.
 
 ## Introduction
 This repository contains the Robot and Simulation software project. For a getting started guide, see [Getting Started](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/getting_started.md).
