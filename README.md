@@ -13,11 +13,11 @@ Whenever you change or add other project files, please update this list. \
 ```
 ********/resources*********************************************
                                   done   doing    todo    new
-milab_body.obj                      *                      *
-milab_hip.obj                       *                      *
-milab_upper_link.obj                *                      *
-milab_upper_link_mirror.obj         *                      *
-milab_lower_link.obj                *                      *
+milab_body.obj                     *                       *
+milab_hip.obj                      *                       *
+milab_upper_link.obj               *                       *
+milab_upper_link_mirror.obj        *                       *
+milab_lower_link.obj               *                       *
 
 
 ********/config************************************************
