@@ -9,6 +9,42 @@
  */
 
 #include "Controllers/LegController.h"
+#include <fstream>
+using namespace std;
+
+/*
+ * Bdebug plot
+ */
+template <typename T>
+void LegController<T>::output2File(){
+        ofstream leg_data;
+        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_data/leg_controller_data.txt", ios::app);
+        if (!leg_data.is_open()) {
+            cout << "[LegController] Open leg_control_data.txt failed!" << endl;
+        } else {
+            for (int leg = 0; leg < 4; leg++) {
+                leg_data << leg << " " << datas[leg].q[0] << " " << datas[leg].q[1] << " " << datas[leg].q[2] << " ";
+                leg_data << commands[leg].qDes[0] << " " << commands[leg].qDes[1] << " " << commands[leg].qDes[2]
+                         << " ";
+                leg_data << datas[leg].tauEstimate[0] << " " << datas[leg].tauEstimate[1] << " "
+                         << datas[leg].tauEstimate[2] << " ";
+            }
+            leg_data << commands[0].kpJoint(0, 0) << " " << commands[0].kpJoint(1, 1) << " "
+                     << commands[0].kpJoint(2, 2) << " ";
+            leg_data << commands[0].kdJoint(0, 0) << " " << commands[0].kdJoint(1, 1) << " "
+                     << commands[0].kdJoint(2, 2) << " ";
+            for (int leg = 0; leg < 4; leg++) {
+                leg_data << datas[leg].p[0] << " " << datas[leg].p[1] << " " << datas[leg].p[2] << " ";
+                leg_data << commands[leg].pDes[0] << " " << commands[leg].pDes[1] << " " << commands[leg].pDes[2]
+                         << " ";
+            }
+            leg_data << commands[0].kpCartesian(0, 0) << " " << commands[0].kpCartesian(1, 1) << " "
+                     << commands[0].kpCartesian(2, 2) << " ";
+            leg_data << commands[0].kdCartesian(0, 0) << " " << commands[0].kdCartesian(1, 1) << " "
+                     << commands[0].kdCartesian(2, 2) << endl;
+            leg_data.close();
+        }
+}
 
 /*!
  * Zero the leg command so the leg will not output torque
@@ -98,7 +134,6 @@ void LegController<T>::updateData(const SpiData* spiData) {
     // J and p
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
                                      &(datas[leg].p), leg);
-    std::cout<<leg<<" "<<datas[leg].p[2]<<std::endl;
     // v
     datas[leg].v = datas[leg].J * datas[leg].qd;
   }
@@ -175,7 +210,6 @@ void LegController<T>::updateCommand(SpiCommand* spiCommand) {
         legTorque +
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
-    std::cout<<leg<<" "<<datas[leg].tauEstimate<<std::endl;
     spiCommand->flags[leg] = _legsEnabled ? 1 : 0;
   }
 }
@@ -226,7 +260,10 @@ void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
  * Set LCM debug data from leg commands and data
  */
 template<typename T>
-void LegController<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_command_lcmt *lcmCommand) {
+void LegController<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_command_lcmt *lcmCommand, u64 iter) {
+    // Output leg commands and datas to file
+    if (iter%10 == 0)
+        output2File();
     for(int leg = 0; leg < 4; leg++) {
         for(int axis = 0; axis < 3; axis++) {
             int idx = leg*3 + axis;
