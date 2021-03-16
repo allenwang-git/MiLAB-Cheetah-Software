@@ -27,24 +27,43 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
 
   zero_vec3.setZero();
   // goal configuration
-  // Folding
-  fold_jpos[0] << -0.0f, -1.4f, 2.7f;
-  fold_jpos[1] << 0.0f, -1.4f, 2.7f;
-  fold_jpos[2] << -0.0f, -1.4f, 2.7f;
-  fold_jpos[3] << 0.0f, -1.4f, 2.7f;
-  // Stand Up
-  for(size_t i(0); i<4; ++i){
-    //stand_jpos[i] << 0.f, -.9425f, 1.885f;
-    stand_jpos[i] << 0.f, .9f, -1.6f;
+  if (this->_data->_quadruped->_robotType == RobotType::MILAB){
+      // Folding
+      fold_jpos[0] << -0.0f, 1.5f, -2.6f;
+      fold_jpos[1] << 0.0f, 1.5f, -2.6f;
+      fold_jpos[2] << -0.0f, 1.5f, -2.6f;
+      fold_jpos[3] << 0.0f, 1.5f, -2.6f;
+      // Stand Up
+      for(size_t i(0); i<4; ++i){
+          stand_jpos[i] << 0.f, .9f, -1.6f;
+      }
+      // Rolling
+      rolling_jpos[0] << 1.5f, -1.6f, 2.77f;
+      rolling_jpos[1] << 1.3f, -3.1f, 2.77f;
+      rolling_jpos[2] << 1.5f, -1.6f, 2.77f;
+      rolling_jpos[3] << 1.3f, -3.1f, 2.77f;
 
+      f_ff << 0.f, 0.f, -75.f;
+  }else{ // MINI CHEETAH & CHEETAH 3
+      // Folding
+      fold_jpos[0] << -0.0f, -1.4f, 2.7f;
+      fold_jpos[1] << 0.0f, -1.4f, 2.7f;
+      fold_jpos[2] << -0.0f, -1.4f, 2.7f;
+      fold_jpos[3] << 0.0f, -1.4f, 2.7f;
+      // Stand Up
+      for(size_t i(0); i<4; ++i){
+          //stand_jpos[i] << 0.f, -.9425f, 1.885f;
+          stand_jpos[i] << 0.f, -.9f, 1.6f;
+      }
+      // Rolling
+      rolling_jpos[0] << 1.5f, -1.6f, 2.77f;
+      rolling_jpos[1] << 1.3f, -3.1f, 2.77f;
+      rolling_jpos[2] << 1.5f, -1.6f, 2.77f;
+      rolling_jpos[3] << 1.3f, -3.1f, 2.77f;
+
+      f_ff << 0.f, 0.f, -25.f;
   }
-  // Rolling
-  rolling_jpos[0] << 1.5f, -1.6f, 2.77f;
-  rolling_jpos[1] << 1.3f, -3.1f, 2.77f;
-  rolling_jpos[2] << 1.5f, -1.6f, 2.77f;
-  rolling_jpos[3] << 1.3f, -3.1f, 2.77f;
 
-  f_ff << 0.f, 0.f, -25.f;
 }
 
 template <typename T>
@@ -164,7 +183,7 @@ void FSM_State_RecoveryStand<T>::_StandUp(const int & curr_iter){
   T body_height = this->_data->_stateEstimator->getResult().position[2];
   bool something_wrong(false);
 
-  if( _UpsideDown() || (body_height < 0.1 ) ) { 
+  if( _UpsideDown() || (body_height < 0.2 ) ) {
     something_wrong = true;
   }
 
