@@ -23,7 +23,7 @@ TORQUE_PLOT = True
 file_name = 'leg_controller_data.txt'
 
 ## read data from file
-def loadData(flieName,leg,switchPD,switchTAU):
+def loadData(flieName,leg):
     inFile = open(flieName, 'r') #open in read only
     abad_tau= np.empty(shape=[1,0])
     hip_tau= np.empty(shape=[1,0])
@@ -45,11 +45,11 @@ def loadData(flieName,leg,switchPD,switchTAU):
 
     for line in inFile:
         trainingSet = line.split(' ') #split data by ' '
-        if switchTAU == True:
+        if TORQUE_PLOT == True:
             abad_tau=np.append(abad_tau,float(trainingSet[10*leg+7]))
             hip_tau=np.append(hip_tau,float(trainingSet[10*leg+8]))
             knee_tau=np.append(knee_tau,float(trainingSet[10*leg+9]))
-        if switchPD == True:
+        if JOINT_PD == True:
             abad_q=np.append(abad_q,float(trainingSet[10*leg+1]))
             abad_qdes=np.append(abad_qdes,float(trainingSet[10*leg+4]))
 
@@ -58,7 +58,7 @@ def loadData(flieName,leg,switchPD,switchTAU):
 
             knee_q=np.append(knee_q,float(trainingSet[10*leg+3]))
             knee_qdes=np.append(knee_qdes,float(trainingSet[10*leg+6]))
-        elif switchPD == False: # Cartesian PD
+        elif JOINT_PD == False: # Cartesian PD
             x_p=np.append(x_p,float(trainingSet[45+6*leg+1]))
             x_pdes=np.append(x_pdes,float(trainingSet[45+6*leg+4]))
 
@@ -67,18 +67,18 @@ def loadData(flieName,leg,switchPD,switchTAU):
 
             z_p=np.append(z_p,float(trainingSet[45+6*leg+3]))
             z_pdes=np.append(z_pdes,float(trainingSet[45+6*leg+6]))
-    if switchTAU:
+    if TORQUE_PLOT:
         abad_tau = np.delete(abad_tau,[0,1,2,3,4])
         hip_tau = np.delete(hip_tau,[0,1,2,3,4])
         knee_tau = np.delete(knee_tau,[0,1,2,3,4])
-    if switchPD:
+    if JOINT_PD:
         abad_q = np.delete(abad_q,[0,1,2,3,4])
         abad_qdes = np.delete(abad_qdes,[0,1,2,3,4])
         hip_q = np.delete(hip_q,[0,1,2,3,4])
         hip_qdes = np.delete(hip_qdes,[0,1,2,3,4])
         knee_q = np.delete(knee_q,[0,1,2,3,4])
         knee_qdes = np.delete(knee_qdes,[0,1,2,3,4])
-    if not switchPD:
+    if not JOINT_PD:
         x_p = np.delete(x_p,[0,1,2,3,4])
         x_pdes = np.delete(x_pdes,[0,1,2,3,4])
         y_p = np.delete(y_p,[0,1,2,3,4])
@@ -87,21 +87,21 @@ def loadData(flieName,leg,switchPD,switchTAU):
         z_pdes = np.delete(z_pdes,[0,1,2,3,4])
 
 
-    if switchPD == True and TORQUE_PLOT == True:
+    if JOINT_PD == True and TORQUE_PLOT == True:
         return abad_q,abad_qdes,hip_q,hip_qdes,knee_q,knee_qdes, abad_tau,hip_tau,knee_tau
-    elif  switchPD == True and TORQUE_PLOT == False:
+    elif  JOINT_PD == True and TORQUE_PLOT == False:
         return abad_q,abad_qdes,hip_q,hip_qdes,knee_q,knee_qdes
-    elif switchPD == False and TORQUE_PLOT == True:
+    elif JOINT_PD == False and TORQUE_PLOT == True:
         return x_p,x_pdes,y_p,y_pdes,z_p,z_pdes, abad_tau,hip_tau,knee_tau
-    elif  switchPD == False and TORQUE_PLOT == False:
+    elif  JOINT_PD == False and TORQUE_PLOT == False:
         return x_p,x_pdes,y_p,y_pdes,z_p,z_pdes
 
 
 for i in range(4):
     if TORQUE_PLOT ==False:
-        y1, y1_des, y2, y2_des, y3, y3_des = loadData(file_name, i, JOINT_PD, TORQUE_PLOT)
+        y1, y1_des, y2, y2_des, y3, y3_des = loadData(file_name, i)
     else :
-        y1, y1_des, y2, y2_des, y3, y3_des, y4, y5, y6 = loadData(file_name, i, JOINT_PD, TORQUE_PLOT)
+        y1, y1_des, y2, y2_des, y3, y3_des, y4, y5, y6 = loadData(file_name, i)
     size = len(y1)
     t = np.linspace(0, size, size, endpoint=False)
 
