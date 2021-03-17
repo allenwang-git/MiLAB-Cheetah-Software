@@ -24,7 +24,6 @@ planning_data
 *.pyc
 documentation/doxygen/latex
 documentation/doxygen/html
-documentation/doxygen/html
-documentation/doxygen/latex
 .DS_Store
 tags
+/debug_data/leg_controller_data.txt
