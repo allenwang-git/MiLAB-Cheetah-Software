@@ -35,10 +35,10 @@ FloatingBaseModel.cpp              *
 cppTypes.h                         *
 ****/Dynamics**
 need to create file according to MiniCheetah.h:
-Milab.h                                    * todo           *
+Milab.h                            * todo                  *
 ****/ControlParameters
 SimulatorParameters.h              *
-
+RobotParameters.h                  *
 
 ********/robot*************************************************
 ******/src**                     done   doing    todo     new
@@ -72,7 +72,7 @@ LocomotionCtrl.cpp                 * todo
 ****/FSM_States**
 FSM_State.cpp                      * todo
 FSM_State_Locomotion.cpp           * todo
-FSM_State_RecoveryStand.cpp                  *
+FSM_State_RecoveryStand.cpp                 *
 FSM_State_StandUp.cpp              * todo
 FSM_BalanceStand.cpp               * todo
 SafetyChecker.cpp                  *
