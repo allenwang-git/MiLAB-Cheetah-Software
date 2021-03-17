@@ -28,6 +28,8 @@ class RobotControlParameters : public ControlParameters {
         INIT_PARAMETER(controller_dt),
         INIT_PARAMETER(stand_kp_cartesian),
         INIT_PARAMETER(stand_kd_cartesian),
+        INIT_PARAMETER(recovery_kp),
+        INIT_PARAMETER(recovery_kd),
         INIT_PARAMETER(kpCOM),
         INIT_PARAMETER(kdCOM),
         INIT_PARAMETER(kpBase),
@@ -47,6 +49,8 @@ class RobotControlParameters : public ControlParameters {
   DECLARE_PARAMETER(double, controller_dt)
   DECLARE_PARAMETER(Vec3<double>, stand_kp_cartesian)
   DECLARE_PARAMETER(Vec3<double>, stand_kd_cartesian)
+  DECLARE_PARAMETER(Vec3<double>, recovery_kp)
+  DECLARE_PARAMETER(Vec3<double>, recovery_kd)
   DECLARE_PARAMETER(Vec3<double>, kpCOM)
   DECLARE_PARAMETER(Vec3<double>, kdCOM)
   DECLARE_PARAMETER(Vec3<double>, kpBase)
