@@ -882,7 +882,7 @@ void SimControlPanel::on_goHomeButton_clicked() {
   homeState.q = DVec<double>(12);
 
   if(_simulation->_robot == RobotType::MILAB){ std::cout<<"milab"<<std::endl;
-      homeState.q << -0.1, 0.8, -1.7, 0.1, 0.8, -1.7, -0.1, 0.8, -1.7, 0.1, 0.8, -1.7;
+      homeState.q << -0., 1., -1.7, 0., 1., -1.7, -0., 1., -1.7, 0., 1., -1.7;
   }else{
       homeState.q << -0.05, -0.8, 1.7, 0.05, -0.8, 1.7, -0.05, -0.8, 1.7, 0.05, -0.8, 1.7;
   }

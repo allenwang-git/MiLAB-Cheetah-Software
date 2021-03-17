@@ -105,7 +105,7 @@ Quadruped<T> buildCheetah3() {
       Vec3<T>(cheetah._bodyLength, cheetah._bodyWidth, 0) * 0.5;
 
   // note that this is wrong to match a small bug in the actual simulator, just
-  // to test that I get the right answer. TODO fix!
+  // to test that I get the right answer.
   cheetah._abadRotorLocation = Vec3<T>(0, -cheetah._bodyWidth / 2., 0);
 
   cheetah._hipLocation = Vec3<T>(0, cheetah._abadLinkLength, 0);
