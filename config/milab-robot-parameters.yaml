@@ -7,8 +7,8 @@ control_mode      : 6
 myValue           : 1010
 stand_kd_cartesian: [30,30,30]
 stand_kp_cartesian: [1000, 1000, 1000]
-recovery_kp: [350,350,380]
-recovery_kd: [3,6,6]
+recovery_kp: [350,350,450]
+recovery_kd: [5,13,15]
 testValue         : 111
 #cheater_mode      : 0
 cheater_mode      : 1

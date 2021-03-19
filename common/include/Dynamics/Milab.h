@@ -38,7 +38,7 @@ Quadruped<T> buildMilab() {
     milab._abadLinkLength = 0.100;
     milab._hipLinkLength = 0.3000;
     milab._kneeLinkY_offset = 0.00;
-    milab._kneeLinkLength = 0.32126;
+    milab._kneeLinkLength = 0.34426; // plus foot link length 0.023
     milab._maxLegLength = 0.621;
     milab._hipRotorLocationYOffset = 0.0375;
 
@@ -48,10 +48,10 @@ Quadruped<T> buildMilab() {
     milab._hipGearRatio = 6;
     milab._kneeGearRatio = 6;
     milab._batteryV = 36;
-    milab._motorKT = 0.09;  // this is flux linkage * pole pairs
+    milab._motorKT = 0.1;  // this is flux linkage * pole pairs
     milab._motorR = 0.3;
-    milab._jointDamping = 0.05;
-    milab._jointDryFriction = 0.6;
+    milab._jointDamping = 0.02;
+    milab._jointDryFriction = 0.4;
 
     // rotor inertia if the rotor is oriented so it spins around the z-axis
     Mat3 <T> rotorRotationalInertiaZ;
@@ -90,9 +90,10 @@ Quadruped<T> buildMilab() {
     Mat3 <T> bodyRotationalInertia;
     bodyRotationalInertia << 87315.704, -1616.648, 3635.591, -1616.648, 478969.026, 8.292, 3635.591, 8.292, 504293.328;
     bodyRotationalInertia = 2* bodyRotationalInertia * 1e-6;
-
+//    bodyRotationalInertia << 0.109, 0, 0, 0, 0.834, 0, 0, 0, 0.833;
     Vec3 <T> bodyCOM(0, 0, 0);
-    SpatialInertia<T> bodyInertia(milab._bodyMass, bodyCOM, bodyRotationalInertia);
+    Vec3<T> bodyDims(milab._bodyLength, milab._bodyWidth,milab._bodyHeight);
+    SpatialInertia<T> bodyInertia(milab._bodyMass, bodyCOM, rotInertiaOfBox(milab._bodyMass, bodyDims));
 
     milab._abadInertia = abadInertia;
     milab._hipInertia = hipInertia;

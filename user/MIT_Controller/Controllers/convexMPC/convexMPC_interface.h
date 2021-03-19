@@ -38,12 +38,12 @@ struct update_data_t
 };
 
 EXTERNC void setup_problem(double dt, int horizon, double mu, double f_max);
-EXTERNC void update_problem_data(double* p, double* v, double* q, double* w, double* r, double yaw, double* weights, double* state_trajectory, double alpha, int* gait);
+EXTERNC void update_problem_data(double* p, double* v, double* q, double* w, double* r, double yaw, double* weights, double* state_trajectory, double alpha, int* gait, bool milab);
 EXTERNC double get_solution(int index);
 EXTERNC void update_solver_settings(int max_iter, double rho, double sigma, double solver_alpha, double terminate, double use_jcqp);
 EXTERNC void update_problem_data_floats(float* p, float* v, float* q, float* w,
                                         float* r, float yaw, float* weights,
-                                        float* state_trajectory, float alpha, int* gait);
+                                        float* state_trajectory, float alpha, int* gait, bool milab);
 
 void update_x_drag(float x_drag);
 #endif

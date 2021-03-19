@@ -41,7 +41,12 @@ void LegController<T>::output2File(){
             leg_data << commands[0].kpCartesian(0, 0) << " " << commands[0].kpCartesian(1, 1) << " "
                      << commands[0].kpCartesian(2, 2) << " ";
             leg_data << commands[0].kdCartesian(0, 0) << " " << commands[0].kdCartesian(1, 1) << " "
-                     << commands[0].kdCartesian(2, 2) << endl;
+                     << commands[0].kdCartesian(2, 2) << " ";
+            for (int leg = 0; leg < 4; ++leg) {
+                leg_data << commands[leg].forceFeedForward[0] << " " << commands[leg].forceFeedForward[1] << " " << commands[leg].forceFeedForward[2] << " ";
+            }
+            leg_data << endl;
+
             leg_data.close();
         }
 }

@@ -64,7 +64,13 @@ DrawList.cpp                       * todo
 ****/Controllers**
 **/convexMPC**
 RobotState.cpp                     * todo
+SolverMPC.cpp                      *
+convexMPC_interface.cpp            *
 ConvexMPCLocomotion.cpp            * todo
+RobotState.h                       *
+SolverMPC.h                        *
+convexMPC_interface.h              *
+ConvexMPCLocomotion.h              *
 **/WBC_Ctrl** 
 WBC_Ctrl.cpp                       * todo
 */LocomotionCtrl

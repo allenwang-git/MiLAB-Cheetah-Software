@@ -2,7 +2,7 @@
 #include <Utilities/Utilities_print.h>
 #include <Utilities/Timer.h>
 /*
- * Todo: Make a final version of knee barrier degree(133-1431) now=0.78
+ * Todo: Make a final version of knee barrier degree(133-143) now=0.78
  */
 template<typename T>
 WBC_Ctrl<T>::WBC_Ctrl(FloatingBaseModel<T> model):

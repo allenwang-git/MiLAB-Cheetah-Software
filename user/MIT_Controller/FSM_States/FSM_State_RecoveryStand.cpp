@@ -38,13 +38,13 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
     }*/
   if (this->_data->_quadruped->_robotType == RobotType::MILAB){
       // Folding
-      fold_jpos[0] << -0.0f, 1.75f, -2.6f;
-      fold_jpos[1] << 0.0f, 1.75f, -2.6f;
-      fold_jpos[2] << -0.0f, 1.75f, -2.6f;
-      fold_jpos[3] << 0.0f, 1.75f, -2.6f;
+      fold_jpos[0] << -0.0f, 1.5f, -2.6f;
+      fold_jpos[1] << 0.0f, 1.5f, -2.6f;
+      fold_jpos[2] << -0.0f, 1.5f, -2.6f;
+      fold_jpos[3] << 0.0f, 1.5f, -2.6f;
       // Stand Up
       for(size_t i(0); i<4; ++i){
-          stand_jpos[i] << 0.f, 1.f, -1.65f;
+          stand_jpos[i] << 0.f, 0.92f, -1.62f;
       }
       // Rolling
       rolling_jpos[0] << 1.5f, -1.6f, 2.77f;
@@ -52,7 +52,7 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
       rolling_jpos[2] << 1.5f, -1.6f, 2.77f;
       rolling_jpos[3] << 1.3f, -3.1f, 2.77f;
 
-      f_ff << 0.f, 0.f, -75.f;
+//      f_ff << 0.f, 0.f, -75.f;
   }else{ // MINI CHEETAH & CHEETAH 3
       // Folding
       fold_jpos[0] << -0.0f, -1.4f, 2.7f;

@@ -83,7 +83,7 @@ int has_solved = 0;
 //  solve_mpc(&update, &problem_configuration);
 //}
 //safely copies problem data and starts the solver
-void update_problem_data(double* p, double* v, double* q, double* w, double* r, double yaw, double* weights, double* state_trajectory, double alpha, int* gait)
+void update_problem_data(double* p, double* v, double* q, double* w, double* r, double yaw, double* weights, double* state_trajectory, double alpha, int* gait, bool milab)
 {
   mfp_to_flt(update.p,p,3);
   mfp_to_flt(update.v,v,3);
@@ -98,7 +98,7 @@ void update_problem_data(double* p, double* v, double* q, double* w, double* r, 
   update.alpha = alpha;
   mint_to_u8(update.gait,gait,4*problem_configuration.horizon);
 
-  solve_mpc(&update, &problem_configuration);
+  solve_mpc(&update, &problem_configuration,milab);
   has_solved = 1;
 }
 
@@ -118,7 +118,7 @@ void update_solver_settings(int max_iter, double rho, double sigma, double solve
 
 void update_problem_data_floats(float* p, float* v, float* q, float* w,
                                 float* r, float yaw, float* weights,
-                                float* state_trajectory, float alpha, int* gait)
+                                float* state_trajectory, float alpha, int* gait, bool milab)
 {
   update.alpha = alpha;
   update.yaw = yaw;
@@ -130,7 +130,7 @@ void update_problem_data_floats(float* p, float* v, float* q, float* w,
   memcpy((void*)update.r,(void*)r,sizeof(float)*12);
   memcpy((void*)update.weights,(void*)weights,sizeof(float)*12);
   memcpy((void*)update.traj,(void*)state_trajectory, sizeof(float) * 12 * problem_configuration.horizon);
-  solve_mpc(&update, &problem_configuration);
+  solve_mpc(&update, &problem_configuration, milab);
   has_solved = 1;
 
 }

@@ -36,11 +36,12 @@ void RobotState::set(flt* p_, flt* v_, flt* q_, flt* w_, flt* r_,flt yaw_)
              ys,  yc,   0,
              0,   0,    1;
 
-    Matrix<fpt,3,1> Id;
-    Id << .07f, 0.26f, 0.242f;
+    Matrix<fpt,3,1> Id_mini,Id_milab;
+    Id_mini << .07f, 0.26f, 0.242f;
     //Id << 0.3f, 2.1f, 2.1f; // DH
-    I_body.diagonal() = Id;
-
+    Id_milab << 0.109f, 0.834f, 0.833f;
+    I_body_mini.diagonal() = Id_mini;
+    I_body_milab.diagonal() = Id_milab;
 }
 
 void RobotState::print()
