@@ -31,14 +31,16 @@ milab-user-defaults.yaml           *                       *
 ****/Dynamics**
 Quadruped.cpp                      * todo
 FloatingBaseModel.cpp              * 
+
 ******/include**
 cppTypes.h                         *
 ****/Dynamics**
-need to create file according to MiniCheetah.h:
 Milab.h                            * todo                  *
 ****/ControlParameters
 SimulatorParameters.h              *
 RobotParameters.h                  *
+****/SimUtilities**
+SpineBoard.h                       *
 
 ********/robot*************************************************
 ******/src**                     done   doing    todo     new

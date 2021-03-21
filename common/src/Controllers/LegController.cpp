@@ -244,6 +244,11 @@ void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
       tiBoardCommand[leg].kp_joint[joint] = commands[leg].kpJoint(joint, joint);
       tiBoardCommand[leg].kd_joint[joint] = commands[leg].kdJoint(joint, joint);
       tiBoardCommand[leg].zero_offset[joint] = CHEETAH_3_ZERO_OFFSET[leg][joint];
+      // estimate torque
+      datas[leg].tauEstimate = datas[leg].J.transpose() * commands[leg].forceFeedForward
+              + commands[leg].tauFeedForward +
+              commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
+              commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
     }
 
     // please only send 1 or 0 here or the robot will explode.

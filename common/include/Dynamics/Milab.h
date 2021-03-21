@@ -39,7 +39,7 @@ Quadruped<T> buildMilab() {
     milab._hipLinkLength = 0.3000;
     milab._kneeLinkY_offset = 0.00;
     milab._kneeLinkLength = 0.34426; // plus foot link length 0.023
-    milab._maxLegLength = 0.621;
+    milab._maxLegLength = 0.644;
     milab._hipRotorLocationYOffset = 0.0375;
 
 //    motor parameters
@@ -56,7 +56,7 @@ Quadruped<T> buildMilab() {
     // rotor inertia if the rotor is oriented so it spins around the z-axis
     Mat3 <T> rotorRotationalInertiaZ;
     rotorRotationalInertiaZ << 53, 0, 0, 0, 53, 0, 0, 0, 105;
-    rotorRotationalInertiaZ = 1e-6 * 2* rotorRotationalInertiaZ;
+    rotorRotationalInertiaZ = 1e-6 * rotorRotationalInertiaZ;
 
     Mat3 <T> RY = coordinateRotation<T>(CoordinateAxis::Y, M_PI / 2);
     Mat3 <T> RX = coordinateRotation<T>(CoordinateAxis::X, M_PI / 2);
@@ -65,7 +65,7 @@ Quadruped<T> buildMilab() {
 
     // spatial inertias
     Mat3 <T> abadRotationalInertia;
-    abadRotationalInertia << 785.098, -1.682, -3.604, -1.682, 1223.521, 11.631, -3.604, 11.631, 866.078;;
+    abadRotationalInertia << 785.098, -1.682, -3.604, -1.682, 1223.521, 11.631, -3.604, 11.631, 866.078;
     abadRotationalInertia = abadRotationalInertia * 1e-6;
     Vec3 <T> abadCOM(-0.004122, -0.000422, -0.000388);  // LEFT
     SpatialInertia<T> abadInertia(milab._abadMass, abadCOM, abadRotationalInertia);
@@ -79,21 +79,21 @@ Quadruped<T> buildMilab() {
     Mat3<T> kneeRotationalInertia, kneeRotationalInertiaRotated;
     kneeRotationalInertiaRotated << 14348.139, -0.069, -10.901, -0.069, 14381.501, 1.424, -10.901, 1.424, 60.547;
     kneeRotationalInertiaRotated = kneeRotationalInertiaRotated * 1e-6;
-    kneeRotationalInertia = RY * kneeRotationalInertiaRotated * RY.transpose();
+//    kneeRotationalInertia = RY * kneeRotationalInertiaRotated * RY.transpose();
     Vec3 <T> kneeCOM(-0.000127, -0.00004, -0.162845);
-    SpatialInertia<T> kneeInertia(milab._kneeMass, kneeCOM, kneeRotationalInertia);
+    SpatialInertia<T> kneeInertia(milab._kneeMass, kneeCOM, kneeRotationalInertiaRotated);
 
     Vec3 <T> rotorCOM(0, 0, 0);
     SpatialInertia<T> rotorInertiaX(milab._rotorMass, rotorCOM, rotorRotationalInertiaX);
     SpatialInertia<T> rotorInertiaY(milab._rotorMass, rotorCOM, rotorRotationalInertiaY);
 
     Mat3 <T> bodyRotationalInertia;
-    bodyRotationalInertia << 87315.704, -1616.648, 3635.591, -1616.648, 478969.026, 8.292, 3635.591, 8.292, 504293.328;
-    bodyRotationalInertia = 2* bodyRotationalInertia * 1e-6;
-//    bodyRotationalInertia << 0.109, 0, 0, 0, 0.834, 0, 0, 0, 0.833;
+    bodyRotationalInertia << 87315.704, -1616.648, 3635.591, -1616.648, 478969.026, 8.292, 3635.591, 8.292, 504293.328;// from solidworks
+    bodyRotationalInertia = bodyRotationalInertia * 1e-6;
+//    baseInertia << 0.109, 0, 0, 0, 0.834, 0, 0, 0, 0.833;
     Vec3 <T> bodyCOM(0, 0, 0);
     Vec3<T> bodyDims(milab._bodyLength, milab._bodyWidth,milab._bodyHeight);
-    SpatialInertia<T> bodyInertia(milab._bodyMass, bodyCOM, rotInertiaOfBox(milab._bodyMass, bodyDims));
+    SpatialInertia<T> bodyInertia(milab._bodyMass, bodyCOM, rotInertiaOfBox(milab._bodyMass, bodyDims)); // simplified inertia
 
     milab._abadInertia = abadInertia;
     milab._hipInertia = hipInertia;

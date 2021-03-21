@@ -299,6 +299,9 @@ void solve_mpc(update_data_t* update, problem_setup* setup, bool milab)
     if (milab){
         rs.m = rs.m_milab;
         rs.I_body = rs.I_body_milab;
+    }else if(setup->f_max>600){
+        rs.m = rs.m_cheetah3;
+        rs.I_body = rs.I_body_cheetah3;
     }else{
         rs.m = rs.m_mini;
         rs.I_body = rs.I_body_mini;

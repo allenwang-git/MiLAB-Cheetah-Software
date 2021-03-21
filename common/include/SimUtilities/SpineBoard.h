@@ -67,7 +67,7 @@ class SpineBoard {
  private:
   float side_sign;
   s32 board_num;
-  const float max_torque[3] = {17.f, 17.f, 26.f};  // TODO CHECK WITH BEN
+  const float max_torque[3] = {48.f, 48.f, 48.f};  // TODO CHECK WITH BEN
   const float wimp_torque[3] = {6.f, 6.f, 6.f};    // TODO CHECK WITH BEN
   const float disabled_torque[3] = {0.f, 0.f, 0.f};
   const float q_limit_p[3] = {1.5f, 5.0f, 0.f};

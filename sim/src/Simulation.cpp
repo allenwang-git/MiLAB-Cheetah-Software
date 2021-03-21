@@ -103,24 +103,24 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   x0.q = zero12;
   x0.qd = zero12;
   // Initial (lies on the ground )
-  if (_robot == RobotType::MILAB){
-      x0.bodyPosition[2] = 0.0752;
-      x0.q[0] = -0.5;
-      x0.q[1] = 1.25;
-      x0.q[2] = -2.8;
-
-      x0.q[3] = 0.5;
-      x0.q[4] = 1.25;
-      x0.q[5] = -2.8;
-
-      x0.q[6] = -0.5;
-      x0.q[7] = 1.25;
-      x0.q[8] = -2.8;
-
-      x0.q[9] = 0.5;
-      x0.q[10] = 1.25;
-      x0.q[11] = -2.8;
-  } else{  //  MiNI CHEETAH & CHEETAH 3
+//  if (_robot != RobotType::MILAB){
+//      x0.bodyPosition[2] = 0.0752;
+//      x0.q[0] = -0.5;
+//      x0.q[1] = 1.25;
+//      x0.q[2] = -2.8;
+//
+//      x0.q[3] = 0.5;
+//      x0.q[4] = 1.25;
+//      x0.q[5] = -2.8;
+//
+//      x0.q[6] = -0.5;
+//      x0.q[7] = 1.25;
+//      x0.q[8] = -2.8;
+//
+//      x0.q[9] = 0.5;
+//      x0.q[10] = 1.25;
+//      x0.q[11] = -2.8;
+//  } else{  //  MiNI CHEETAH & CHEETAH 3
       x0.bodyPosition[2] = 0.05;
       x0.q[0] = -0.7;
       x0.q[1] = -1.;
@@ -137,10 +137,10 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
       x0.q[9] = 0.7;
       x0.q[10] = -1.0;
       x0.q[11] = 2.715;
-      if (_robot==RobotType::CHEETAH_3){
+      if (_robot!=RobotType::MINI_CHEETAH){
           x0.bodyPosition[2] = 0.075;
       }
-  }
+//  }
 //  Bebug
 //  x0.q.setZero();
 
@@ -351,6 +351,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
             _spineBoards[leg].torque_out[joint],
             _simulator->getState().qd[leg * 3 + joint]);
       }
+      printf("leg %d %4.3f %4.3f %4.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
     }
   } else if (_robot == RobotType::MINI_CHEETAH) {
         for (int leg = 0; leg < 4; leg++) {
@@ -359,6 +360,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
                         _spineBoards[leg].torque_out[joint],
                         _simulator->getState().qd[leg * 3 + joint]);
             }
+            printf("leg %d %4.3f %4.3f %4.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
         }
     } else if (_robot == RobotType::CHEETAH_3) {
     for (int leg = 0; leg < 4; leg++) {
@@ -367,6 +369,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
             _tiBoards[leg].data->tau_des[joint],
             _simulator->getState().qd[leg * 3 + joint]);
       }
+      printf("leg %d %4.3f %4.3f %4.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
     }
   } else {
     assert(false);

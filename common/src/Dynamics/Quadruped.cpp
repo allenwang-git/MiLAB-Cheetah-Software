@@ -10,7 +10,7 @@
 #include "Dynamics/Quadruped.h"
 #include "Dynamics/spatial.h"
 #include "Math/orientation_tools.h"
-// Todo: precisely modify the ground contact points of Milab robot (80,98)
+// Todo: precisely modify the foot ground contact points of Milab robot (80,98)
 using namespace ori;
 using namespace spatial;
 
@@ -52,7 +52,7 @@ bool Quadruped<T>::buildModel(FloatingBaseModel<T>& model) {
                     JointType::Revolute, CoordinateAxis::X, xtreeAbad,
                     xtreeAbadRotor);
     }
-      if (_robotType==RobotType::MILAB) {
+     /* if (_robotType==RobotType::MILAB) {
           // Hip Joint
           bodyID++;
           Mat6<T> xtreeHip = createSXform(I3,withLegSigns<T>(_hipLocation, legID));
@@ -82,16 +82,16 @@ bool Quadruped<T>::buildModel(FloatingBaseModel<T>& model) {
                             _kneeGearRatio, bodyID - 1, JointType::Revolute,
                             CoordinateAxis::Y, xtreeKnee, xtreeKneeRotor);
               // add foot ground contact point
-              model.addGroundContactPoint(bodyID, Vec3<T>(-0., _kneeLinkY_offset, -_kneeLinkLength), true);
+              model.addGroundContactPoint(bodyID, Vec3<T>(0.,0., -_kneeLinkLength), true);
           } else {
               model.addBody(_kneeInertia, _kneeRotorInertia, _kneeGearRatio, bodyID - 1,
                             JointType::Revolute, CoordinateAxis::Y, xtreeKnee,
                             xtreeKneeRotor);
               // add foot ground contact point
-              model.addGroundContactPoint(bodyID, Vec3<T>(-0., -_kneeLinkY_offset, -_kneeLinkLength ), true);
+              model.addGroundContactPoint(bodyID, Vec3<T>(0., 0., -_kneeLinkLength ), true);
           }
       }
-      else{  //MINI CHEETAH & CHEETAH 3
+      else{  //MINI CHEETAH & CHEETAH 3*/
           // Hip Joint
           bodyID++;
           Mat6<T> xtreeHip =
@@ -132,7 +132,7 @@ bool Quadruped<T>::buildModel(FloatingBaseModel<T>& model) {
 
               model.addGroundContactPoint(bodyID, Vec3<T>(-0., -_kneeLinkY_offset, -_kneeLinkLength), true);
           }
-      }
+//      }
 
     sideSign *= -1;
   }

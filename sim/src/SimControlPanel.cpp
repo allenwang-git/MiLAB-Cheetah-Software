@@ -379,7 +379,7 @@ void SimControlPanel::on_startButton_clicked() {
   printf("[SimControlPanel] Initialize Graphics...\n");
   _graphicsWindow = new Graphics3D();
   _graphicsWindow->show();
-  _graphicsWindow->resize(1920, 1080);
+  _graphicsWindow->resize(800, 600);
 
   if (_simulationMode) {
     // run a simulation
