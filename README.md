@@ -86,7 +86,9 @@ FSM_BalanceStand.cpp               * todo
 SafetyChecker.cpp                  *
 
 ********/debug-data**********************************************
-leg_controller_plot.py             *
+leg_controller_plot.py             *                        *
+positive_matrix_check              *                        *
+
 ```
 ## Differences
 * The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.

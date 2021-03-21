@@ -1,5 +1,8 @@
-# Check whether MPC weight matrix is a positive matrix or not
-
+# This file can check whether MPC weight matrix Q is a positive matrix or not
+#
+# Author: Yinuo Wang
+# Date: 03/19/21
+# Email: dbdxwyn@163.com
 import numpy as np
 
 r = 4e-5
