@@ -52,7 +52,7 @@ T sq(T a)
 }
 
 
-void solve_mpc(update_data_t* update, problem_setup* setup);
+void solve_mpc(update_data_t* update, problem_setup* setup, bool milab);
 
 void quat_to_rpy(Quaternionf q, Matrix<fpt,3,1>& rpy);
 void ct_ss_mats(Matrix<fpt,3,3> I_world, fpt m, Matrix<fpt,3,4> r_feet, Matrix<fpt,3,3> R_yaw, Matrix<fpt,13,13>& A, Matrix<fpt,13,12>& B);

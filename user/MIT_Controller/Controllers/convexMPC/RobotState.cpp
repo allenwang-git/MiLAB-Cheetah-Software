@@ -36,11 +36,13 @@ void RobotState::set(flt* p_, flt* v_, flt* q_, flt* w_, flt* r_,flt yaw_)
              ys,  yc,   0,
              0,   0,    1;
 
-    Matrix<fpt,3,1> Id;
-    Id << .07f, 0.26f, 0.242f;
-    //Id << 0.3f, 2.1f, 2.1f; // DH
-    I_body.diagonal() = Id;
-
+    Matrix<fpt,3,1> Id_mini,Id_milab,Id_cheetah3;
+    Id_mini << .07f, 0.26f, 0.242f;
+    Id_cheetah3 << 0.41f, 2.1f, 2.1f; // DH
+    Id_milab << 0.109f, 0.834f, 0.833f;
+    I_body_mini.diagonal() = Id_mini;
+    I_body_milab.diagonal() = Id_milab;
+    I_body_cheetah3.diagonal() = Id_cheetah3;
 }
 
 void RobotState::print()
@@ -48,7 +50,8 @@ void RobotState::print()
    cout<<"Robot State:"<<endl<<"Position\n"<<p.transpose()
        <<"\nVelocity\n"<<v.transpose()<<"\nAngular Veloctiy\n"
        <<w.transpose()<<"\nRotation\n"<<R<<"\nYaw Rotation\n"
-       <<R_yaw<<"\nFoot Locations\n"<<r_feet<<"\nInertia\n"<<I_body<<endl;
+       <<R_yaw<<"\nFoot Locations\n"<<r_feet<<"\nInertia\n"
+       <<I_body<<"\nMass\n"<<m<<endl;
 }
 
 

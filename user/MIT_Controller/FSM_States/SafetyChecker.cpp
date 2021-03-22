@@ -129,8 +129,8 @@ bool SafetyChecker<T>::checkForceFeedForward() {
 
   // Maximum force limits for each robot
   if (data->_quadruped->_robotType == RobotType::MILAB) {
-      maxLateralForce = 800;
-      maxVerticalForce = 800;
+      maxLateralForce = 500;
+      maxVerticalForce = 500;
 
   }else if (data->_quadruped->_robotType == RobotType::CHEETAH_3) {
     maxLateralForce = 1800;

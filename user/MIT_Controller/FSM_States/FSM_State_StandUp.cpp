@@ -40,7 +40,7 @@ void FSM_State_StandUp<T>::onEnter() {
 
   for(size_t leg(0); leg<4; ++leg){
     _ini_foot_pos[leg] = this->_data->_legController->datas[leg].p;
-    std::cout<<leg<<" "<<_ini_foot_pos[leg]<<std::endl;
+//    std::cout<<leg<<" "<<_ini_foot_pos[leg]<<std::endl;
   }
 }
 
@@ -75,7 +75,7 @@ void FSM_State_StandUp<T>::run() {
           float kd_cartesian = this->_data->controlParameters->stand_kd_cartesian[0];
           this->_data->_legController->commands[i].kpCartesian = Vec3<T>(kp_cartesian,kp_cartesian,kp_cartesian).asDiagonal();
           this->_data->_legController->commands[i].kdCartesian = Vec3<T>(kd_cartesian,kd_cartesian,kd_cartesian).asDiagonal();
-
+//          this->_data->_legController->commands[i].forceFeedForward = Vec3<T>(0.f,0.f,-75.f);
           this->_data->_legController->commands[i].pDes = _ini_foot_pos[i];
           this->_data->_legController->commands[i].pDes[2] =
                   progress*(-hMax) + (1. - progress) * _ini_foot_pos[i][2];

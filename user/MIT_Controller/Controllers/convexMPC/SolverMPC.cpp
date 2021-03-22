@@ -294,8 +294,18 @@ Matrix<fpt,13,13> A_ct;
 Matrix<fpt,13,12> B_ct_r;
 
 
-void solve_mpc(update_data_t* update, problem_setup* setup)
+void solve_mpc(update_data_t* update, problem_setup* setup, bool milab)
 {
+    if (milab){
+        rs.m = rs.m_milab;
+        rs.I_body = rs.I_body_milab;
+    }else if(setup->f_max>600){
+        rs.m = rs.m_cheetah3;
+        rs.I_body = rs.I_body_cheetah3;
+    }else{
+        rs.m = rs.m_mini;
+        rs.I_body = rs.I_body_mini;
+    }
   rs.set(update->p, update->v, update->q, update->w, update->r, update->yaw);
 #ifdef K_PRINT_EVERYTHING
 

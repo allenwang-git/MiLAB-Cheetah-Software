@@ -33,11 +33,13 @@ FSM_State<T>::FSM_State(ControlFSMData<T>* _controlFSMData,
  * @param dqDes desired joint velocity
  */
 template <typename T>
-void FSM_State<T>::jointPDControl(
-    int leg, Vec3<T> qDes, Vec3<T> qdDes) {
+void FSM_State<T>::jointPDControl(int leg, Vec3<T> qDes, Vec3<T> qdDes) {
+//    load parameters from yaml
+  Vec3<double> kp_joint = this->_data->controlParameters->recovery_kp;
+  Vec3<double> kd_joint = this->_data->controlParameters->recovery_kd;
 
-  kpMat << 80, 0, 0, 0, 80, 0, 0, 0, 80;
-  kdMat << 1, 0, 0, 0, 1, 0, 0, 0, 1;
+  kpMat << kp_joint[0], 0, 0, 0, kp_joint[1], 0, 0, 0, kp_joint[2];
+  kdMat << kd_joint[0], 0, 0, 0, kd_joint[1], 0, 0, 0, kd_joint[2];
 
   _data->_legController->commands[leg].kpJoint = kpMat;
   _data->_legController->commands[leg].kdJoint = kdMat;

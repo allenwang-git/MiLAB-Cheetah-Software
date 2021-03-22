@@ -83,7 +83,7 @@ class ConvexMPCLocomotion {
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters, float fmax);
+  ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters, float fmax, RobotType& robotType);
   void initialize();
 
   template<typename T>
@@ -107,6 +107,7 @@ public:
 
 private:
   void _SetupCommand(ControlFSMData<float> & data);
+  Mat3<float> r_z;
 
   float _yaw_turn_rate;
   float _yaw_des;
@@ -119,8 +120,9 @@ private:
 
   // High speed running
   //float _body_height = 0.34;
-  float _body_height = 0.29;
-
+  float _body_height;
+//  const float _milab_body_height = 0.42;
+  bool milab_flag = false;
   float _body_height_running = 0.29;
   float _body_height_jumping = 0.36;
 
@@ -129,6 +131,7 @@ private:
   void solveDenseMPC(int *mpcTable, ControlFSMData<float> &data);
   void solveSparseMPC(int *mpcTable, ControlFSMData<float> &data);
   void initSparseMPC();
+  void initMilabSparseMPC();
   int iterationsBetweenMPC;
   int horizonLength;
   int default_iterations_between_mpc;
@@ -141,6 +144,7 @@ private:
   OffsetDurationGait trotting, bounding, pronking, jumping, galloping, standing, trotRunning, walking, walking2, pacing;
   MixedFrequncyGait random, random2;
   Mat3<float> Kp, Kd, Kp_stance, Kd_stance;
+  Vec3<double> Kp_swing, Kd_swing;
   bool firstRun = true;
   bool firstSwing[4];
   float swingTimeRemaining[4];

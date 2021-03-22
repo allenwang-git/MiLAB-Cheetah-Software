@@ -18,6 +18,8 @@
 #include "ParamHandler.hpp"
 #include "Utilities/Timer.h"
 #include "Controllers/PositionVelocityEstimator.h"
+#include <fstream>
+
 //#include "rt/rt_interface_lcm.h"
 
 RobotRunner::RobotRunner(RobotController* robot_ctrl, 
@@ -35,7 +37,9 @@ RobotRunner::RobotRunner(RobotController* robot_ctrl,
  */
 void RobotRunner::init() {
   printf("[RobotRunner] initialize\n");
-
+  //clear debug Data file
+  std::ofstream fs("/home/allen/MiLAB-Cheetah-Software/debug_data/leg_controller_data.txt", std::fstream::out | std::ios_base::trunc);
+  fs.close();
   // Build the appropriate Quadruped object
   if (robotType == RobotType::MINI_CHEETAH) {
     _quadruped = buildMiniCheetah<float>();
@@ -224,7 +228,7 @@ void RobotRunner::finalizeStep() {
   } else {
     assert(false);
   }
-  _legController->setLcm(&leg_control_data_lcm, &leg_control_command_lcm);
+  _legController->setLcm(&leg_control_data_lcm, &leg_control_command_lcm, _iterations);
   _stateEstimate.setLcm(state_estimator_lcm);
   _lcm.publish("leg_control_command", &leg_control_command_lcm);
   _lcm.publish("leg_control_data", &leg_control_data_lcm);

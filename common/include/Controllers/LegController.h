@@ -67,8 +67,9 @@ class LegController {
   void updateCommand(SpiCommand* spiCommand);
   void updateCommand(TiBoardCommand* tiBoardCommand);
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
-  void setLcm(leg_control_data_lcmt* data, leg_control_command_lcmt* command);
-
+  void setLcm(leg_control_data_lcmt* data, leg_control_command_lcmt* command,u64 iter);
+//  Debug 20210316
+  void output2File();
   /*!
    * Set the maximum torque.  This only works on cheetah 3!
    */

@@ -30,7 +30,7 @@ Kd_foot           : [10, 10, 10]
 Kp_ori            : [100, 100, 100]
 Kd_ori            : [10, 10, 10]
 
-cmpc_gait         : 9
+cmpc_gait         : 4
 cmpc_x_drag       : 3
 cmpc_use_sparse   : 0
 cmpc_bonus_swing  : 0
@@ -40,22 +40,26 @@ jcqp_rho          : 1e-07
 jcqp_sigma        : 1e-08
 jcqp_terminate    : 0.1
 use_jcqp          : 0
-use_wbc           : 1
+use_wbc           : 0
 
 # Swing leg parameters
-Swing_Kp_cartesian : [350, 350, 75]
-Swing_Kd_cartesian : [5.5, 5.5, 5.5]
-Swing_Kp_joint     : [0, 0, 0]
-Swing_Kd_joint     : [0.2, 0.2, 0.2]
+Swing_Kp_cartesian : [1000, 1000, 500]
+Swing_Kd_cartesian : [7,7,7]
+Swing_Kp_joint     : [0,0,0]
+Swing_Kd_joint     : [1, 1, 1]
 Swing_step_offset  : [0,0.05,-0.003]
-Swing_traj_height  : 0.07
+Swing_traj_height  : 0.05
 Swing_use_tau_ff   : 0
+Q_pos             : [2, 2, 100]
+Q_vel             : [1, 1, 1]
+Q_ori             : [0, 0, 1]
+Q_ang             : [2, 2, 2]
 
 # Two Leg Stance parameters
-Q_pos             : [20, 20, 20000]
-Q_vel             : [0, 0, 0]
-Q_ori             : [1500, 1900, 900]
-Q_ang             : [30, 40, 10]
+#Q_pos             : [20, 20, 20000]
+#Q_vel             : [0, 0, 0]
+#Q_ori             : [1500, 1900, 900]
+#Q_ang             : [30, 40, 10]
 
 R_control         : 1.1
 R_prev            : 2.0

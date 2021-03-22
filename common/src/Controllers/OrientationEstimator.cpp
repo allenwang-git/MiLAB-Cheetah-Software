@@ -4,7 +4,7 @@
  *  This file will contain all orientation algorithms.
  *  Orientation estimators should compute:
  *  - orientation: a quaternion representing orientation
- *  - rBody: coordinate transformation matrix (satisfies vBody = Rbody * vWorld)
+ *  - rBody: coordinate transformation matrix (satisfies vBody = rbody * vWorld)
  *  - omegaBody: angular velocity in body frame
  *  - omegaWorld: angular velocity in world frame
  *  - rpy: roll pitch yaw
