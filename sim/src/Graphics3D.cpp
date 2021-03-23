@@ -543,10 +543,10 @@ void Graphics3D::paintGL() {
   }
 
   _MeshObstacleDrawing();
-
+// Left-top info window settings
   glDisable(GL_DEPTH_TEST);
   painter2.setPen(QColor(100, 100, 100, 255));
-  painter2.fillRect(QRect(30, 30, 400, 200), QColor(100, 100, 100, 220));
+  painter2.fillRect(QRect(26, 33, 400, 105), QColor(100, 100, 100, 220));
   QFont font("Monospace", 20);
   painter2.setPen(QColor(210, 100, 100));
   painter2.setFont(font);
