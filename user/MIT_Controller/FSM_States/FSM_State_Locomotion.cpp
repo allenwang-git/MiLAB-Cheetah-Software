@@ -201,8 +201,8 @@ template<typename T>
 bool FSM_State_Locomotion<T>::locomotionSafe() {
   auto& seResult = this->_data->_stateEstimator->getResult();
 
-  const T max_roll = 40;
-  const T max_pitch = 40;
+  const T max_roll = 30;
+  const T max_pitch = 30;
 
   if(std::fabs(seResult.rpy[0]) > ori::deg2rad(max_roll)) {
     printf("Unsafe locomotion: roll is %.3f degrees (max %.3f)\n", ori::rad2deg(seResult.rpy[0]), max_roll);
@@ -216,7 +216,7 @@ bool FSM_State_Locomotion<T>::locomotionSafe() {
 
   for(int leg = 0; leg < 4; leg++) {
     auto p_leg = this->_data->_legController->datas[leg].p;
-    if(p_leg[2] > 0) {
+    if(p_leg[2] >= -0.05) {
       printf("Unsafe locomotion: leg %d is above hip (%.3f m)\n", leg, p_leg[2]);
       return false;
     }
