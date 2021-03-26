@@ -694,7 +694,7 @@ if (data._quadruped->_robotType == RobotType::MILAB){
 
         // force from leg to ground in body frame
         f_ff[leg] = -seResult.rBody * f;
-        printf("[%d F:] %7.3f %7.3f %7.3f\n", leg, f_ff[leg][0], f_ff[leg][1],f_ff[leg][2]);
+//        printf("[%d F:] %7.3f %7.3f %7.3f\n", leg, f_ff[leg][0], f_ff[leg][1],f_ff[leg][2]);
 
         // Update for WBC
         Fr_des[leg] = f;
