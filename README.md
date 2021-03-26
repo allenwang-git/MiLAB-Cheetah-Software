@@ -101,6 +101,15 @@ positive_matrix_check.py           *                        *
 * The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.
 
 ## Robot Basic Definition
+* Default Units
+```
+Length:           m
+Angle:            rad
+Angular velocity: rad/s
+Torque:           N.m
+Mass:             kg
+Inertia tensor:   kg·m^2
+```
 * Serial numbers of the legs, joints and links:
 ```
 leg 0: FR -- Front-Right             joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
@@ -108,13 +117,16 @@ leg 1: FL -- Front-Left              joint 1: Hip                              l
 leg 2: RR -- Rear-Right              joint 2: Knee                             link 2: Lower link
 leg 3: RL -- Rear-Right
 ```
-* Joint limitation:
-```
-Ab/Ad: [-90,  45]
-Hip:   [-249, 50]
-Knee:  [-37, 167]
-```
+* Joint limitation
+
+Joint  | LowerBound | UpperBound
+-------|------------|-----------
+Ab/Ad  |-90         |  45
+Hip    |-249        |  50
+Knee   |-37         | 167
+
 * Size and mass parameters
+
 Part       | Length | Mass
 ---------  | ------ | ------
  Hip link  | 0.1   | 0.766
