@@ -103,9 +103,9 @@ positive_matrix_check.py           *                        *
 ## Robot Basic Definition
 * Serial numbers of the legs, joints and links:
 ```
-leg 0: FR -- Front-Right                   joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
-leg 1: FL -- Front-Left                    joint 1: Hip                              link 1: Upper link   
-leg 2: RR -- Rear-Right                    joint 2: Knee                             link 2: Lower link
+leg 0: FR -- Front-Right             joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
+leg 1: FL -- Front-Left              joint 1: Hip                              link 1: Upper link   
+leg 2: RR -- Rear-Right              joint 2: Knee                             link 2: Lower link
 leg 3: RL -- Rear-Right
 ```
 * Joint limitation:
@@ -115,14 +115,13 @@ Hip:   [-249, 50]
 Knee:  [-37, 167]
 ```
 * Size and mass parameters
------------|------ 
-Hip link   | 0.1   | 0.766
+Part       | Length | Mass
+---------  | ------ | ------
+ Hip link  | 0.1   | 0.766
 Upper link | 0.3   | 1.598
 Lower link | 0.34  | 0.363
 
-First Header | Second Header
------------- | -------------
-Content from cell 1 | Content from cell 2
+
 
 * The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical.
 
