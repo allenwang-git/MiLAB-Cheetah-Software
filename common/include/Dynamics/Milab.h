@@ -4,7 +4,8 @@
  * Authors: Shuyu Yang, Yinuo Wang
  * Date: 2021/03/04
  * E-mial: yangshuyu@westlake.edu.cn , dbdxwyn@163.com
- * First Version Date: 2021/03/17
+ * First Version Date: 2021/03/17  Total mass:27.925
+ * Second Version Date: 2021/03/26 Total mass:25.693
  *
  * This file builds a model of the Milab robot.
  * The mass, inertia and size parameters of all bodies are determined from SolidWorks.
@@ -15,7 +16,7 @@
 
 #include "FloatingBaseModel.h"
 #include "Quadruped.h"
-//  todo: modify following parameters according to real robot measurements:
+
 /*!
  * Generate a Quadruped model of Milab robot
  */
@@ -24,11 +25,11 @@ Quadruped<T> buildMilab() {
     Quadruped<T> milab;
     milab._robotType = RobotType::MILAB;
 //    mass parameters
-//  Nominal Total Mass = 27.925
-    milab._bodyMass = 15.905;
-    milab._abadMass = 0.851;
+//  Nominal Total Mass = 25.693
+    milab._bodyMass = 13.777;
+    milab._abadMass = 0.766;
     milab._hipMass = 1.598;
-    milab._kneeMass = 0.304;
+    milab._kneeMass = 0.363;
     milab._rotorMass = 0.084;
 
 //    link parameters
@@ -65,22 +66,22 @@ Quadruped<T> buildMilab() {
 
     // spatial inertias
     Mat3 <T> abadRotationalInertia;
-    abadRotationalInertia << 785.098, -1.682, -3.604, -1.682, 1223.521, 11.631, -3.604, 11.631, 866.078;
+    abadRotationalInertia << 712.408, -3.535, -5.317, -3.535, 1095.432, 13.78, -5.317, 13.78, 772.605;
     abadRotationalInertia = abadRotationalInertia * 1e-6;
-    Vec3 <T> abadCOM(-0.004122, -0.000422, -0.000388);  // LEFT
+    Vec3 <T> abadCOM(-0.004444, -0.000541, -0.000536);  // LEFT
     SpatialInertia<T> abadInertia(milab._abadMass, abadCOM, abadRotationalInertia);
 
     Mat3 <T> hipRotationalInertia;
-    hipRotationalInertia << 17479.820, 0.659, 1217.843, 0.659, 16957.82, 22.085, 1217.843, 22.085, 2928.195;
+    hipRotationalInertia << 17479.820, -9.63, 1236.601, -9.63, 17229.4, -20.313, 1236.601, -20.313, 2982.14;
     hipRotationalInertia = hipRotationalInertia * 1e-6;
-    Vec3<T> hipCOM(-0.004928, 0.022568, -0.040268);
+    Vec3<T> hipCOM(-0.004928, -0.022568, -0.039632);
     SpatialInertia<T> hipInertia(milab._hipMass, hipCOM, hipRotationalInertia);
 
     Mat3<T> kneeRotationalInertia, kneeRotationalInertiaRotated;
-    kneeRotationalInertiaRotated << 14348.139, -0.069, -10.901, -0.069, 14381.501, 1.424, -10.901, 1.424, 60.547;
+    kneeRotationalInertiaRotated << 7880.558, -0.083, -15.380, -0.083, 7917.82, -0.27, -15.38, -0.27, 71.290;
     kneeRotationalInertiaRotated = kneeRotationalInertiaRotated * 1e-6;
 //    kneeRotationalInertia = RY * kneeRotationalInertiaRotated * RY.transpose();
-    Vec3 <T> kneeCOM(-0.000127, -0.00004, -0.162845);
+    Vec3 <T> kneeCOM(-0.000838, -0.000038, -0.157249);
     SpatialInertia<T> kneeInertia(milab._kneeMass, kneeCOM, kneeRotationalInertiaRotated);
 
     Vec3 <T> rotorCOM(0, 0, 0);
@@ -88,10 +89,10 @@ Quadruped<T> buildMilab() {
     SpatialInertia<T> rotorInertiaY(milab._rotorMass, rotorCOM, rotorRotationalInertiaY);
 
     Mat3 <T> bodyRotationalInertia;
-    bodyRotationalInertia << 87315.704, -1616.648, 3635.591, -1616.648, 478969.026, 8.292, 3635.591, 8.292, 504293.328;// from solidworks
+    bodyRotationalInertia << 84746.639, -505.566, -1520.915, -505.566, 460537.565, 143.817, -1520.915, 143.817, 487181.361;// inertia from solidworks
     bodyRotationalInertia = bodyRotationalInertia * 1e-6;
-//    baseInertia << 0.109, 0, 0, 0, 0.834, 0, 0, 0, 0.833;
-    Vec3 <T> bodyCOM(0, 0, 0);
+//    baseInertia << 0.0996, 0, 0, 0, 0.765, 0, 0, 0, 0.765;
+    Vec3 <T> bodyCOM(-0.004017, -0.000209, -0.005174);
     Vec3<T> bodyDims(milab._bodyLength, milab._bodyWidth,milab._bodyHeight);
     SpatialInertia<T> bodyInertia(milab._bodyMass, bodyCOM, rotInertiaOfBox(milab._bodyMass, bodyDims)); // simplified inertia
 

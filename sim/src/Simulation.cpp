@@ -59,9 +59,10 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   // init graphics
   if (_window) {
     printf("[Simulation] Setup Robot graphics...\n");
+//    set robot color
     Vec4<float> truthColor, seColor;
     truthColor << 0.2, 0.4, 0.2, 0.6;
-    seColor << .75,.75,.75, 1.0;
+    seColor << .6,.6,.6, 1.0;
     if (_robot == RobotType::MINI_CHEETAH){
         _simRobotID =  window->setupMiniCheetah(truthColor, true, true);
     }else if (_robot == RobotType::MILAB){
@@ -103,24 +104,24 @@ Simulation::Simulation(RobotType robot, Graphics3D* window,
   x0.q = zero12;
   x0.qd = zero12;
   // Initial (lies on the ground )
-//  if (_robot != RobotType::MILAB){
-//      x0.bodyPosition[2] = 0.0752;
-//      x0.q[0] = -0.5;
-//      x0.q[1] = 1.25;
-//      x0.q[2] = -2.8;
-//
-//      x0.q[3] = 0.5;
-//      x0.q[4] = 1.25;
-//      x0.q[5] = -2.8;
-//
-//      x0.q[6] = -0.5;
-//      x0.q[7] = 1.25;
-//      x0.q[8] = -2.8;
-//
-//      x0.q[9] = 0.5;
-//      x0.q[10] = 1.25;
-//      x0.q[11] = -2.8;
-//  } else{  //  MiNI CHEETAH & CHEETAH 3
+/*  if (_robot == RobotType::MILAB){
+      x0.bodyPosition[2] = 0.0752;
+      x0.q[0] = -0.5;
+      x0.q[1] = 1.25;
+      x0.q[2] = -2.8;
+
+      x0.q[3] = 0.5;
+      x0.q[4] = 1.25;
+      x0.q[5] = -2.8;
+
+      x0.q[6] = -0.5;
+      x0.q[7] = 1.25;
+      x0.q[8] = -2.8;
+
+      x0.q[9] = 0.5;
+      x0.q[10] = 1.25;
+      x0.q[11] = -2.8;
+  } else{  //  MiNI CHEETAH & CHEETAH 3*/
       x0.bodyPosition[2] = 0.05;
       x0.q[0] = -0.7;
       x0.q[1] = -1.;
@@ -351,7 +352,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
             _spineBoards[leg].torque_out[joint],
             _simulator->getState().qd[leg * 3 + joint]);
       }
-      printf("leg %d %4.3f %4.3f %4.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
+//      printf("leg %d %7.3f %7.3f %7.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
     }
   } else if (_robot == RobotType::MINI_CHEETAH) {
         for (int leg = 0; leg < 4; leg++) {
@@ -360,7 +361,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
                         _spineBoards[leg].torque_out[joint],
                         _simulator->getState().qd[leg * 3 + joint]);
             }
-            printf("leg %d %4.3f %4.3f %4.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
+//            printf("leg %d %7.3f %7.3f %7.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
         }
     } else if (_robot == RobotType::CHEETAH_3) {
     for (int leg = 0; leg < 4; leg++) {
@@ -369,7 +370,7 @@ void Simulation::step(double dt, double dtLowLevelControl,
             _tiBoards[leg].data->tau_des[joint],
             _simulator->getState().qd[leg * 3 + joint]);
       }
-      printf("leg %d %4.3f %4.3f %4.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
+//      printf("leg %d %7.3f %7.3f %7.3f\n",leg,_tau[leg*3],_tau[leg*3+1],_tau[leg*3+2]);
     }
   } else {
     assert(false);
@@ -675,12 +676,12 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
         double simRate = (_currentSimTime - lastSimTime) / realElapsedTime;
         lastSimTime = _currentSimTime;
         sprintf(_window->infoString,
-                "[Simulation Run %5.2fx]\n"
-                "real-time:  %8.3f\n"
-                "sim-time:   %8.3f\n"
-                "rate:       %8.3f\n",
-                _desiredSimSpeed, freeRunTimer.getSeconds(), _currentSimTime,
-                simRate);
+                "[Sim-speed： %7.3fx]\n"
+                "[Real-time:  %8.3f]\n"
+                "[Sim-time:   %8.3f]",
+//                "rate:       %8.3f\n",
+//                _desiredSimSpeed,
+                simRate, freeRunTimer.getSeconds(), _currentSimTime);
         updateGraphics();
       }
       if (!_window->IsPaused() && (desiredSteps - steps) < nStepsPerFrame)
