@@ -156,6 +156,7 @@ class Simulation {
   double _timeOfNextHighLevelControl = 0.;
   s64 _highLevelIterations = 0;
   simulator_lcmt _simLCM;
+  bool isMilab = false;
 };
 
 #endif  // PROJECT_SIMULATION_H

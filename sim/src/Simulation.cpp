@@ -405,10 +405,10 @@ void Simulation::lowLevelControl() {
             _spiData.qd_hip[leg] = _simulator->getState().qd[leg * 3 + 1];
             _spiData.qd_knee[leg] = _simulator->getState().qd[leg * 3 + 2];
         }
-
+        isMilab = true;
         // run spine board control:
         for (auto& spineBoard : _spineBoards) {
-            spineBoard.run();
+            spineBoard.run(isMilab);
         }
 
     } else if (_robot == RobotType::MINI_CHEETAH) {
@@ -425,7 +425,7 @@ void Simulation::lowLevelControl() {
 
         // run spine board control:
         for (auto& spineBoard : _spineBoards) {
-            spineBoard.run();
+            spineBoard.run(isMilab);
         }
 
     } else if (_robot == RobotType::CHEETAH_3) {
@@ -641,7 +641,7 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
   u64 steps = 0;
 
   double frameTime = 1. / 60.;
-  double lastSimTime = 0;
+//  double lastSimTime = 0;
 
   printf(
       "[Simulator] Starting run loop (dt %f, dt-low-level %f, dt-high-level %f "
@@ -670,18 +670,22 @@ void Simulation::runAtSpeed(std::function<void(std::string)> errorCallback, bool
       }
     }
     if (frameTimer.getSeconds() > frameTime) {
-      double realElapsedTime = frameTimer.getSeconds();
+//      double realElapsedTime = frameTimer.getSeconds();
       frameTimer.start();
       if (graphics && _window) {
-        double simRate = (_currentSimTime - lastSimTime) / realElapsedTime;
-        lastSimTime = _currentSimTime;
+//        double simRate = (_currentSimTime - lastSimTime) / realElapsedTime;
+//        lastSimTime = _currentSimTime;
         sprintf(_window->infoString,
-                "[Sim-speed： %7.3fx]\n"
-                "[Real-time:  %8.3f]\n"
-                "[Sim-time:   %8.3f]",
+                "Sim-speed： %8.3fX\n"
+                "Real-time:  %8.3fs\n"
+                "Sim-time:   %8.3fs\n"
+                "Robot-height:  %3.3fm\n"
+                "Robot-speed: %4.2f,%4.2f m/s",
 //                "rate:       %8.3f\n",
-//                _desiredSimSpeed,
-                simRate, freeRunTimer.getSeconds(), _currentSimTime);
+                _desiredSimSpeed,
+//                simRate,
+                freeRunTimer.getSeconds(), _currentSimTime,_simulator->getState().bodyPosition[2],
+                _simulator->getDState().dBodyPosition[0],_simulator->getDState().dBodyPosition[1]);
         updateGraphics();
       }
       if (!_window->IsPaused() && (desiredSteps - steps) < nStepsPerFrame)

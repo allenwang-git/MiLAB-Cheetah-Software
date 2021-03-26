@@ -877,19 +877,19 @@ void SimControlPanel::on_goHomeButton_clicked() {
 
   FBModelState<double> homeState;
   homeState.bodyOrientation << 1, 0, 0, 0;
-  homeState.bodyPosition = Vec3<double>(0, 0, 0.4);
+  homeState.bodyPosition = Vec3<double>(0, 0, 0.5);
   homeState.bodyVelocity = SVec<double>::Zero();
   homeState.q = DVec<double>(12);
 
   if(_simulation->_robot == RobotType::MILAB){
-      std::cout<<"MILAB ROBOT ";
-      homeState.q << -0., 1., -1.7, 0., 1., -1.7, -0., 1., -1.7, 0., 1., -1.7;
+      printf("[Simulation] MILAB ROBOT ");
+      homeState.q << -0., -0.96, 1.6, 0., -0.96, 1.6, -0., -0.96, 1.6, 0., -0.96, 1.6;
   }else{
-      std::cout<<"MIT CHEETAH ";
+      printf("[Simulation] MIT CHEETAH ");
       homeState.q << -0.05, -0.8, 1.7, 0.05, -0.8, 1.7, -0.05, -0.8, 1.7, 0.05, -0.8, 1.7;
   }
   homeState.qd = homeState.q;
-  printf("go home\n");
+  printf("Go Home\n");
   _simulation->setRobotState(homeState);
 }
 /*!
