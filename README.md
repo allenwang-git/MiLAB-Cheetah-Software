@@ -6,7 +6,7 @@
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
 Remember to check corresponding include files of following source files. \
 Whenever you change or add other project files, please update this list. \
-**done**: have submitted final modification \
+**done**: have finished and submitted \
 **doing**: working on it now \
 **todo**: plan to modify recently or still have *TODO* tips in the file \
 **new**: new file specifically for Milab robot
@@ -100,6 +100,8 @@ positive_matrix_check.py           *                        *
 ## Differences
 * The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.
 * The Milab Robot model in simulator needs to use at least 5 mesh parts, because our robot's upper link is mirror symmetrical.
+## Coordinate Definition
+![The Coordinate Definition](https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png)
 
 ## Introduction
 This repository contains the Robot and Simulation software project. For a getting started guide, see [Getting Started](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/getting_started.md).
