@@ -99,9 +99,39 @@ positive_matrix_check.py           *                        *
 ```
 ## Differences
 * The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.
-* The Milab Robot model in simulator needs to use at least 5 mesh parts, because our robot's upper link is mirror symmetrical.
+
+## Robot Basic Definition
+* Serial numbers of the legs, joints and links:
+```
+leg 0: FR -- Front-Right                   joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
+leg 1: FL -- Front-Left                    joint 1: Hip                              link 1: Upper link   
+leg 2: RR -- Rear-Right                    joint 2: Knee                             link 2: Lower link
+leg 3: RL -- Rear-Right
+```
+* Joint limitation:
+```
+Ab/Ad: [-90,  45]
+Hip:   [-249, 50]
+Knee:  [-37, 167]
+```
+* Size and mass parameters
+
+Hip link | 0.1m |
+---------|------------------
+Upper link| 0.3m|
+Lower link| 0.34m|    0.363kg
+
+
+* The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical.
+
 ## Coordinate Definition
+* The coordinate definition and the zero degrees position of each joint are shown as below.
+The rotation axis of the ab/ad joints is the x axis, and the rotation axis of the hip joint and the knee joint is the y axis. 
+Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.
 ![The Coordinate Definition](https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png)
+* The joint rotation axis definition is shown as below.
+Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.
+![motorframe](https://user-images.githubusercontent.com/69251304/112635651-0c16b800-8e77-11eb-9bb2-08ddf950ed4c.png)
 
 ## Introduction
 This repository contains the Robot and Simulation software project. For a getting started guide, see [Getting Started](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/getting_started.md).
