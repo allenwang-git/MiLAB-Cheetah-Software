@@ -115,12 +115,14 @@ Hip:   [-249, 50]
 Knee:  [-37, 167]
 ```
 * Size and mass parameters
+-----------|------ 
+Hip link   | 0.1   | 0.766
+Upper link | 0.3   | 1.598
+Lower link | 0.34  | 0.363
 
-Hip link | 0.1m |
----------|------------------
-Upper link| 0.3m|
-Lower link| 0.34m|    0.363kg
-
+First Header | Second Header
+------------ | -------------
+Content from cell 1 | Content from cell 2
 
 * The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical.
 
