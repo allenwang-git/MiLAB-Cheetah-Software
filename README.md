@@ -101,6 +101,7 @@ positive_matrix_check.py           *                        *
 * The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.
 
 ## Robot Basic Definition
+Although part of the following definitions and settings are also applicable to MIT or UNITREE robots, they are specifically written for MiLAB Robot.
 * Default Units
 ```
 Length:           m
@@ -133,9 +134,7 @@ Part       | Length | Mass
 Upper link | 0.3   | 1.598
 Lower link | 0.34  | 0.363
 
-
-
-* The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical.
+* The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical. Noted that the MIT cheetah robots only use 4 kinds of mesh parts.
 
 ## Coordinate Definition
 * The coordinate definition and the zero degrees position of each joint are shown as below.
