@@ -47,9 +47,10 @@ Knee   |-37°        | 167°
 
 Part       | Length | Mass
 ---------  | ------ | ------
- Hip link  | 0.1    | 0.766
+Hip link   | 0.1    | 0.766
 Upper link | 0.3    | 1.598
 Lower link | 0.34   | 0.363
+Body       |0.5779 x 0.152 x 0.153| 13.777
 
 * The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical. Noted that the MIT cheetah robots only use 4 kinds of mesh parts.
 
