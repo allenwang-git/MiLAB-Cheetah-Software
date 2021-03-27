@@ -102,7 +102,7 @@ positive_matrix_check.py           *                        *
 
 ## Robot Basic Definition
 Although part of the following definitions and settings are also applicable to MIT or UNITREE robots, they are specifically written for MiLAB Robot.
-* Default Units
+* Default Units in project
 ```
 Length:           m
 Angle:            rad
@@ -122,17 +122,17 @@ leg 3: RL -- Rear-Right
 
 Joint  | LowerBound | UpperBound
 -------|------------|-----------
-Ab/Ad  |-90         |  45
-Hip    |-249        |  50
-Knee   |-37         | 167
+Ab/Ad  |-90°        |  45°
+Hip    |-249°       |  50°
+Knee   |-37°        | 167°
 
 * Size and mass parameters
 
 Part       | Length | Mass
 ---------  | ------ | ------
- Hip link  | 0.1   | 0.766
-Upper link | 0.3   | 1.598
-Lower link | 0.34  | 0.363
+ Hip link  | 0.1    | 0.766
+Upper link | 0.3    | 1.598
+Lower link | 0.34   | 0.363
 
 * The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical. Noted that the MIT cheetah robots only use 4 kinds of mesh parts.
 
