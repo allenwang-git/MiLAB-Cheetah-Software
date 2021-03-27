@@ -1,9 +1,9 @@
 /*
  * @brief Utility function to build a Milab Quadruped object
  *
- * Authors: Shuyu Yang, Yinuo Wang
+ * Authors: Yinuo Wang, Shuyu Yang
  * Date: 2021/03/04
- * E-mial: yangshuyu@westlake.edu.cn , dbdxwyn@163.com
+ * E-mial: dbdxwyn@163.com, yangshuyu@westlake.edu.cn
  * First Version Date: 2021/03/17  Total mass:27.925
  * Second Version Date: 2021/03/26 Total mass:25.693
  *
