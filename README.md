@@ -1,8 +1,8 @@
 # MiLAB-Cheetah-Software 
-*Creation Date: 2020.03.01* \ 
+*Creation Date: 2020.03.01* \
 *Contributor: Wang Yinuo, Yang Shuyu* \
 *Current Maintainer: Wang Yinuo* \
-*Email: dbdxwyn@163.com* \
+*Email: dbdxwyn@163.com*
 
 ## Introduction
 Based on [MIT-Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Software) open-source project, we developed this repository which contains the Robot and Simulation software for our MiLAB quadruped robot. For a getting started guide, see [Getting Started](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/getting_started.md).
