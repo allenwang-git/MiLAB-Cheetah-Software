@@ -26,6 +26,7 @@ public:
         INIT_PARAMETER(Q_vel),
         INIT_PARAMETER(Q_ori),
         INIT_PARAMETER(Q_ang),
+        INIT_PARAMETER(R),
         INIT_PARAMETER(R_control),
         INIT_PARAMETER(R_prev),
         INIT_PARAMETER(two_leg_orient),
@@ -101,6 +102,7 @@ public:
   DECLARE_PARAMETER(Vec3<double>, Q_vel);
   DECLARE_PARAMETER(Vec3<double>, Q_ori);
   DECLARE_PARAMETER(Vec3<double>, Q_ang);
+    DECLARE_PARAMETER(double, R);
   DECLARE_PARAMETER(double, R_control);
   DECLARE_PARAMETER(double, R_prev);
   DECLARE_PARAMETER(Vec3<double>, two_leg_orient);
