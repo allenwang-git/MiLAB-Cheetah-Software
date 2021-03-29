@@ -56,7 +56,7 @@ void FSM_State_BalanceStand<T>::onEnter() {
 
   last_height_command = _ini_body_pos[2];
 
-  _ini_body_ori_rpy = (this->_data->_stateEstimator->getResult()).rpy;
+  _ini_body_ori_rpy = (this->_data->_stateEstimator->getResult()).rBody * (this->_data->_stateEstimator->getResult()).rpy;
   _body_weight = this->_data->_quadruped->_bodyMass * 9.81;
 }
 
@@ -112,7 +112,19 @@ FSM_StateName FSM_State_BalanceStand<T>::checkTransition() {
       }*/
       break;
 
-    case K_LOCOMOTION:
+    case K_STAND_UP:
+      this->nextStateName = FSM_StateName::STAND_UP;
+      // Transition time is immediate
+      this->transitionDuration = 0.0;
+      break;
+
+    case K_SQUAT_DOWN:
+      this->nextStateName = FSM_StateName::SQUAT_DOWN;
+      // Transition time is immediate
+      this->transitionDuration = 0.0;
+      break;
+
+/*    case K_LOCOMOTION:
       // Requested change to balance stand
       this->nextStateName = FSM_StateName::LOCOMOTION;
 
@@ -121,7 +133,7 @@ FSM_StateName FSM_State_BalanceStand<T>::checkTransition() {
 
       // Set the next gait in the scheduler to
       this->_data->_gaitScheduler->gaitData._nextGait = GaitType::TROT;
-      break;
+      break;*/
 
     case K_PASSIVE:
       this->nextStateName = FSM_StateName::PASSIVE;
@@ -130,11 +142,11 @@ FSM_StateName FSM_State_BalanceStand<T>::checkTransition() {
 
       break;
 
-    case K_VISION:
+/*    case K_VISION:
       this->nextStateName = FSM_StateName::VISION;
       // Transition time is immediate
       this->transitionDuration = 0.0;
-      break;
+      break;*/
 
     case K_RECOVERY_STAND:
       this->nextStateName = FSM_StateName::RECOVERY_STAND;
@@ -142,10 +154,10 @@ FSM_StateName FSM_State_BalanceStand<T>::checkTransition() {
       this->transitionDuration = 0.0;
       break;
 
-    case K_BACKFLIP:
+/*    case K_BACKFLIP:
       this->nextStateName = FSM_StateName::BACKFLIP;
       this->transitionDuration = 0.;
-      break;
+      break;*/
 
     default:
       std::cout << "[CONTROL FSM] Bad Request: Cannot transition from "
@@ -167,7 +179,7 @@ template <typename T>
 TransitionData<T> FSM_State_BalanceStand<T>::transition() {
   // Switch FSM control mode
   switch (this->nextStateName) {
-    case FSM_StateName::LOCOMOTION:
+/*    case FSM_StateName::LOCOMOTION:
       BalanceStandStep();
 
       _iter++;
@@ -177,10 +189,18 @@ TransitionData<T> FSM_State_BalanceStand<T>::transition() {
         this->transitionData.done = false;
       }
 
-      break;
+      break;*/
 
     case FSM_StateName::PASSIVE:
       this->turnOffAllSafetyChecks();
+      this->transitionData.done = true;
+      break;
+
+    case FSM_StateName::STAND_UP:
+      this->transitionData.done = true;
+      break;
+
+    case FSM_StateName::SQUAT_DOWN:
       this->transitionData.done = true;
       break;
 
@@ -188,13 +208,13 @@ TransitionData<T> FSM_State_BalanceStand<T>::transition() {
       this->transitionData.done = true;
       break;
 
-    case FSM_StateName::BACKFLIP:
+/*    case FSM_StateName::BACKFLIP:
       this->transitionData.done = true;
       break;
 
     case FSM_StateName::VISION:
       this->transitionData.done = true;
-      break;
+      break;*/
 
     default:
       std::cout << "[CONTROL FSM] Something went wrong in transition"
@@ -236,18 +256,31 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   }else{ // in simulation
     // Orientation
     _wbc_data->pBody_RPY_des[0] = 
-     0.6* this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0];
+      this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0];
      _wbc_data->pBody_RPY_des[1] = 
-      0.6*this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
+      this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
     _wbc_data->pBody_RPY_des[2] -= 
       this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[1];
     
     // Height
     _wbc_data->pBody_des[2] += 
-      0.12 * this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
+      0.12 * this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[1];
   }
   _wbc_data->vBody_Ori_des.setZero();
 
+// Blance  Limitation
+  if (abs(_wbc_data->pBody_RPY_des[0]) > rollLimit){
+      _wbc_data->pBody_RPY_des[0] = (_wbc_data->pBody_RPY_des[0] > 0) ? rollLimit : (-rollLimit);
+  } else if (abs(_wbc_data->pBody_RPY_des[1]) > pitchLimit){
+      _wbc_data->pBody_RPY_des[1] = (_wbc_data->pBody_RPY_des[1] > 0) ? pitchLimit : (-pitchLimit);
+  } else if (abs(_wbc_data->pBody_RPY_des[2]) > yawLimit){
+      _wbc_data->pBody_RPY_des[2] = (_wbc_data->pBody_RPY_des[2] > 0) ? yawLimit : (-yawLimit);
+  } else if (_wbc_data->pBody_des[2] > heightLimitUpper){
+      _wbc_data->pBody_des[2] = heightLimitUpper;
+  } else if (_wbc_data->pBody_des[2] < heightLimitLower){
+      _wbc_data->pBody_des[2] = heightLimitLower;
+  }
+std::cout<<_wbc_data->pBody_RPY_des[0]<<" "<<_wbc_data->pBody_RPY_des[1]<<" "<<_wbc_data->pBody_RPY_des[2]<<" "<<_wbc_data->pBody_des[2]<<std::endl;
   for(size_t i(0); i<4; ++i){
     _wbc_data->pFoot_des[i].setZero();
     _wbc_data->vFoot_des[i].setZero();

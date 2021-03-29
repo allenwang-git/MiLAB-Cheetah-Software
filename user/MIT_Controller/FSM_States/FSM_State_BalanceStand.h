@@ -45,6 +45,15 @@ class FSM_State_BalanceStand : public FSM_State<T> {
   Vec3<T> _ini_body_pos;
   Vec3<T> _ini_body_ori_rpy;
   T _body_weight;
+
+  // Blance  Limitation
+  T const rollLimit = 0.523; // 40degrees
+  T const pitchLimit = 0.523;
+  T const yawLimit = 0.523;
+  T const maxLegLength = 0.644;
+  T const heightLimitUpper = 0.85 * maxLegLength;
+  T const heightLimitLower = 0.3 * maxLegLength;
+
 };
 
 #endif  // FSM_STATE_BALANCESTAND_H
