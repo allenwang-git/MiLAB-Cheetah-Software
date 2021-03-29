@@ -19,7 +19,7 @@
 #define K_VISION 8
 #define K_BACKFLIP 9
 #define K_FRONTJUMP 11
-
+#define K_SQUAT_DOWN 2
 // Specific control states
 #define K_JOINT_PD 51
 #define K_IMPEDANCE_CONTROL 52
@@ -40,7 +40,8 @@ enum class FSM_StateName {
   RECOVERY_STAND,
   VISION,
   BACKFLIP,
-  FRONTJUMP
+  FRONTJUMP,
+  SQUAT_DOWN
 };
 
 /**

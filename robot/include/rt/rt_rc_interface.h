@@ -19,6 +19,7 @@ class rc_control_settings {
 
 namespace RC_mode{
   constexpr int OFF = 0;
+  constexpr int SQUAT_DOWN = 2;
   constexpr int QP_STAND = 3;
   constexpr int BACKFLIP_PRE = 4;
   constexpr int BACKFLIP = 5;
