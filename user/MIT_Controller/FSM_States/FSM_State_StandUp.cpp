@@ -65,7 +65,7 @@ void FSM_State_StandUp<T>::run() {
         progress*(-hMax) + (1. - progress) * _ini_foot_pos[i][2];
     }
   }else if (this->_data->_quadruped->_robotType == RobotType::MILAB){
-      T hMax = 0.4;
+      T hMax = 0.35;
       T progress = 1 * iter * this->_data->controlParameters->controller_dt;
 
       if (progress > 1.){ progress = 1.; }
@@ -75,13 +75,13 @@ void FSM_State_StandUp<T>::run() {
           float kd_cartesian = this->_data->controlParameters->stand_kd_cartesian[0];
           this->_data->_legController->commands[i].kpCartesian = Vec3<T>(kp_cartesian,kp_cartesian,kp_cartesian).asDiagonal();
           this->_data->_legController->commands[i].kdCartesian = Vec3<T>(kd_cartesian,kd_cartesian,kd_cartesian).asDiagonal();
-//          this->_data->_legController->commands[i].forceFeedForward = Vec3<T>(0.f,0.f,-75.f);
+          this->_data->_legController->commands[i].forceFeedForward = Vec3<T>(0.f,0.f,-50.f);
           this->_data->_legController->commands[i].pDes = _ini_foot_pos[i];
           this->_data->_legController->commands[i].pDes[2] =
                   progress*(-hMax) + (1. - progress) * _ini_foot_pos[i][2];
       }
   }else if (this->_data->_quadruped->_robotType == RobotType::CHEETAH_3){
-      T hMax = 0.6;
+      T hMax = 0.45;
       T progress = 2 * iter * this->_data->controlParameters->controller_dt;
 
       if (progress > 1.){ progress = 1.; }
@@ -108,24 +108,32 @@ FSM_StateName FSM_State_StandUp<T>::checkTransition() {
   this->nextStateName = this->stateName;
   iter++;
 
-  // Switch FSM control mode
+  // Switch FSM control mode 0,1,2,3,6
   switch ((int)this->_data->controlParameters->control_mode) {
     case K_STAND_UP:
       break;
+
     case K_BALANCE_STAND:
       this->nextStateName = FSM_StateName::BALANCE_STAND;
       break;
 
-    case K_LOCOMOTION:
-      this->nextStateName = FSM_StateName::LOCOMOTION;
+//    case K_LOCOMOTION:
+//      this->nextStateName = FSM_StateName::LOCOMOTION;
+//      break;
+
+//    case K_VISION:
+//      this->nextStateName = FSM_StateName::VISION;
+//      break;
+
+    case K_RECOVERY_STAND:
+      this->nextStateName = FSM_StateName::RECOVERY_STAND;
       break;
 
-    case K_VISION:
-      this->nextStateName = FSM_StateName::VISION;
+    case K_SQUAT_DOWN:
+      this->nextStateName = FSM_StateName::SQUAT_DOWN;
       break;
 
-
-    case K_PASSIVE:  // normal c
+    case K_PASSIVE:
       this->nextStateName = FSM_StateName::PASSIVE;
       break;
 
@@ -157,13 +165,21 @@ TransitionData<T> FSM_State_StandUp<T>::transition() {
       this->transitionData.done = true;
       break;
 
-    case FSM_StateName::LOCOMOTION:
+    case FSM_StateName::SQUAT_DOWN:
       this->transitionData.done = true;
       break;
 
-    case FSM_StateName::VISION:
+    case FSM_StateName::RECOVERY_STAND:
       this->transitionData.done = true;
       break;
+
+//    case FSM_StateName::LOCOMOTION:
+//      this->transitionData.done = true;
+//      break;
+//
+//    case FSM_StateName::VISION:
+//      this->transitionData.done = true;
+//      break;
 
 
     default:

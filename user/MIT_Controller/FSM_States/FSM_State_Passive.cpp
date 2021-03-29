@@ -76,10 +76,10 @@ FSM_StateName FSM_State_Passive<T>::checkTransition() {
       this->nextStateName = FSM_StateName::JOINT_PD;
       break;
 
-    case K_STAND_UP:
-      // Requested switch to joint PD control
-      this->nextStateName = FSM_StateName::STAND_UP;
-      break;
+//    case K_STAND_UP:
+//      // Requested switch to joint PD control
+//      this->nextStateName = FSM_StateName::STAND_UP;
+//      break;
 
     case K_RECOVERY_STAND:
       // Requested switch to joint PD control
