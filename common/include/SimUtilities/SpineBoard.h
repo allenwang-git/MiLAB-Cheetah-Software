@@ -76,8 +76,8 @@ class SpineBoard {
   const float milab_kp_softstop = 350.f;
   const float milab_kd_softstop = 5.f;
   float max_torque[3] = {18.f, 18.f, 24.f};
-  float q_limit_upper[3] = {1.5f, 5.0f, 2.72f};
-  float q_limit_low[3] = {-1.5f, -5.0f, -2.72f};
+  float q_limit_upper[3] = {1.5f, 5.0f, 3.05f};
+  float q_limit_low[3] = {-1.5f, -5.0f, -3.05f};
   float kp_softstop = 100.f;
   float kd_softstop = 0.4f;
   s32 iter_counter = 0;
