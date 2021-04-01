@@ -9,7 +9,8 @@
 
 static constexpr float windows2000[] = {220.f / 256.f, 234.f / 256.f,
                                         242.f / 256.f};
-static constexpr float disgustingGreen[] = {0.f, 0.2f, 0.2f};
+static constexpr float terrainColor[] = {247.f / 256.f, 138.f / 256.f,
+                                         21.f / 256.f};
 static constexpr float checkerboardDark[] = {0.f, 0.f, 0.f};
 static constexpr float checkerboardLight[] = {1.f, 1.f, 1.f};
 static constexpr float defaultRobotColor[] = {1.f, 1.f, 1.f};

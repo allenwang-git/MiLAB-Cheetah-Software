@@ -6,9 +6,10 @@
 #include <include/GameController.h>
 #include <unistd.h>
 #include <fstream>
+#include <random>
 
 // Todo: provide the joint angles when the Milab robot lies on the ground (138-152)
-
+using namespace std;
 // if DISABLE_HIGH_LEVEL_CONTROL is defined, the simulator will run freely,
 // without trying to connect to a robot
 //#define DISABLE_HIGH_LEVEL_CONTROL
@@ -599,10 +600,10 @@ void Simulation::addCollisionBox(double mu, double resti, double depth,
                                  const Vec3<double>& pos,
                                  const Mat3<double>& ori, bool addToWindow,
                                  bool transparent) {
-  _simulator->addCollisionBox(mu, resti, depth, width, height, pos, ori);
+  _simulator->addCollisionBox(mu, resti, depth, width, height, pos, ori);// add collision
   if (addToWindow && _window) {
     _window->lockGfxMutex();
-    _window->_drawList.addBox(depth, width, height, pos, ori, transparent);
+    _window->_drawList.addBox(depth, width, height, pos, ori, transparent);// draw terrain
     _window->unlockGfxMutex();
   }
 }
@@ -784,14 +785,81 @@ void Simulation::loadTerrainFile(const std::string& terrainFileName,
             double heightOffset = rise / 2;
             double runOffset = run / 2;
             for (size_t step = 0; step < steps; step++) {
-                Vec3<double> p(runOffset, 0, heightOffset);
-                p = R * p + pOff;
+                double xpos = (runOffset*stepsDouble) + (run*step);
+                Vec3<double> p(xpos, 0, heightOffset);
+                p = R * p + pOff ;
+//              A better stairs drawing method by WYN
+                addCollisionBox(mu, resti, run*(stepsDouble), width, rise+0.01, p, R,
+                                addGraphics, transparent != 0.);
 
-                addCollisionBox(mu, resti, run, width, heightOffset * 2, p, R,
+                heightOffset += rise;
+                stepsDouble -= 1;
+
+/*                addCollisionBox(mu, resti, run, width, heightOffset * 2, p, R,
                                 addGraphics, transparent != 0.);
 
                 heightOffset += rise / 2;
-                runOffset += run;
+                runOffset += run;*/
+            }
+        }
+        else if (typeName == "slopes") {
+            double mu, resti, slope, direction, length, width, transparent;
+            double pos[3];
+            load(mu, "mu");
+            load(resti, "restitution");
+            load(slope, "slope");
+            load(direction, "direction");
+            load(length, "length");
+            load(width, "width");
+            loadArray(pos, "position", 3);
+            load(transparent, "transparent");
+
+            const double slopeLimit = 45;
+            const double directionLimit = 180;
+            slope = -slope;
+            if (std::abs(slope) > slopeLimit)
+                slope = (slope > 0) ? slopeLimit : -slopeLimit;
+            if (std::abs(direction) > directionLimit)
+                direction = (direction > 0) ? direction : -direction;
+
+            Mat3<double> R = ori::rpyToRotMat(Vec3<double>(0,ori::deg2rad(slope),ori::deg2rad(direction)));
+            R.transposeInPlace();  // "graphics" rotation matrix
+            pos[2] = - 0.5 * length * sin(ori::deg2rad(slope));
+            std::cout<<pos[2];
+            addCollisionBox(mu, resti, length, width, 0.02,
+                            Vec3<double>(pos), R, addGraphics, transparent != 0.);
+
+        }
+        else if (typeName == "random") {
+            double mu, resti, length, width, transparent, num;
+            double size[3], pos[3], ori[3];
+            load(mu, "mu");
+            load(resti, "restitution");
+            load(length, "length");
+            load(width, "width");
+            load(num, "num");
+            loadArray(size, "size", 3);
+            loadArray(pos, "position", 3);
+            loadArray(ori, "orientation", 3);
+            load(transparent, "transparent");
+            int box_num = (int)num;
+            default_random_engine e;
+            uniform_real_distribution<double> randomX(pos[0],(pos[0]+length));
+            uniform_real_distribution<double> randomY(pos[1],pos[1]+width);
+            uniform_real_distribution<double> randomSizeX(0.5*size[0], size[0]);
+            uniform_real_distribution<double> randomSizeY(0.5*size[1],size[1]);
+            uniform_real_distribution<double> randomSizeZ(0.5*size[2],size[2]);
+            Mat3<double> R_box = ori::rpyToRotMat(Vec3<double>(ori));
+            R_box.transposeInPlace();  // collisionBox uses "rotation" matrix instead of "transformation"
+            for (int i = 0; i < box_num; ++i) {
+                double box_x = randomX(e);
+                double box_y = randomY(e);
+                double box_size_x = randomSizeX(e);
+                double box_size_y = randomSizeY(e);
+                double box_size_z = randomSizeZ(e);
+                std::cout<<pos[0]<<" "<<length<<" "<<box_x<<" "<<box_y<<" "<<std::endl;
+                addCollisionBox(mu, resti, box_size_x, box_size_y, box_size_z,Vec3<double>(box_x, box_y,box_size_z/2),
+                        R_box, addGraphics, transparent != 0.);
             }
         }
         else if (typeName == "mesh") {
