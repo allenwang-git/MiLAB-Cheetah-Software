@@ -27,10 +27,10 @@ public:
         INIT_PARAMETER(Q_ori),
         INIT_PARAMETER(Q_ang),
         INIT_PARAMETER(R),
-        INIT_PARAMETER(R_control),
+/*        INIT_PARAMETER(R_control),
         INIT_PARAMETER(R_prev),
         INIT_PARAMETER(two_leg_orient),
-        INIT_PARAMETER(stance_legs),
+        INIT_PARAMETER(stance_legs),*/
         INIT_PARAMETER(use_jcqp),
         INIT_PARAMETER(jcqp_max_iter),
         INIT_PARAMETER(jcqp_rho),
@@ -44,7 +44,7 @@ public:
         INIT_PARAMETER(Swing_step_offset),
         INIT_PARAMETER(Swing_traj_height),
         INIT_PARAMETER(Swing_use_tau_ff),
-        INIT_PARAMETER(RPC_Q_p),
+/*        INIT_PARAMETER(RPC_Q_p),
         INIT_PARAMETER(RPC_Q_theta),
         INIT_PARAMETER(RPC_Q_dp),
         INIT_PARAMETER(RPC_Q_dtheta),
@@ -69,7 +69,7 @@ public:
         INIT_PARAMETER(des_dtheta),
         INIT_PARAMETER(des_theta_max),
         INIT_PARAMETER(des_dp_max),
-        INIT_PARAMETER(des_dtheta_max),
+        INIT_PARAMETER(des_dtheta_max),*/
         INIT_PARAMETER(gait_type),
         INIT_PARAMETER(gait_period_time),
         INIT_PARAMETER(gait_switching_phase),
@@ -102,11 +102,12 @@ public:
   DECLARE_PARAMETER(Vec3<double>, Q_vel);
   DECLARE_PARAMETER(Vec3<double>, Q_ori);
   DECLARE_PARAMETER(Vec3<double>, Q_ang);
-    DECLARE_PARAMETER(double, R);
-  DECLARE_PARAMETER(double, R_control);
+  DECLARE_PARAMETER(double, R);
+
+/*  DECLARE_PARAMETER(double, R_control);
   DECLARE_PARAMETER(double, R_prev);
   DECLARE_PARAMETER(Vec3<double>, two_leg_orient);
-  DECLARE_PARAMETER(double, stance_legs);
+  DECLARE_PARAMETER(double, stance_legs);*/
 
   //DECLARE_PARAMETER(Vec3<double>, Kp_joint_swing);
   //DECLARE_PARAMETER(Vec3<double>, Kd_joint_swing);
@@ -129,7 +130,7 @@ public:
 
 
   // Parameters used for RPC
-  DECLARE_PARAMETER(Vec3<double>, RPC_Q_p);
+/*  DECLARE_PARAMETER(Vec3<double>, RPC_Q_p);
   DECLARE_PARAMETER(Vec3<double>, RPC_Q_theta);
   DECLARE_PARAMETER(Vec3<double>, RPC_Q_dp);
   DECLARE_PARAMETER(Vec3<double>, RPC_Q_dtheta);
@@ -147,16 +148,16 @@ public:
   DECLARE_PARAMETER(double, RPC_use_pred_comp);
   DECLARE_PARAMETER(double, RPC_use_async_filt);
   DECLARE_PARAMETER(double, RPC_visualize_pred);
-  DECLARE_PARAMETER(double, RPC_use_separate);
+  DECLARE_PARAMETER(double, RPC_use_separate);*/
 
   // Desired states
-  DECLARE_PARAMETER(Vec3<double>, des_p);
+/*  DECLARE_PARAMETER(Vec3<double>, des_p);
   DECLARE_PARAMETER(Vec3<double>, des_theta);
   DECLARE_PARAMETER(Vec3<double>, des_dp);
   DECLARE_PARAMETER(Vec3<double>, des_dtheta);
   DECLARE_PARAMETER(Vec3<double>, des_theta_max);
   DECLARE_PARAMETER(Vec3<double>, des_dp_max);
-  DECLARE_PARAMETER(Vec3<double>, des_dtheta_max);
+  DECLARE_PARAMETER(Vec3<double>, des_dtheta_max);*/
 
   // Gait Scheduler
   DECLARE_PARAMETER(double, gait_type);

@@ -34,11 +34,11 @@ cmpc_gait         : 4
 cmpc_x_drag       : 3
 cmpc_use_sparse   : 0
 cmpc_bonus_swing  : 0
-#jcqp_alpha        : 1.5
-#jcqp_max_iter     : 10000
-#jcqp_rho          : 1e-07
-#jcqp_sigma        : 1e-08
-#jcqp_terminate    : 0.1
+jcqp_alpha        : 1.5
+jcqp_max_iter     : 10000
+jcqp_rho          : 1e-07
+jcqp_sigma        : 1e-08
+jcqp_terminate    : 0.1
 use_jcqp          : 0
 use_wbc           : 0
 
@@ -48,7 +48,7 @@ Swing_Kd_cartesian : [7,7,7]
 Swing_Kp_joint     : [0,0,0]
 Swing_Kd_joint     : [1, 1, 1]
 Swing_step_offset  : [0,0.05,-0.003]
-Swing_traj_height  : 0.05
+Swing_traj_height  : 0.12
 Swing_use_tau_ff   : 0
 Q_pos             : [1, 1, 50]
 Q_vel             : [1, 1, 1]
@@ -99,10 +99,10 @@ R                 : 1e-05
 #des_dtheta_max    : [0,0,3]
 
 # Gait parameters
-#gait_type             : 4
-#gait_period_time      : 0.5
-#gait_switching_phase  : 0.5
-#gait_override         : 4
-#gait_max_leg_angle    : 15
-#gait_max_stance_time  : 0.25
-#gait_min_stance_time  : 0.1
+gait_type             : 4
+gait_period_time      : 0.5
+gait_switching_phase  : 0.5
+gait_override         : 4
+gait_max_leg_angle    : 15
+gait_max_stance_time  : 0.25
+gait_min_stance_time  : 0.1
