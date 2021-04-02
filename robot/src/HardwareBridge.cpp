@@ -229,7 +229,7 @@ void HardwareBridge::run_sbus() {
     if (_port > 0) {
         int x = receive_sbus(_port);
         if (x) {
-            sbus_packet_complete();
+            sbus_packet_complete_at9s();
         }
     }
 }

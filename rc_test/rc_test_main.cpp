@@ -38,6 +38,7 @@ const char* switch_names[3] = {
   [UP]  [UP]  [ 0.1]  [-1.0]  [UP]  [UP]
          [-0.0 -0.0]  [ 0.0  0.0]
  */
+#ifdef TARANIS_X7
 void print_sbus(Taranis_X7_data& data) {
   printf("\n\n\n"
          "     [%s]                        [%s]\n"
@@ -53,7 +54,7 @@ void print_sbus(Taranis_X7_data& data) {
          data.left_stick[0], data.left_stick[1], data.right_stick[0], data.right_stick[1]
   );
 }
-
+#endif
 void print_left_y() {
  // printf("[%6.3f]\n", data.left_stick[1]);
   printf("cmd: %.3f\n", main_control_settings.v_des[0]);
@@ -64,7 +65,7 @@ void print_left_y() {
   printf("\n");
   printf("mode: %d\n\n", (int)main_control_settings.mode);
 }
-
+#ifdef TARANIS_X7
 void sbus_packet_complete() {
   Taranis_X7_data data;
   update_taranis_x7(&data);
@@ -124,7 +125,7 @@ void sbus_packet_complete() {
         main_control_settings.v_des[0] = v_scale * data.left_stick[1] * 0.5;
         main_control_settings.v_des[1] = v_scale * data.left_stick[0] * -1.;
         main_control_settings.v_des[2] = 0;
-        main_control_settings.p_des[2] = 0.25; // todo?
+        main_control_settings.p_des[2] = 0.25;
 
         main_control_settings.omega_des[0] = 0;
         main_control_settings.omega_des[1] = 0;
@@ -149,7 +150,7 @@ void sbus_packet_complete() {
   }
 
 }
-
+#endif
 #include <cmath>
 static double last_cmd = 0.;
 void check_d_rate() {
@@ -193,7 +194,7 @@ int main(int argc, char** argv) {
     while(true) {
       receive_sbus(port);
       if (receive_sbus(port)) {
-        sbus_packet_complete();
+//        sbus_packet_complete();
         //update_taranis_x7(&controller_data);
       }
     }
