@@ -97,14 +97,14 @@ FSM_StateName FSM_State_Locomotion<T>::checkTransition() {
       case K_LOCOMOTION:
         break;
 
-  /*    case K_BALANCE_STAND:
+      case K_BALANCE_STAND:
         // Requested change to BALANCE_STAND
         this->nextStateName = FSM_StateName::BALANCE_STAND;
 
         // Transition time is immediate
         this->transitionDuration = 0.0;
 
-        break;*/
+        break;
 
       case K_PASSIVE:
         // Requested change to BALANCE_STAND
@@ -154,7 +154,6 @@ template <typename T>
 TransitionData<T> FSM_State_Locomotion<T>::transition() {
   // Switch FSM control mode 0,6
   switch (this->nextStateName) {
-/*
     case FSM_StateName::BALANCE_STAND:
       LocomotionControlStep();
 
@@ -166,7 +165,7 @@ TransitionData<T> FSM_State_Locomotion<T>::transition() {
       }
 
       break;
-*/
+
     case FSM_StateName::PASSIVE:
       this->turnOffAllSafetyChecks();
       this->transitionData.done = true;
