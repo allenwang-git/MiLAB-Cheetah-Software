@@ -22,7 +22,7 @@ FSM_State_Locomotion<T>::FSM_State_Locomotion(ControlFSMData<T>* _controlFSMData
 {
         float fmax;
     if(_controlFSMData->_quadruped->_robotType == RobotType::MILAB){
-        fmax = 150;
+        fmax = 180;
         cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
                 27 / (1000. * _controlFSMData->controlParameters->controller_dt),
                 _controlFSMData->userParameters, fmax, _controlFSMData->_quadruped->_robotType);
