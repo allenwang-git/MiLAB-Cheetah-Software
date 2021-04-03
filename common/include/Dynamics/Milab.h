@@ -13,7 +13,7 @@
 
 #ifndef MILAB_milab_SOFTWARE_MILAB_H
 #define MILAB_milab_SOFTWARE_MILAB_H
-
+// Todo: fix abadRotorLocation x
 #include "FloatingBaseModel.h"
 #include "Quadruped.h"
 
