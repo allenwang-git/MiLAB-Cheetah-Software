@@ -223,10 +223,10 @@ void sbus_packet_complete_at9s() {
                     data.right_stick_x = deadband(data.right_stick_x, 0.1, -1., 1.);
                     data.right_stick_y = deadband(data.right_stick_y, 0.1, -1., 1.);
 
-                    int gait_id = 4;
-                    if (locomotion_stand_switch == AT9S_BOOL_UP)
+                    int gait_id = 9;
+                    if (locomotion_stand_switch == AT9S_BOOL_DOWN)
                         gait_id = 4;
-                    else if (locomotion_stand_switch == AT9S_BOOL_DOWN) {
+                    else if (locomotion_stand_switch == AT9S_BOOL_UP) {
                         if (right_select == AT9S_BOOL_UP) {
                             if (left_select == AT9S_TRI_UP)
                                 gait_id = 9; // trotting
