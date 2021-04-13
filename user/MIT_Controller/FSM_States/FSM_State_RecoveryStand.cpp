@@ -37,10 +37,10 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
           stand_jpos[i] << 0.f, -0.96f, 1.6f;
       }
       // Rolling
-      rolling_jpos[0] << 1.5f, -1.6f, 2.77f;
-      rolling_jpos[1] << 1.3f, -3.1f, 2.77f;
-      rolling_jpos[2] << 1.5f, -1.6f, 2.77f;
-      rolling_jpos[3] << 1.3f, -3.1f, 2.77f;
+      rolling_jpos[0] << -1.5f, 1.6f, -2.77f;
+      rolling_jpos[1] << -1.3f, 3.1f, -2.77f;
+      rolling_jpos[2] << -1.5f, 1.6f, -2.77f;
+      rolling_jpos[3] << -1.3f, 3.1f, -2.77f;
       ========================================
       // Folding
       fold_jpos[0] << -0.0f, 1.5f, -2.6f;
@@ -68,11 +68,11 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
           stand_jpos[i] << 0.f, -0.92f, 1.6f;
       }
       // Rolling
-      rolling_jpos[0] << 1.5f, -1.6f, 2.77f;
-      rolling_jpos[1] << 1.3f, -3.1f, 2.77f;
-      rolling_jpos[2] << 1.5f, -1.6f, 2.77f;
-      rolling_jpos[3] << 1.3f, -3.1f, 2.77f;
-      f_ff << 0.f, 0.f, -65.f;
+      rolling_jpos[0] << -1.3f, -1.8f, 2.8f;
+      rolling_jpos[1] << 1.2f, -3.1f, 2.8f;
+      rolling_jpos[2] << -1.3f, -1.8f, 2.8f;
+      rolling_jpos[3] << 1.2f, -3.1f, 2.8f;
+//      f_ff << 0.f, 0.f, -65.f;
   }else{ // MINI CHEETAH & CHEETAH 3
       // Folding
       fold_jpos[0] << -0.0f, -1.4f, 2.7f;
@@ -279,11 +279,11 @@ void FSM_State_RecoveryStand<T>::_MilabStandUp(const int & curr_iter){
     T body_height = this->_data->_stateEstimator->getResult().position[2];
     bool something_wrong(false);
 
-    if( _UpsideDown() || (body_height < 0.30 ) ) {
+    if( _UpsideDown() || (body_height < 0.20 ) ) {
         something_wrong = true;
     }
 
-    if( (curr_iter > floor(milab_standup_ramp_iter*0.7) ) && something_wrong){
+    if( (curr_iter > floor(milab_standup_ramp_iter*0.6) ) && something_wrong){
         // If body height is too low because of some reason
         // even after the stand up motion is almost over
         // (Can happen when E-Stop is engaged in the middle of Other state)

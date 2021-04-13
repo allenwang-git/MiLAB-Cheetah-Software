@@ -3,7 +3,7 @@
  */
 
 #include <stdio.h>
-
+#include "iostream"
 #include "SimUtilities/SpineBoard.h"
 
 /*!
@@ -87,6 +87,12 @@ void SpineBoard::run(bool milab) {
       }
       kp_softstop = milab_kp_softstop;
       kd_softstop = milab_kd_softstop;
+
+      //  MiLAB robot's abad limitations is different for left and right legs
+      if (board_num == 1 || board_num == 3){  //left[-0.75,1.5]
+          q_limit_upper[0] = -milab_q_limit_low[0];
+          q_limit_low[0] = -milab_q_limit_upper[0];
+      }
   }
   /// Check abad softstop ///
   if (data->q_abad[board_num] > q_limit_upper[0]) {
@@ -127,6 +133,8 @@ void SpineBoard::run(bool milab) {
         torque_out[2] = kp_softstop * (q_limit_upper[2] - data->q_knee[board_num]) -
                         kd_softstop * (data->qd_knee[board_num]) +
                         cmd->tau_knee_ff[board_num];
+
+            std::cout<<board_num<<" "<<torque_out[2]<<kp_softstop<<std::endl;
     } else if (data->q_knee[board_num] < q_limit_low[2]) {
         torque_out[2] = kp_softstop * (q_limit_low[2] - data->q_knee[board_num]) -
                         kd_softstop * (data->qd_knee[board_num]) +
@@ -138,6 +146,7 @@ void SpineBoard::run(bool milab) {
                         (cmd->qd_des_knee[board_num] - data->qd_knee[board_num]) +
                         cmd->tau_knee_ff[board_num];
     }
+
 
   const float* torque_limits = disabled_torque;
 // flags=1 leg enable/ 0 leg unable
