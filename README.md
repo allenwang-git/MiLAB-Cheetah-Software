@@ -85,7 +85,7 @@ milab_lower_link.obj               *                       *
                                   done   doing    todo    new
 milab-robot-defaults.yaml          *                       *
 milab-user-defaults.yaml           *                       *
-
+default-terrain.yaml               *
 
 ********/common************************************************
 ******/src**                     done   doing    todo     new
@@ -111,8 +111,8 @@ RobotRunner.cpp                    * todo
 main_helper.cpp                    *
 HardwareBridge.cpp                 *
 ****/rt**
-rt_rc_interface.cpp                                *
-rt_subs.cpp                                        *
+rt_rc_interface.cpp                *
+rt_subs.cpp                        *
 rt_spi.cpp                                         *
 
 ******/include**
@@ -141,10 +141,12 @@ RobotState.h                       *
 SolverMPC.h                        *
 convexMPC_interface.h              *
 ConvexMPCLocomotion.h              *
+
 **/WBC_Ctrl** 
 WBC_Ctrl.cpp                       * todo
 */LocomotionCtrl
 LocomotionCtrl.cpp                 * todo
+
 ****/FSM_States**
 FSM_State.cpp                      * todo
 FSM_State_Locomotion.cpp           * todo
@@ -218,9 +220,6 @@ Example:
 i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
 s: simulation,  r: robot
 
-## Manipulate guidance
-
-
 ## Run Real Robot
 0. Find detailed guidance in [Running Mini Cheetah](http://ghttps://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.mdoogle.com)
 1. Create build folder `mkdir mc-build`
@@ -230,6 +229,10 @@ s: simulation,  r: robot
 5. ssh into the mini cheetah `ssh user@10.0.0.34`
 6. Enter the robot program folder `cd robot-software-....`
 7. Run robot code `./run_mc.sh` 
+
+## Operation Guide
+* [Real robot operation guide]() 
+* [Simulation operation guide]()
 
 ## Dependencies
 - Qt 5.10 - https://www.qt.io/download-qt-installer
