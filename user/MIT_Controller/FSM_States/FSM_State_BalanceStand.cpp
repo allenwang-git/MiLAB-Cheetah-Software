@@ -280,7 +280,7 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   } else if (_wbc_data->pBody_des[2] < heightLimitLower){
       _wbc_data->pBody_des[2] = heightLimitLower;
   }
-std::cout<<_wbc_data->pBody_RPY_des[0]<<" "<<_wbc_data->pBody_RPY_des[1]<<" "<<_wbc_data->pBody_RPY_des[2]<<" "<<_wbc_data->pBody_des[2]<<std::endl;
+//std::cout<<_wbc_data->pBody_RPY_des[0]<<" "<<_wbc_data->pBody_RPY_des[1]<<" "<<_wbc_data->pBody_RPY_des[2]<<" "<<_wbc_data->pBody_des[2]<<std::endl;
   for(size_t i(0); i<4; ++i){
     _wbc_data->pFoot_des[i].setZero();
     _wbc_data->vFoot_des[i].setZero();
