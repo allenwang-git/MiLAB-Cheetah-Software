@@ -2,10 +2,9 @@
 #include <WBC_Ctrl/ContactSet/SingleContact.hpp>
 #include <WBC_Ctrl/TaskSet/BodyOriTask.hpp>
 #include <WBC_Ctrl/TaskSet/BodyPosTask.hpp>
-//#include <WBC_Ctrl/TaskSet/BodyPostureTask.hpp>
 #include <WBC_Ctrl/TaskSet/LinkPosTask.hpp>
 /*
- * Todo: If you want to change kp / kd of WBC-Tasks or leg joints, go to milab-user-defaults.yaml !!
+ * Todo: If you want to change kp / kd of WBC-Tasks or leg joints, go to milab-user-defaults.yaml ！
  */
 template<typename T>
 LocomotionCtrl<T>::LocomotionCtrl(FloatingBaseModel<T> model):
@@ -53,10 +52,7 @@ void LocomotionCtrl<T>::_ContactTaskUpdate(void* input, ControlFSMData<T> & data
 
   Vec3<T> zero_vec3; zero_vec3.setZero();
   _body_ori_task->UpdateTask(&_quat_des, _input_data->vBody_Ori_des, zero_vec3);
-  _body_pos_task->UpdateTask(
-      &(_input_data->pBody_des), 
-      _input_data->vBody_des, 
-      _input_data->aBody_des);
+  _body_pos_task->UpdateTask(&(_input_data->pBody_des),_input_data->vBody_des,_input_data->aBody_des);
 
   WBCtrl::_task_list.push_back(_body_ori_task);
   WBCtrl::_task_list.push_back(_body_pos_task);
@@ -80,7 +76,7 @@ void LocomotionCtrl<T>::_ContactTaskUpdate(void* input, ControlFSMData<T> & data
 /*
  * Just test. Not used any more
  */
-template<typename T>
+/*template<typename T>
 void LocomotionCtrl<T>::_ContactTaskUpdateTEST(void* input, ControlFSMData<T> & data){
   (void)data;
   _input_data = static_cast<LocomotionCtrlData<T>* >(input);
@@ -127,7 +123,7 @@ void LocomotionCtrl<T>::_ContactTaskUpdateTEST(void* input, ControlFSMData<T> & 
       WBCtrl::_task_list.push_back(_foot_task[leg]);
     }
   }
-}
+}*/
 /*
  * Read kp kd parameters from user parameters table!
  */
@@ -144,14 +140,11 @@ void LocomotionCtrl<T>::_ParameterSetup(const MIT_UserParameters* param){
     for(size_t j(0); j<4; ++j){
       ((LinkPosTask<T>*)_foot_task[j])->_Kp[i] = param->Kp_foot[i];
       ((LinkPosTask<T>*)_foot_task[j])->_Kd[i] = param->Kd_foot[i];
-      //((LinkPosTask<T>*)_foot_task[j])->_Kp_kin[i] = 1.5;
     }
 
     WBCtrl::_Kp_joint[i] = param->Kp_joint[i];
     WBCtrl::_Kd_joint[i] = param->Kd_joint[i];
 
-    //WBCtrl::_Kp_joint_swing[i] = param->Kp_joint_swing[i];
-    //WBCtrl::_Kd_joint_swing[i] = param->Kd_joint_swing[i];
    }
 }
 

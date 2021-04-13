@@ -2,7 +2,7 @@
 #include <Utilities/Utilities_print.h>
 #include <Utilities/Timer.h>
 /*
- * Todo: Make a final version of knee barrier degree(133-143) now=0.78
+ * Todo: Make a final version of knee barrier degree(133-143) and weights of floating base & reaction force
  */
 template<typename T>
 WBC_Ctrl<T>::WBC_Ctrl(FloatingBaseModel<T> model):
@@ -20,7 +20,7 @@ WBC_Ctrl<T>::WBC_Ctrl(FloatingBaseModel<T> model):
 
   _wbic = new WBIC<T>(cheetah::dim_config, &(_contact_list), &(_task_list));
   _wbic_data = new WBIC_ExtraData<T>();
-
+//    weights of floating base & reaction force
   _wbic_data->_W_floating = DVec<T>::Constant(6, 0.1);
   //_wbic_data->_W_floating = DVec<T>::Constant(6, 50.);
   //_wbic_data->_W_floating[5] = 0.1;
@@ -28,9 +28,6 @@ WBC_Ctrl<T>::WBC_Ctrl(FloatingBaseModel<T> model):
 
   _Kp_joint.resize(cheetah::num_leg_joint, 3.);
   _Kd_joint.resize(cheetah::num_leg_joint, 0.2);
-
-  //_Kp_joint_swing.resize(cheetah::num_leg_joint, 10.);
-  //_Kd_joint_swing.resize(cheetah::num_leg_joint, 1.5);
 
   _state.q = DVec<T>::Zero(cheetah::num_act_joint);
   _state.qd = DVec<T>::Zero(cheetah::num_act_joint);
@@ -82,15 +79,14 @@ void WBC_Ctrl<T>::run(void* input, ControlFSMData<T> & data){
   _ComputeWBC();
   
   // TEST
-  //T dt(0.002);
-  //for(size_t i(0); i<12; ++i){
-    //_des_jpos[i] = _state.q[i] + _state.qd[i] * dt + 0.5 * _wbic_data->_qddot[i+6] * dt * dt;
-    //_des_jvel[i] = _state.qd[i] + _wbic_data->_qddot[i+6]*dt;
-  //}
+/*  T dt(0.002);
+  for(size_t i(0); i<12; ++i){
+    _des_jpos[i] = _state.q[i] + _state.qd[i] * dt + 0.5 * _wbic_data->_qddot[i+6] * dt * dt;
+    _des_jvel[i] = _state.qd[i] + _wbic_data->_qddot[i+6]*dt;
+  }
 
-  //_ContactTaskUpdateTEST(input, data);
-  //_ComputeWBC();
-  // END of TEST
+  _ContactTaskUpdateTEST(input, data);
+  _ComputeWBC();*/
 
   // Update Leg Command
   _UpdateLegCMD(data);
@@ -129,15 +125,15 @@ void WBC_Ctrl<T>::_UpdateLegCMD(ControlFSMData<T> & data){
 
 
   /*
-   * Knee joint soft barrier -- 45degree
-   * Knee joint hard barrier -- 33degree
+   * Knee joint soft barrier -- 40degree
+   * Knee joint hard barrier -- 37degree
    */
   for(size_t leg(0); leg<4; ++leg){
-    if(cmd[leg].qDes[2] < 0.78){
-      cmd[leg].qDes[2] = 0.78;
+    if(cmd[leg].qDes[2] < 0.7){
+      cmd[leg].qDes[2] = 0.7;
     }
-    if(data._legController->datas[leg].q[2] < 0.78){
-        T hard_barrier = 0.58;
+    if(data._legController->datas[leg].q[2] < 0.7){
+        T hard_barrier = 0.65;
         T knee_pos = data._legController->datas[leg].q[2];
         T barrier_factor = knee_pos - hard_barrier;
         cmd[leg].tauFeedForward[2] = 1./(barrier_factor * barrier_factor + 0.02);

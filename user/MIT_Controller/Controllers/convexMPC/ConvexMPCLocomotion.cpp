@@ -89,16 +89,16 @@ void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
 
     float x_vel_cmd, y_vel_cmd;
     float filter(0.1);
-    if(data.controlParameters->use_rc){
+    if(data.controlParameters->use_rc){ // remote commander
         const rc_control_settings* rc_cmd = data._desiredStateCommand->rcCommand;
         data.userParameters->cmpc_gait = rc_cmd->variable[0];
         _yaw_turn_rate = -rc_cmd->omega_des[2];
         x_vel_cmd = rc_cmd->v_des[0];
         y_vel_cmd = rc_cmd->v_des[1] * 0.5;
         _body_height += rc_cmd->height_variation * 0.08;
-    }else{ //simulation
+    }else{ //simulation gamepad
         _yaw_turn_rate = data._desiredStateCommand->rightAnalogStick[0]*1.0;
-        x_vel_cmd = data._desiredStateCommand->leftAnalogStick[1]*2.0;
+        x_vel_cmd = data._desiredStateCommand->leftAnalogStick[1]*2.5;
         y_vel_cmd = data._desiredStateCommand->leftAnalogStick[0];
     }
     _x_vel_des = _x_vel_des*(1-filter) + x_vel_cmd * filter;
@@ -139,6 +139,8 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         stand_traj[5] = seResult.rpy[2];
         world_position_desired[0] = stand_traj[0];
         world_position_desired[1] = stand_traj[1];
+        // set WBC and MPC signal
+        standingMPC = true;
     }
 
     // pick gait
@@ -230,6 +232,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 //std::cout<<seResult.position<<std::endl;
     if(gait != &standing) {
         world_position_desired += dt * Vec3<float>(v_des_world[0], v_des_world[1], 0);
+        standingMPC = false;
     }
 
     // some first time initialization
@@ -310,7 +313,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
                         (0.5f*seResult.position[2]/9.81f) * (-seResult.vWorld[0]*_yaw_turn_rate);
         pfx_rel = fminf(fmaxf(pfx_rel, -p_rel_max), p_rel_max);
         pfy_rel = fminf(fmaxf(pfy_rel, -p_rel_max), p_rel_max);
-        Pf[0] +=  pfx_rel + 0.04;
+        Pf[0] +=  pfx_rel;
         Pf[1] +=  pfy_rel;
 
         Pf[2] = -0.005;
@@ -418,7 +421,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
             pFoot_des[foot] = pDesFootWorld;
             vFoot_des[foot] = vDesFootWorld;
             aFoot_des[foot] = footSwingTrajectories[foot].getAcceleration();
-
+            //only using MPC
             if(!data.userParameters->use_wbc){
                 // Update leg control command regardless of the usage of WBIC
                 data._legController->commands[foot].pDes = pDesLeg;
@@ -445,8 +448,8 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 //            std::cout << "Foot" << foot << " relative foot position: " << pDesLeg.transpose() <<"body position"<<seResult.position.transpose()<< "\n";
 //            std::cout << "Foot " << foot << " relative position desired: " << vDesLeg.transpose() << "\n";
 //            std::cout << "Foot " << foot << " now position desired: " << data._legController->datas[foot].p.transpose() << "\n";
-
-            if(!data.userParameters->use_wbc){
+            //  only using MPC
+            if(!data.userParameters->use_wbc || standingMPC){
                 data._legController->commands[foot].pDes = pDesLeg;
                 data._legController->commands[foot].vDes = vDesLeg;
                 data._legController->commands[foot].kpCartesian = Kp_stance;
@@ -455,21 +458,15 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
                 data._legController->commands[foot].forceFeedForward = f_ff[foot];
                 data._legController->commands[foot].kdJoint = Mat3<float>::Identity() * data.userParameters->Swing_Kd_joint[0];
                 data._legController->commands[foot].kpJoint = Mat3<float>::Identity() * data.userParameters->Swing_Kp_joint[0];
-//                std::cout << foot <<" "<<
-                //      footSwingTrajectories[foot]->updateFF(hw_i->leg_controller->leg_datas[foot].q,
-                //                                          hw_i->leg_controller->leg_datas[foot].qd, 0); todo removed
-                // hw_i->leg_controller->leg_commands[foot].tau_ff += 0*footSwingController[foot]->getTauFF();
-            }else{ // Stance foot damping
+
+            }else{ // using WBC
                 data._legController->commands[foot].pDes = pDesLeg;
                 data._legController->commands[foot].vDes = vDesLeg;
                 data._legController->commands[foot].kpCartesian = 0.* Kp_stance;
                 data._legController->commands[foot].kdCartesian = Kd_stance;
             }
-            //            cout << "Foot " << foot << " force: " << f_ff[foot].transpose() << "\n";
             se_contactState[foot] = contactState;
 
-            // Update for WBC
-            //Fr_des[foot] = -f_ff[foot];
         }
     }
 

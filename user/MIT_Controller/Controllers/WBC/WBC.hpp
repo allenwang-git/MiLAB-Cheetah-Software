@@ -8,14 +8,13 @@
 #include "ContactSpec.hpp"
 #include "Task.hpp"
 
-// Assume first 6 (or 3 in 2D case) joints are for the representation of
-// a floating base.
+/* Assume first 6 joints are for the representation of a floating base.*/
 
 #define WB WBC<T>
 
 template <typename T>
 class WBC {
- public:
+ public:// num_qdot = 18
   WBC(size_t num_qdot) : num_act_joint_(num_qdot - 6), num_qdot_(num_qdot) {
     Sa_ = DMat<T>::Zero(num_act_joint_, num_qdot_);
     Sv_ = DMat<T>::Zero(6, num_qdot_);

@@ -2,8 +2,7 @@
 #include <Utilities/Timer.h>
 #include <eigen3/Eigen/LU>
 #include <eigen3/Eigen/SVD>
-
-  template <typename T>
+template <typename T>
 WBIC<T>::WBIC(size_t num_qdot, const std::vector<ContactSpec<T>*>* contact_list,
     const std::vector<Task<T>*>* task_list)
   : WBC<T>(num_qdot), _dim_floating(6) {

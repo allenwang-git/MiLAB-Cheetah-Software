@@ -102,8 +102,8 @@ public:
   Vec3<float> aFoot_des[4];
 
   Vec3<float> Fr_des[4];
-
   Vec4<float> contact_state;
+  bool standingMPC = false;
 
 private:
   void _SetupCommand(ControlFSMData<float> & data);
