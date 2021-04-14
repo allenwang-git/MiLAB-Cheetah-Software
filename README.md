@@ -231,7 +231,7 @@ s: simulation,  r: robot
 7. Run robot code `./run_mc.sh` 
 
 ## Operation Guide
-* [Real robot operation guide]() 
+* [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/documents/realrobot_operation_guide.md) 
 * [Simulation operation guide]()
 
 ## Dependencies
