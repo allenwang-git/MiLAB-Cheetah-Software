@@ -4,10 +4,15 @@ Date: 2021.04.13\
 Email: dbdxwyn@163.com
 ## Remote Commander
 **1.Introduction**
+![Remote Commander](https://user-images.githubusercontent.com/69251304/114665702-ef5ff880-9d2f-11eb-84d0-a2a2d67d967f.png)
 
 
 **2.Key Function**
 ```
+TWO-STATE SWITCH: Switch A, Switch B, Switch D
+THREE-STATE SWITCH: Switch C, Switch E, Switch G
+JOYSTICK: Left Stick, Right Stick
+
 * Left Stick: X--Adjust Pitch Angle
               Y--Turn Left / Right
 
@@ -38,7 +43,8 @@ Email: dbdxwyn@163.com
 * Variable B: Adjust Step Height (0-0.2m)
 ```
 **3.Operation Procedure**
-* Initial Configuration
+* Initial Configuration\
+<img src="https://user-images.githubusercontent.com/69251304/114666456-de63b700-9d30-11eb-8eac-3709a0d2f4b8.png" width="300" height="400"/><br/>
 ```
 SwA = UP
 SwB = UP
