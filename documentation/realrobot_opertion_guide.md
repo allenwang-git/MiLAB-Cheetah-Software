@@ -55,7 +55,7 @@ SwG = UP
 ```
 * Start Up To RecoveryStand Mode
 
-<img src="https://user-images.githubusercontent.com/69251304/114668984-f7ba3280-9d33-11eb-8961-8445c641c17f.png" width="400" height="400"/> <img src="https://user-images.githubusercontent.com/69251304/114668458-57fca480-9d33-11eb-9af9-1b9aae3e1cf3.png" width="400" height="400"/> <br/>
+<img src="https://user-images.githubusercontent.com/69251304/114670896-0f92b600-9d36-11eb-954b-871278e042f2.jpg" width="400" height="400"/> <img src="https://user-images.githubusercontent.com/69251304/114669538-98105700-9d34-11eb-8252-f92dfd722140.png" width="400" height="400"/><br/>
 ```
 SwA = DWN
 SwB = UP
@@ -66,6 +66,8 @@ SwG = UP
 ```
 
 * Trans To BalanceStand Mode
+
+<img src="https://user-images.githubusercontent.com/69251304/114671111-4d8fda00-9d36-11eb-84bc-f4a03572412c.jpg" width="300" height="400"/><br/>
 
 ```
 SwA = DWN
