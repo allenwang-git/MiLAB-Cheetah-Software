@@ -4,8 +4,7 @@ Date: 2021.04.13\
 Email: dbdxwyn@163.com
 ## Remote Commander
 **1.Introduction**
-![Remote Commander](https://user-images.githubusercontent.com/69251304/114665702-ef5ff880-9d2f-11eb-84d0-a2a2d67d967f.png)
-
+<img src="https://user-images.githubusercontent.com/69251304/114665702-ef5ff880-9d2f-11eb-84d0-a2a2d67d967f.png" width="500" height="500"/><br/>
 
 **2.Key Function**
 ```
@@ -43,8 +42,9 @@ JOYSTICK: Left Stick, Right Stick
 * Variable B: Adjust Step Height (0-0.2m)
 ```
 **3.Operation Procedure**
-* Initial Configuration\
-<img src="https://user-images.githubusercontent.com/69251304/114666456-de63b700-9d30-11eb-8eac-3709a0d2f4b8.png" width="300" height="400"/><br/>
+* Initial Configuration
+
+<img src="https://user-images.githubusercontent.com/69251304/114666456-de63b700-9d30-11eb-8eac-3709a0d2f4b8.png" width="300" height="400"/>  <img src="https://user-images.githubusercontent.com/69251304/114668072-e1f83d80-9d32-11eb-9e97-1f8280d150a0.png" width="400" height="400"/><br/>
 ```
 SwA = UP
 SwB = UP
@@ -54,6 +54,8 @@ SwE = UP
 SwG = UP
 ```
 * Start Up To RecoveryStand Mode
+
+<img src="https://user-images.githubusercontent.com/69251304/114668984-f7ba3280-9d33-11eb-8961-8445c641c17f.png" width="400" height="400"/> <img src="https://user-images.githubusercontent.com/69251304/114668458-57fca480-9d33-11eb-9af9-1b9aae3e1cf3.png" width="400" height="400"/> <br/>
 ```
 SwA = DWN
 SwB = UP
@@ -64,6 +66,7 @@ SwG = UP
 ```
 
 * Trans To BalanceStand Mode
+
 ```
 SwA = DWN
 SwB = UP
