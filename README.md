@@ -222,7 +222,7 @@ i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
 s: simulation,  r: robot
 
 ## Run Real Robot
-0. Find detailed guidance in [Running Mini Cheetah](http://ghttps://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.md)
+0. Find detailed guidance in [Running Mini Cheetah](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.md)
 1. Create build folder `mkdir mc-build`
 2. Build as mini cheetah executable `cd mc-build; cmake -DMINI_CHEETAH_BUILD=TRUE ..; make -j`
 3. Connect to mini cheetah over ethernet, verify you can ssh in
