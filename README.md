@@ -58,11 +58,10 @@ Body       |0.5779 x 0.152 x 0.153| 13.777
 * The coordinate definition and the zero degrees position of each joint are shown as below.
 The rotation axis of the ab/ad joints is the x axis, and the rotation axis of the hip joint and the knee joint is the y axis. 
 Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.
-![The Coordinate Definition](https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png)
+<img src="https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png" width="500" height="500" alt="The Coordinate Definition"/><br/>
 * The joint rotation axis definition is shown as below.
 Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.
-![motorframe](https://user-images.githubusercontent.com/69251304/112635651-0c16b800-8e77-11eb-9bb2-08ddf950ed4c.png)
-
+<img src="https://user-images.githubusercontent.com/69251304/112635651-0c16b800-8e77-11eb-9bb2-08ddf950ed4c.png" width="500" height="500" alt="The motorframe"/><br/>
 ## Workload List
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
 Remember to check corresponding include files of following source files. \
