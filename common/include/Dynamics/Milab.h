@@ -26,7 +26,7 @@ Quadruped<T> buildMilab() {
     milab._robotType = RobotType::MILAB;
 //    mass parameters
 //  Nominal Total Mass = 25.693
-    milab._bodyMass = 13.777;
+    milab._bodyMass = 15;//13.777;
     milab._abadMass = 0.766;
     milab._hipMass = 1.598;
     milab._kneeMass = 0.363;
@@ -49,8 +49,8 @@ Quadruped<T> buildMilab() {
     milab._hipGearRatio = 6;
     milab._kneeGearRatio = 6;
     milab._batteryV = 36;
-    milab._motorKT = 0.1;  // this is flux linkage * pole pairs
-    milab._motorR = 0.3;
+    milab._motorKT = 0.08;  // this is flux linkage(0.0025) * pole pairs(21)*1.5
+    milab._motorR = 0.13;
     milab._jointDamping = 0.02;
     milab._jointDryFriction = 0.4;
 
