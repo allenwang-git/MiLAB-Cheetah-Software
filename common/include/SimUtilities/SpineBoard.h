@@ -71,8 +71,8 @@ class SpineBoard {
   const float milab_max_torque[3] = {48.f, 48.f, 48.f};
   const float wimp_torque[3] = {6.f, 6.f, 6.f};
   const float disabled_torque[3] = {0.f, 0.f, 0.f};
-  const float milab_q_limit_upper[3] = {0.75f, 0.85f, 2.87f};
-  const float milab_q_limit_low[3] = {-1.5f, -4.28f, 0.65f};
+  const float milab_q_limit_upper[3] = {0.75f, 1.0f, 2.87f};
+  const float milab_q_limit_low[3] = {-1.5f, -4.15f, 0.65f};
   const float milab_kp_softstop = 450.f;
   const float milab_kd_softstop = 5.f;
   float max_torque[3] = {18.f, 18.f, 24.f};
