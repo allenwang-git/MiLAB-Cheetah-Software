@@ -114,7 +114,7 @@ HardwareBridge.cpp                 *
 ****/rt**
 rt_rc_interface.cpp                *
 rt_subs.cpp                        *
-rt_spi.cpp                                         *
+rt_spi.cpp                         *todo
 
 ******/include**
 HardwareBridge.h                   *
@@ -154,6 +154,8 @@ FSM_State_Locomotion.cpp           * todo
 FSM_State_RecoveryStand.cpp        * todo
 FSM_State_StandUp.cpp              * todo
 FSM_BalanceStand.cpp               * todo
+FSM_SquatDown.cpp                  *                        *
+FSM_SquatDown.h                    *                        *
 SafetyChecker.cpp                  *
 
 ********/debug-data**********************************************
