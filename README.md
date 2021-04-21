@@ -57,15 +57,16 @@ Total robot|    \   | **26.35**
 * The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical. Noted that the MIT cheetah robots only use 4 kinds of mesh parts.
 
 ## Coordinate Definition
-* The coordinate definition and the zero degrees position of each joint are shown as below.
+* The coordinate definition and the zero degrees position of each joint are shown as below.\
 The rotation axis of the ab/ad joints is the x axis, and the rotation axis of the hip joint and the knee joint is the y axis. 
-Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.
+Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.\
 <img src="https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png" width="500" height="500" alt="The Coordinate Definition"/><br/>
-* The joint rotation axis definition in simulation is shown as below.
-Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.
+* The joint rotation axis definition in simulation is shown as below.\
+Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.\
 <img src="https://user-images.githubusercontent.com/69251304/112635651-0c16b800-8e77-11eb-9bb2-08ddf950ed4c.png" width="500" height="500" alt="The motorframe"/><br/>
-* The actual motor rotation axis definition
-For each motor in our robot, the rotation axis points along the motor shaft from the motor output to the motor driver.
+* The actual motor rotation axis definition is shown as below.\
+For each motor in our robot, the rotation axis points along the motor shaft from the motor output to the motor driver.\
+<img src="https://user-images.githubusercontent.com/69251304/115496834-12912780-a29d-11eb-8142-d62174f64656.png" width="300" height="300" alt="real motorframe"/><br/>
 
 ## Workload List
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
