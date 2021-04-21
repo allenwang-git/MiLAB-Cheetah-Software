@@ -3,7 +3,7 @@
  * @brief SPI communication to spine board
  */
 #ifdef linux
-
+// TODO: finally modify the joint offsets(55-57)
 #include <byteswap.h>
 #include <math.h>
 #include <pthread.h>
@@ -13,6 +13,9 @@
 #include <linux/spi/spidev.h>
 #include "rt/rt_spi.h"
 #include <lcm/lcm-cpp.hpp>
+
+#define HIP_OFFSET_POS 4.189f
+#define KNEE_OFFSET_POS 2.897f
 
 unsigned char spi_mode = SPI_MODE_0;
 unsigned char spi_bits_per_word = 8;
@@ -33,20 +36,29 @@ spi_torque_t spi_torque;
 
 pthread_mutex_t spi_mutex;
 
-const float max_torque[3] = {17.f, 17.f, 26.f};  // TODO CHECK WITH BEN
-const float wimp_torque[3] = {6.f, 6.f, 6.f};    // TODO CHECK WITH BEN
+const float max_torque[3] = {48.f, 48.f, 48.f};
+const float wimp_torque[3] = {6.f, 6.f, 6.f};
 const float disabled_torque[3] = {0.f, 0.f, 0.f};
-
+/*
+ * actual joint angles = (sim joint angles * side sign) + joint offsets
+ * sim joint angles = (actual joint angles - joint offsets) * side sign
+ * */
 // only used for actual robot
 const float abad_side_sign[4] = {-1.f, -1.f, 1.f, 1.f};
-const float hip_side_sign[4] = {-1.f, 1.f, -1.f, 1.f};
-const float knee_side_sign[4] = {-.6429f, .6429f, -.6429f, .6429f};
+const float hip_side_sign[4]  = {-1.f, 1.f, -1.f, 1.f};
+const float knee_side_sign[4] = {-1.f, 1.f, -1.f, 1.f};
+//mini-cheetah 1:1.55 in knee
+//const float knee_side_sign[4] = {-.6429f, .6429f, -.6429f, .6429f};
 
 // only used for actual robot
+// Zero Position for actual motor!! Offsets are calculated from actual zero to sim zero.
 const float abad_offset[4] = {0.f, 0.f, 0.f, 0.f};
-const float hip_offset[4] = {M_PI / 2.f, -M_PI / 2.f, -M_PI / 2.f, M_PI / 2.f};
-const float knee_offset[4] = {K_KNEE_OFFSET_POS, -K_KNEE_OFFSET_POS,
-                              -K_KNEE_OFFSET_POS, K_KNEE_OFFSET_POS};
+const float hip_offset[4]  = {-HIP_OFFSET_POS,  HIP_OFFSET_POS,  -HIP_OFFSET_POS,  HIP_OFFSET_POS};
+const float knee_offset[4] = {KNEE_OFFSET_POS, -KNEE_OFFSET_POS, KNEE_OFFSET_POS, -KNEE_OFFSET_POS};
+// mini-cheetah
+//const float hip_offset[4]  = {M_PI / 2.f, -M_PI / 2.f, -M_PI / 2.f, M_PI / 2.f};
+//const float knee_offset[4] = {K_KNEE_OFFSET_POS, -K_KNEE_OFFSET_POS,
+//                              -K_KNEE_OFFSET_POS, K_KNEE_OFFSET_POS};
 
 /*!
  * Compute SPI message checksum
@@ -200,12 +212,7 @@ int spi_driver_iterations = 0;
  */
 void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
   for (int i = 0; i < 2; i++) {
-    // spine_cmd->q_des_abad[i] = (cmd->q_des_abad[i+leg_0] +
-    // abad_offset[i+leg_0]) * abad_side_sign[i+leg_0]; spine_cmd->q_des_hip[i]
-    // = (cmd->q_des_hip[i+leg_0] + hip_offset[i+leg_0]) *
-    // hip_side_sign[i+leg_0]; spine_cmd->q_des_knee[i] =
-    // (cmd->q_des_knee[i+leg_0] + knee_offset[i+leg_0]) /
-    // knee_side_sign[i+leg_0];
+
     spine_cmd->q_des_abad[i] =
         (cmd->q_des_abad[i + leg_0] * abad_side_sign[i + leg_0]) +
         abad_offset[i + leg_0];
@@ -213,7 +220,7 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
         (cmd->q_des_hip[i + leg_0] * hip_side_sign[i + leg_0]) +
         hip_offset[i + leg_0];
     spine_cmd->q_des_knee[i] =
-        (cmd->q_des_knee[i + leg_0] / knee_side_sign[i + leg_0]) +
+        (cmd->q_des_knee[i + leg_0] * knee_side_sign[i + leg_0]) +
         knee_offset[i + leg_0];
 
     spine_cmd->qd_des_abad[i] =
@@ -221,7 +228,7 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
     spine_cmd->qd_des_hip[i] =
         cmd->qd_des_hip[i + leg_0] * hip_side_sign[i + leg_0];
     spine_cmd->qd_des_knee[i] =
-        cmd->qd_des_knee[i + leg_0] / knee_side_sign[i + leg_0];
+        cmd->qd_des_knee[i + leg_0] * knee_side_sign[i + leg_0];
 
     spine_cmd->kp_abad[i] = cmd->kp_abad[i + leg_0];
     spine_cmd->kp_hip[i] = cmd->kp_hip[i + leg_0];
