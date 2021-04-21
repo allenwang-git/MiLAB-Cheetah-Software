@@ -200,17 +200,17 @@ Part of this build process will automatically download the gtest software testin
 [  PASSED  ] 18 tests.
 ```
 ## Run simulator
-1.To avoid Stack overflow, append following commands to the end of ~/.bashrc
+1.To avoid Stack Overflow, append following commands to the end of ~/.bashrc (Not a mandatory step):
 ```
 ulimit -s 102400
-echo "Stack size has been changed to $(ulimit -s) KB"
+echo "[Bash Info] Stack size has been changed to $(ulimit -s) KB for Milab Quadrupedal"
 ```
-2.To run the simulator, open a command window
+2.To run the simulator, open a command window:
 ```
 cd MiLAB-Cheetah-Software/build
 ./sim/sim
 ```
-3.In the another command window in the same path, run the robot controller
+3.In the another command window in the same path, run the robot controller:
 ```
 ./user/${controller_folder}/${controller_name} ${robot_name} ${target_system}
 ```
