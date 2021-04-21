@@ -30,9 +30,9 @@ Inertia tensor:   kg·m^2
 ```
 * Serial numbers of the legs, joints and links:
 ```
-leg 0: FR -- Front-Right             joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
-leg 1: FL -- Front-Left              joint 1: Hip                              link 1: Upper link   
-leg 2: RR -- Rear-Right              joint 2: Knee                             link 2: Lower link
+leg 0: FR -- Front-Right           joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
+leg 1: FL -- Front-Left            joint 1: Hip                              link 1: Upper link   
+leg 2: RR -- Rear-Right            joint 2: Knee                             link 2: Lower link
 leg 3: RL -- Rear-Right
 ```
 * Joint limitation
