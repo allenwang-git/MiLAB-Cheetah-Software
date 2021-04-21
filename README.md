@@ -39,9 +39,9 @@ leg 3: RL -- Rear-Right
 
 Joint  | LowerBound | UpperBound
 -------|------------|-----------
-Ab/Ad  |-90°        |  45°
-Hip    |-249°       |  50°
-Knee   |-37°        | 167°
+Ab/Ad  |-90°/45°    | 45°/90°
+Hip    |-240°       |  60°
+Knee   |36°         | 166°
 
 * Size and mass parameters
 
@@ -57,13 +57,17 @@ Total robot|    \   | **26.35**
 * The Milab Robot model in simulator needs to use at least 5 kinds and totally 13 pieces of mesh parts, because our robot's upper link is mirror symmetrical. Noted that the MIT cheetah robots only use 4 kinds of mesh parts.
 
 ## Coordinate Definition
-* The coordinate definition and the zero degrees position of each joint are shown as below.
+* The coordinate definition and the zero degrees position of each joint are shown as below.\
 The rotation axis of the ab/ad joints is the x axis, and the rotation axis of the hip joint and the knee joint is the y axis. 
-Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.
+Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.\
 <img src="https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png" width="500" height="500" alt="The Coordinate Definition"/><br/>
-* The joint rotation axis definition is shown as below.
-Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.
+* The joint rotation axis definition in simulation is shown as below.\
+Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.\
 <img src="https://user-images.githubusercontent.com/69251304/112635651-0c16b800-8e77-11eb-9bb2-08ddf950ed4c.png" width="500" height="500" alt="The motorframe"/><br/>
+* The actual motor rotation axis definition is shown as below.\
+For each motor in our robot, the rotation axis points along the motor shaft from the motor output to the motor driver.\
+<img src="https://user-images.githubusercontent.com/69251304/115496834-12912780-a29d-11eb-8142-d62174f64656.png" width="300" height="300" alt="real motorframe"/><br/>
+
 ## Workload List
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
 Remember to check corresponding include files of following source files. \
@@ -163,8 +167,6 @@ leg_controller_plot.py             *                        *
 positive_matrix_check.py           *                        *
 
 ```
-## Differences
-* The coordinates of Milab Robot between abad and upper link is different from MIT cheetah, which are not rotated 180 degree around z-axis. Our difinition makes all 8 hip and knee motors obey the right-hand rule and the direction of the rotation axis parallel to the positive y-axis. Like MIT Cheetah, the rotation direction of 2 front abad motors is parallel to the positive direction of the x-axis, while the rotation direction of rear ones is parallel to the x-axiz negative direction.
 
 ## Build
 To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt
@@ -202,17 +204,17 @@ Part of this build process will automatically download the gtest software testin
 [  PASSED  ] 18 tests.
 ```
 ## Run simulator
-1.To avoid Stack overflow, append following commands to the end of ~/.bashrc
+1.To avoid Stack Overflow, append following commands to the end of ~/.bashrc (Not a mandatory step):
 ```
 ulimit -s 102400
-echo "Stack size has been changed to $(ulimit -s) KB"
+echo "[Bash Info] Stack size has been changed to $(ulimit -s) KB for Milab Quadrupedal"
 ```
-2.To run the simulator, open a command window
+2.To run the simulator, open a command window:
 ```
 cd MiLAB-Cheetah-Software/build
 ./sim/sim
 ```
-3.In the another command window in the same path, run the robot controller
+3.In the another command window in the same path, run the robot controller:
 ```
 ./user/${controller_folder}/${controller_name} ${robot_name} ${target_system}
 ```
@@ -224,7 +226,7 @@ i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
 s: simulation,  r: robot
 
 ## Run Real Robot
-0. Find detailed guidance in [Running Mini Cheetah](http://ghttps://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.mdoogle.com)
+0. Find detailed guidance in [Running Mini Cheetah](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.md)
 1. Create build folder `mkdir mc-build`
 2. Build as mini cheetah executable `cd mc-build; cmake -DMINI_CHEETAH_BUILD=TRUE ..; make -j`
 3. Connect to mini cheetah over ethernet, verify you can ssh in
