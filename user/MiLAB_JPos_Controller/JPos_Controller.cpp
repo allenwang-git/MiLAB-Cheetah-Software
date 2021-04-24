@@ -2,7 +2,7 @@
 # include <iostream>
 /*
  * This controller is able to control any number of legs and any number of joints by setting the joint_enable
- * and leg_enable param in jpos_user_parameters.yaml. KP, KD, feedforward-torque can also be tuned in that file.
+ * and leg_enable param in jpos-user-parameters.yaml. KP, KD, feedforward-torque can also be tuned in that file.
  * By modifying this file, the robot motion logic can be changed as you need.
  *
  * Wang Yinuo, 04/24/2021, dbdxwyn@163.com

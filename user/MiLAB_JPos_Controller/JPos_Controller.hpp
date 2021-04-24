@@ -19,7 +19,6 @@ class JPos_Controller:public RobotController{
     }
   protected:
     DVec<float> _jpos_ini;
-    DVec<float> _jpos_ini_const;
   JPosUserParameters userParameters;
 };
 

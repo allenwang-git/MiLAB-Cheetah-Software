@@ -91,6 +91,7 @@ milab_lower_link.obj               *                       *
 milab-robot-defaults.yaml          *                       *
 milab-user-defaults.yaml           *                       *
 default-terrain.yaml               *
+jpos-user-parameters.yaml          *                       *
 
 ********/common************************************************
 ******/src**                     done   doing    todo     new
@@ -99,16 +100,21 @@ Quadruped.cpp                      * todo
 FloatingBaseModel.cpp              * 
 ****/SimUtilities**
 SpineBoard.cpp                     *
+****/ControllerParameters**
+ControlParameters.cpp              * 
 
 ******/include**
 cppTypes.h                         *
 ****/Dynamics**
 Milab.h                            * todo                  *
-****/ControlParameters
+****/ControlParameters**
 SimulatorParameters.h              *
+ControlParameters.h                *
 RobotParameters.h                  *
 ****/SimUtilities**
 SpineBoard.h                       *
+****/Utilities**
+utilities.h                        *
 
 ********/robot*************************************************
 ******/src**                     done   doing    todo     new
@@ -135,7 +141,7 @@ DrawList.cpp                       * todo
 
 
 ********/user**************************************************
-******/MIT_Controller**          done   doing    todo     new
+******/MiLAB_Controller**        done   doing    todo     new
 ****/Controllers**
 **/convexMPC**
 RobotState.cpp                     * todo
@@ -161,6 +167,11 @@ FSM_BalanceStand.cpp               * todo
 FSM_SquatDown.cpp                  *                        *
 FSM_SquatDown.h                    *                        *
 SafetyChecker.cpp                  *
+
+******/MiLAB_JPos_Controller**
+jpos_user_parameters.cpp           *
+JPosUserParameters.h               *
+
 
 ********/debug-data**********************************************
 leg_controller_plot.py             *                        *

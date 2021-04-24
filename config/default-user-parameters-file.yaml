@@ -1,7 +1,7 @@
 __collection-name__: user-parameter-file
 
 # Jpos_Controller
-#file_name : "jpos_user_parameters.yaml"
+#file_name : "jpos-user-parameters.yaml"
 
 # Cheetah_Controller
 file_name : "milab-user-parameters.yaml"
