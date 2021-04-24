@@ -1,4 +1,4 @@
-# Instruction when changing Controllers or Robots
+# Instruction of changing Controllers or Robots
 
 There are several different controllers for Cheetah robot in this dir. For example, **MiLAB_Controller** is a MPC-WBC controller, 
 and **MiLAB_JPos_Controller** is a joint PD controller. Please noticed that, for different kinds of robots, above controllers 
