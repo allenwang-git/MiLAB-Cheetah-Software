@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "cppTypes.h"
-#include "../../user/MIT_Controller/MIT_UserParameters.h"
+#include "../../user/MiLAB_Controller/MIT_UserParameters.h"
 
 /**
  * Enumerated gait types. Preplanned gaits are defined.
