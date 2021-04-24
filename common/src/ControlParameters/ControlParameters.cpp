@@ -30,6 +30,8 @@ std::string controlParameterValueKindToString(
       return "vec3d";
     case ControlParameterValueKind::VEC3_FLOAT:
       return "vec3f";
+    case ControlParameterValueKind::VEC4_FLOAT:
+      return "vec4f";
     default:
       return "unknown-ControlParameterValueKind";
   }
@@ -56,6 +58,13 @@ std::string controlParameterValueToString(ControlParameterValue value,
       result += numberToString(value.vec3f[0]) + ", ";
       result += numberToString(value.vec3f[1]) + ", ";
       result += numberToString(value.vec3f[2]) + "]";
+      break;
+    case ControlParameterValueKind::VEC4_FLOAT:
+      result += "[";
+      result += numberToString(value.vec4f[0]) + ", ";
+      result += numberToString(value.vec4f[1]) + ", ";
+      result += numberToString(value.vec4f[2]) + ", ";
+      result += numberToString(value.vec4f[3]) + "]";
       break;
     case ControlParameterValueKind::VEC3_DOUBLE:
       result += "[";
@@ -301,7 +310,7 @@ ControlParameterValueKind getControlParameterValueKindFromString(const std::stri
   if(str.find('[') != std::string::npos) {
     // vec type
     if(str.find('f') != std::string::npos) {
-      return ControlParameterValueKind::VEC3_FLOAT;
+      return ControlParameterValueKind::VEC4_FLOAT; // ASSERT ALL FLOAT ARRAYS ARE VEC4 --WangYN
     } else {
       return ControlParameterValueKind::VEC3_DOUBLE;
     }
@@ -356,8 +365,13 @@ void ControlParameters::defineAndInitializeFromYamlFile(const std::string &path)
     std::string valueString;
     paramHandler.getString(key, valueString);
     ControlParameterValueKind kind;
-    if(valueString.empty()) {
-      kind = ControlParameterValueKind::VEC3_DOUBLE;
+
+//    std::cout<<key << " "<<valueString<<std::endl;
+    if(valueString.empty()) {// arrays cannot be got
+        if (key == "leg_enable")// for special parameters which have 4 elements
+            kind = ControlParameterValueKind::VEC4_FLOAT;
+        else
+            kind = ControlParameterValueKind::VEC3_DOUBLE;
     } else {
       kind = ControlParameterValueKind::DOUBLE;
     }
@@ -398,6 +412,14 @@ void ControlParameters::defineAndInitializeFromYamlFile(const std::string &path)
         Vec3<float> v(vv[0], vv[1], vv[2]);
         cp->initializeVec3f(v);
       } break;
+
+      case ControlParameterValueKind::VEC4_FLOAT: {
+          std::vector<float> v4;
+          assert(paramHandler.getVector(key, v4));
+          assert(v4.size() == 4);
+          Vec4<float> v(v4[0], v4[1], v4[2], v4[3]);
+          cp->initializeVec4f(v);
+        } break;
 
       default:
         throw std::runtime_error("can't read type " +
@@ -476,6 +498,14 @@ void ControlParameters::initializeFromYamlFile(const std::string& path) {
         assert(vv.size() == 3);
         Vec3<float> v(vv[0], vv[1], vv[2]);
         cp.initializeVec3f(v);
+      } break;
+
+      case ControlParameterValueKind::VEC4_FLOAT: {
+          std::vector<float> vv;
+          assert(paramHandler.getVector(key, vv));
+          assert(vv.size() == 4);
+          Vec4<float> v(vv[0], vv[1], vv[2], vv[3]);
+          cp.initializeVec4f(v);
       } break;
 
       default:

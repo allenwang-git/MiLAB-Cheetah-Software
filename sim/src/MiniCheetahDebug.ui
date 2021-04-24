@@ -164,10 +164,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="abad_3_kp"/>
+            <widget class="QLineEdit" name="abad_3_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="abad_3_kd"/>
+            <widget class="QLineEdit" name="abad_3_kd">
+             <property name="text">
+              <string>8</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -214,10 +222,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="abad_1_kp"/>
+            <widget class="QLineEdit" name="abad_1_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="abad_1_kd"/>
+            <widget class="QLineEdit" name="abad_1_kd">
+             <property name="text">
+              <string>8</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -318,10 +334,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="abad_2_kp"/>
+            <widget class="QLineEdit" name="abad_2_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="abad_2_kd"/>
+            <widget class="QLineEdit" name="abad_2_kd">
+             <property name="text">
+              <string>8</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -368,10 +392,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="abad_4_kp"/>
+            <widget class="QLineEdit" name="abad_4_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="abad_4_kd"/>
+            <widget class="QLineEdit" name="abad_4_kd">
+             <property name="text">
+              <string>8</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -457,7 +489,7 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_13">
-           <item row="1" column="1">
+           <item row="2" column="1">
             <widget class="QLabel" name="label_39">
              <property name="text">
               <string>KD</string>
@@ -471,11 +503,19 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="hip_1_kp"/>
+           <item row="2" column="0">
+            <widget class="QLineEdit" name="hip_1_kd">
+             <property name="text">
+              <string>13</string>
+             </property>
+            </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="hip_1_kd"/>
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="hip_1_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -522,10 +562,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="knee_1_kp"/>
+            <widget class="QLineEdit" name="knee_1_kp">
+             <property name="text">
+              <string>450</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="knee_1_kd"/>
+            <widget class="QLineEdit" name="knee_1_kd">
+             <property name="text">
+              <string>15</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -572,10 +620,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="hip_2_kp"/>
+            <widget class="QLineEdit" name="hip_2_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="hip_2_kd"/>
+            <widget class="QLineEdit" name="hip_2_kd">
+             <property name="text">
+              <string>13</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -607,7 +663,7 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_16">
-           <item row="1" column="1">
+           <item row="2" column="1">
             <widget class="QLabel" name="label_45">
              <property name="text">
               <string>KD</string>
@@ -621,11 +677,19 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="knee_2_kp"/>
+           <item row="2" column="0">
+            <widget class="QLineEdit" name="knee_2_kd">
+             <property name="text">
+              <string>15</string>
+             </property>
+            </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="knee_2_kd"/>
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="knee_2_kp">
+             <property name="text">
+              <string>450</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -672,10 +736,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="hip_3_kp"/>
+            <widget class="QLineEdit" name="hip_3_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="hip_3_kd"/>
+            <widget class="QLineEdit" name="hip_3_kd">
+             <property name="text">
+              <string>13</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -722,10 +794,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="knee_3_kp"/>
+            <widget class="QLineEdit" name="knee_3_kp">
+             <property name="text">
+              <string>450</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="knee_3_kd"/>
+            <widget class="QLineEdit" name="knee_3_kd">
+             <property name="text">
+              <string>15</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -772,10 +852,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="hip_4_kp"/>
+            <widget class="QLineEdit" name="hip_4_kp">
+             <property name="text">
+              <string>350</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="hip_4_kd"/>
+            <widget class="QLineEdit" name="hip_4_kd">
+             <property name="text">
+              <string>13</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -822,10 +910,18 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLineEdit" name="knee_4_kp"/>
+            <widget class="QLineEdit" name="knee_4_kp">
+             <property name="text">
+              <string>450</string>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="knee_4_kd"/>
+            <widget class="QLineEdit" name="knee_4_kd">
+             <property name="text">
+              <string>15</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>

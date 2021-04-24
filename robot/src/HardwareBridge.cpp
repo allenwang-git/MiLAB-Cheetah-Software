@@ -20,7 +20,7 @@
 #include "rt/rt_vectornav.h"
 #include "rt/rt_ethercat.h"
 #include "Utilities/Utilities_print.h"
-
+// Todo: change user yaml in needed(310)
 #define USE_MICROSTRAIN
 
 /*!
@@ -307,6 +307,11 @@ void MilabHardwareBridge::run() {
         if(_userControlParameters) {
             try {
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/milab-user-parameters.yaml");
+                std::string yamlName = "milab-user-parameters.yaml";
+//                _userControlParameters->initializeFromYamlFile(THIS_COM "config/jpos-user-parameters.yaml");
+//                std::string yamlName = "jpos-user-parameters.yaml";
+                printf("Loaded user parameters from yaml file: %s\n", yamlName.c_str());
+
             } catch(std::exception& e) {
                 printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
                 exit(1);
