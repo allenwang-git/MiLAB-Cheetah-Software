@@ -12,12 +12,45 @@ set(CMAKE_COLOR_MAKEFILE   ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
-
+option(MILAB_BUILD "use compiler flags for MILAB cheetah computer" OFF)
 option(MINI_CHEETAH_BUILD "use compiler flags for mini cheetah computer" OFF)
 set(BUILD_TYPE_RELEASE TRUE)
 
 option(NO_SIM "Do not build simulator" OFF)
 
+# SELECT MILAB SIMULATION BUILD OR REAL ROBOT BUILD
+if(MILAB_BUILD) # REAL ROBOT
+  SET (THIS_COM "../" )
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+          ${CMAKE_BINARY_DIR}/Configuration.h)
+  set(CMAKE_CXX_FLAGS "-O3 -no-pie -ggdb -Wall \
+  -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
+  -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
+  -Wshadow -Wsign-promo -Werror")
+  set(CMAKE_C_FLAGS "-O3  -ggdb -std=gnu99 -I.")
+  message("**** Real MiLab-Cheetah build enabled ****")
+
+else(MILAB_BUILD) # SIM
+  SET (THIS_COM "${PROJECT_SOURCE_DIR}/" )
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+          ${CMAKE_BINARY_DIR}/Configuration.h)
+  if(CMAKE_SYSTEM_NAME MATCHES Linux)
+    set(CMAKE_CXX_FLAGS "-O3 -no-pie -march=native -ggdb -Wall \
+    -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
+    -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
+    -Wshadow -Wsign-promo -Werror")
+  elseif(APPLE)
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -ggdb -Wall \
+    -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
+    -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
+    -Wshadow -Wsign-promo")
+    include_directories("/usr/local/include/")   # lcm includes
+  endif()
+  set(CMAKE_C_FLAGS "-O3  -ggdb  -march=native -std=gnu99 -I.")
+  message("**** Real MiLab-Cheetah build disabled ****")
+endif(MILAB_BUILD)
+
+# MIT CHEETAH
 if(MINI_CHEETAH_BUILD)
   SET (THIS_COM "../" )
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
@@ -27,7 +60,7 @@ if(MINI_CHEETAH_BUILD)
   -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
   -Wshadow -Wsign-promo -Werror")
   set(CMAKE_C_FLAGS "-O3  -ggdb -std=gnu99 -I.")
-  message("**** Mini-Cheetah build enabled ****")
+  message("**** Real Mini-Cheetah build enabled ****")
 else(MINI_CHEETAH_BUILD)
   SET (THIS_COM "${PROJECT_SOURCE_DIR}/" )
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
@@ -47,7 +80,7 @@ else(MINI_CHEETAH_BUILD)
   endif()
 
   set(CMAKE_C_FLAGS "-O3  -ggdb  -march=native -std=gnu99 -I.")
-  message("**** Mini-Cheetah build disabled ****")
+  message("**** Real Mini-Cheetah build disabled ****")
 endif(MINI_CHEETAH_BUILD)
 
 set(CMAKE_CXX_STANDARD 14)
