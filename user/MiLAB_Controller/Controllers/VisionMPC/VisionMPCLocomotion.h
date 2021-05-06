@@ -39,7 +39,7 @@ private:
 
 class VisionMPCLocomotion {
 public:
-  VisionMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters);
+  VisionMPCLocomotion(float _dt, int _iterations_between_mpc, MiLAB_UserParameters* parameters);
   void initialize();
 
   template<typename T>
@@ -100,7 +100,7 @@ private:
   Vec3<float> pFoot[4];
   float trajAll[12*36];
 
-  MIT_UserParameters* _parameters = nullptr;
+  MiLAB_UserParameters* _parameters = nullptr;
 };
 
 

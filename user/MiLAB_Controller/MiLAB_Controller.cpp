@@ -1,12 +1,12 @@
-#include "MIT_Controller.hpp"
+#include "MiLAB_Controller.hpp"
 
-MIT_Controller::MIT_Controller():RobotController(){  }
+MiLAB_Controller::MiLAB_Controller(): RobotController(){  }
 
 //#define RC_ESTOP
 /**
  * Initializes the Control FSM.
  */
-void MIT_Controller::initializeController() {
+void MiLAB_Controller::initializeController() {
   // Initialize a new GaitScheduler object
   _gaitScheduler = new GaitScheduler<float>(&userParameters, _controlParameters->controller_dt);
 
@@ -24,7 +24,7 @@ void MIT_Controller::initializeController() {
 /**
  * Calculate the commands for the leg controllers using the ControlFSM logic.
  */
-void MIT_Controller::runController() {
+void MiLAB_Controller::runController() {
   // Find the current gait schedule
   _gaitScheduler->step();
 

@@ -108,7 +108,7 @@ void VisionGait::setIterations(int iterationsPerMPC, int currentIteration) {
 // Controller
 ////////////////////
 
-VisionMPCLocomotion::VisionMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters) :
+VisionMPCLocomotion::VisionMPCLocomotion(float _dt, int _iterations_between_mpc, MiLAB_UserParameters* parameters) :
   iterationsBetweenMPC(_iterations_between_mpc),
   horizonLength(10),
   dt(_dt),

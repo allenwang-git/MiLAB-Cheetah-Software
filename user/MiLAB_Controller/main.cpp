@@ -7,9 +7,9 @@
  */
 
 #include <main_helper.h>
-#include "MIT_Controller.hpp"
+#include "MiLAB_Controller.hpp"
 
 int main(int argc, char** argv) {
-  main_helper(argc, argv, new MIT_Controller());
+  main_helper(argc, argv, new MiLAB_Controller());
   return 0;
 }

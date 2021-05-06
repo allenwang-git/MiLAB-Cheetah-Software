@@ -68,7 +68,7 @@ class ControlFSM {
              DesiredStateCommand<T>* _desiredStateCommand,
              RobotControlParameters* controlParameters,
              VisualizationData* visualizationData,
-             MIT_UserParameters* userParameters);
+             MiLAB_UserParameters* userParameters);
 
   // Initializes the Control FSM instance
   void initialize();

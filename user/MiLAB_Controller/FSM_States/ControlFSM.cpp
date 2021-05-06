@@ -28,7 +28,7 @@ ControlFSM<T>::ControlFSM(Quadruped<T>* _quadruped,
                           DesiredStateCommand<T>* _desiredStateCommand,
                           RobotControlParameters* controlParameters,
                           VisualizationData* visualizationData,
-                          MIT_UserParameters* userParameters)
+                          MiLAB_UserParameters* userParameters)
 {
   // Add the pointers to the ControlFSMData struct
   data._quadruped = _quadruped;

@@ -83,7 +83,7 @@ class ConvexMPCLocomotion {
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MIT_UserParameters* parameters, float fmax, RobotType& robotType);
+  ConvexMPCLocomotion(float _dt, int _iterations_between_mpc, MiLAB_UserParameters* parameters, float fmax, RobotType& robotType);
   void initialize();
 
   template<typename T>
@@ -160,7 +160,7 @@ private:
   CMPC_Result<float> result;
   float trajAll[12*36];
 
-  MIT_UserParameters* _parameters = nullptr;
+  MiLAB_UserParameters* _parameters = nullptr;
   CMPC_Jump jump_state;
 
   vectorAligned<Vec12<double>> _sparseTrajectory;

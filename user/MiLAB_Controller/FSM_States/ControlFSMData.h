@@ -2,7 +2,7 @@
 #define CONTROLFSMDATA_H
 
 #include <ControlParameters/RobotParameters.h>
-#include <MIT_UserParameters.h>
+#include <MiLAB_UserParameters.h>
 #include "Controllers/DesiredStateCommand.h"
 #include "Controllers/GaitScheduler.h"
 #include "Controllers/LegController.h"
@@ -21,7 +21,7 @@ struct ControlFSMData {
   GaitScheduler<T>* _gaitScheduler;
   DesiredStateCommand<T>* _desiredStateCommand;
   RobotControlParameters* controlParameters;
-  MIT_UserParameters* userParameters;
+  MiLAB_UserParameters* userParameters;
   VisualizationData* visualizationData;
 };
 

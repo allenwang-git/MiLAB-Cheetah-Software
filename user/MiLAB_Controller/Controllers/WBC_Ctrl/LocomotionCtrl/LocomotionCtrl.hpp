@@ -30,7 +30,7 @@ class LocomotionCtrl: public WBC_Ctrl<T>{
   protected:
     virtual void _ContactTaskUpdate( void * input, ControlFSMData<T> & data);
 //    virtual void _ContactTaskUpdateTEST(void * input, ControlFSMData<T> & data);
-    void _ParameterSetup(const MIT_UserParameters* param);
+    void _ParameterSetup(const MiLAB_UserParameters* param);
     void _CleanUp();
     virtual void _LCM_PublishData();
 
