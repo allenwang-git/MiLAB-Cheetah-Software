@@ -17,3 +17,6 @@ tau_ff : 0.0
 
 zero : 0
 calibrate : 0
+
+
+# Tip: Jpos controller can not run normally when milab-robot-parameter cheater_mode = 1 !! keep it = 0

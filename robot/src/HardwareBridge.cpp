@@ -22,7 +22,8 @@
 #include "Utilities/Utilities_print.h"
 
 #define USE_MICROSTRAIN
-
+#define JPOS_CTRL
+//#define CMPC_CTRL
 /*!
  * If an error occurs during initialization, before motors are enabled, print
  * error and exit.
@@ -647,12 +648,16 @@ void MilabHardwareBridge::run() {
 
         if(_userControlParameters) {
             try {
+                #ifdef CMPC_CTRL
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/milab-user-parameters.yaml");
                 std::string yamlName = "milab-user-parameters.yaml";
-//                _userControlParameters->initializeFromYamlFile(THIS_COM "config/jpos-user-parameters.yaml");
-//                std::string yamlName = "jpos-user-parameters.yaml";
                 printf("Loaded user parameters from yaml file: %s\n", yamlName.c_str());
-
+                #endif
+                #ifdef JPOS_CTRL
+                _userControlParameters->initializeFromYamlFile(THIS_COM "config/jpos-user-parameters.yaml");
+                std::string yamlName = "jpos-user-parameters.yaml";
+                printf("Loaded user parameters from yaml file: %s\n", yamlName.c_str());
+                #endif
             } catch(std::exception& e) {
                 printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
                 exit(1);
