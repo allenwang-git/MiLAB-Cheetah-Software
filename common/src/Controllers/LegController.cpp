@@ -12,7 +12,7 @@
 #include <fstream>
 using namespace std;
 
-#define OUTPUT_LEG_DATA
+//#define OUTPUT_LEG_DATA
 
 /*
  * Bdebug plot
@@ -297,11 +297,12 @@ void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
  */
 template<typename T>
 void LegController<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_command_lcmt *lcmCommand, u64 iter) {
-#ifdef OUTPUT_LEG_DATA
+
     // Output leg commands and datas to file
     if (iter%10 == 0)
+        #ifdef OUTPUT_LEG_DATA
         output2File();
-#endif
+        #endif
     for(int leg = 0; leg < 4; leg++) {
         for(int axis = 0; axis < 3; axis++) {
             int idx = leg*3 + axis;
