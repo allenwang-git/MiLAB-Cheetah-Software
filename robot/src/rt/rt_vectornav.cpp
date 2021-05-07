@@ -18,7 +18,7 @@
 #include "rt/rt_vectornav.h"
 #include "vectornav_lcmt.hpp"
 
-#define K_MINI_CHEETAH_VECTOR_NAV_SERIAL "/dev/ttyS0"
+#define K_CHEETAH_VECTOR_NAV_SERIAL "/dev/ttyS0"
 
 //#define PRINT_VECTORNAV_DEBUG
 
@@ -54,7 +54,7 @@ bool init_vectornav(VectorNavData* vn_data) {
   VnError error;
   VpeBasicControlRegister vpeReg;
   ImuFilteringConfigurationRegister filtReg;
-  const char SENSOR_PORT[] = K_MINI_CHEETAH_VECTOR_NAV_SERIAL;
+  const char SENSOR_PORT[] = K_CHEETAH_VECTOR_NAV_SERIAL;
   const uint32_t SENSOR_BAUDRATE = 115200;
   char modelNumber[30];
   char strConversions[50];

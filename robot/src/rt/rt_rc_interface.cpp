@@ -174,8 +174,6 @@ if(trigger || selected_mode == RC_mode::OFF || selected_mode == RC_mode::RECOVER
 #endif
 
 #ifdef RC_AT9S
-
-
 void sbus_packet_complete_at9s() {
     AT9s_data data;
     update_at9s(&data);

@@ -21,6 +21,7 @@
 #include <fstream>
 
 //#include "rt/rt_interface_lcm.h"
+//#define OUTPUT_LEG_DATA
 
 RobotRunner::RobotRunner(RobotController* robot_ctrl, 
     PeriodicTaskManager* manager, 
@@ -37,9 +38,11 @@ RobotRunner::RobotRunner(RobotController* robot_ctrl,
  */
 void RobotRunner::init() {
   printf("[RobotRunner] initialize\n");
+#ifdef OUTPUT_LEG_DATA
   //clear debug Data file
   std::ofstream fs("/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt", std::fstream::out | std::ios_base::trunc);
   fs.close();
+#endif
   // Build the appropriate Quadruped object
   if (robotType == RobotType::MINI_CHEETAH) {
     _quadruped = buildMiniCheetah<float>();
@@ -112,7 +115,7 @@ void RobotRunner::run() {
     _legController->setEnabled(true);
 
     if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if(count_ini%10000 ==0)   printf("[RobotRunner]] use_rc = 1, turn it to 0 to start controller\n");
+      if(count_ini%10000 ==0)   printf("[RobotRunner] use_rc = 1, turn it to 0 to start controller\n");
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }

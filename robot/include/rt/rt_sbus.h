@@ -10,6 +10,7 @@
 /*
  * There are two kinds of remote controllers, and we use AT9S now.
  * */
+
 #define RC_AT9S
 //#define TARANIS_X7
 

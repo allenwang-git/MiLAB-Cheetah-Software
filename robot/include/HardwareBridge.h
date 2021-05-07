@@ -26,6 +26,7 @@
 #include "microstrain_lcmt.hpp"
 #include "ecat_command_t.hpp"
 #include "ecat_data_t.hpp"
+//#include "T265position_t.hpp"
 
 
 
@@ -48,6 +49,7 @@ class HardwareBridge {
   ~HardwareBridge() { delete _robotRunner; }
   void handleGamepadLCM(const lcm::ReceiveBuffer* rbuf, const std::string& chan,
                         const gamepad_lcmt* msg);
+  //void handleT265LCM(const lcm::ReceiveBuffer* rbuf, const std::string& chan, const T265position_t* msg);
 
   void handleInterfaceLCM();
   void handleControlParameter(const lcm::ReceiveBuffer* rbuf,
@@ -83,28 +85,7 @@ class HardwareBridge {
 
   int _port;
 };
-/*!
- * Interface between robot and hardware specialized for Milab robot
- */
-class MilabHardwareBridge : public HardwareBridge {
-public:
-    MilabHardwareBridge(RobotController* rc, bool load_parameters_from_file);
-    void runSpi();
-    void initHardware();
-    void run();
-    void runMicrostrain();
-    void logMicrostrain();
 
-private:
-    VectorNavData _vectorNavData;
-    lcm::LCM _spiLcm;
-    lcm::LCM _microstrainLcm;
-    std::thread _microstrainThread;
-    LordImu _microstrainImu;
-    microstrain_lcmt _microstrainData;
-    bool _microstrainInit = false;
-    bool _load_parameters_from_file;
-};
 /*!
  * Interface between robot and hardware specialized for Mini Cheetah
  */
@@ -130,8 +111,28 @@ class MiniCheetahHardwareBridge : public HardwareBridge {
   bool _load_parameters_from_file;
 };
 /*!
- * Interface between robot and hardware specialized for Cheetah 3
+ * Interface between robot and hardware specialized for Milab robot
  */
+class MilabHardwareBridge : public HardwareBridge {
+public:
+    MilabHardwareBridge(RobotController* rc, bool load_parameters_from_file);
+    void runSpi();
+    void initHardware();
+    void run();
+    void runMicrostrain();
+    void logMicrostrain();
+
+private:
+    VectorNavData _vectorNavData;
+    lcm::LCM _spiLcm;
+    lcm::LCM _microstrainLcm;
+    std::thread _microstrainThread;
+    LordImu _microstrainImu;
+    microstrain_lcmt _microstrainData;
+    bool _microstrainInit = false;
+    bool _load_parameters_from_file;
+};
+
 class Cheetah3HardwareBridge : public HardwareBridge {
 public:
   Cheetah3HardwareBridge(RobotController* rc);

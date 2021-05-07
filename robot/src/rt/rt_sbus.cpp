@@ -97,6 +97,7 @@ void unpack_sbus_data(uint8_t sbus_data[], uint16_t *channels_) {
     }
     //printf("\n\n");
     pthread_mutex_unlock(&sbus_data_m);
+
     #ifdef Show_RT9S_Celebration
     static int show_rt9s_times=0;
     show_rt9s_times++;
@@ -119,7 +120,7 @@ void unpack_sbus_data(uint8_t sbus_data[], uint16_t *channels_) {
     // printf("\n\n");
 
   } else {
-    // printf("Bad Packet\n");
+     printf("Bad Packet\n");
   }
 }
 
@@ -195,13 +196,14 @@ int init_sbus(int is_simulator) {
 
   int fd1 = open(port1.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   if (fd1 < 0) {
-    printf("[Warning: RemoteCommander] Opening %s: %s%d\n", port1.c_str(), strerror(errno),fd1);
+    printf("[RemoteCommander] Error Opening %s: %s%d\n", port1.c_str(), strerror(errno),fd1);
   } else {
     init_serial_for_sbus(fd1, 100000);
 #ifdef linux
     //set_interface_attribs_custom_baud(fd1, 100000, 0, 0);
 #endif
   }
+  printf("SBUS init OK!\n");
   return fd1;
 }
 #ifdef TARANIS_X7
