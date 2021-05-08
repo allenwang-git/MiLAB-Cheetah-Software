@@ -134,7 +134,7 @@ void SpineBoard::run(bool milab) {
                         kd_softstop * (data->qd_knee[board_num]) +
                         cmd->tau_knee_ff[board_num];
 
-            std::cout<<board_num<<" "<<torque_out[2]<<kp_softstop<<std::endl;
+//            std::cout<<board_num<<" "<<torque_out[2]<<kp_softstop<<std::endl;
     } else if (data->q_knee[board_num] < q_limit_low[2]) {
         torque_out[2] = kp_softstop * (q_limit_low[2] - data->q_knee[board_num]) -
                         kd_softstop * (data->qd_knee[board_num]) +
