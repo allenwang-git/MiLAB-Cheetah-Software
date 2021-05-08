@@ -18,8 +18,10 @@ please make sure the user parameter file has been changed.
 For now, we have two version of user parameters in **/config/default-user-parameters-file.yaml**
 * **jpos-user-parameters.yaml** for MiLAB_JPos_Controller
 * **milab-user-parameters.yaml** for MiLAB_Controller
+* **no-parameters.yaml** for MiLAB_Spi_Controller
 
 ### Real Robot
 To change params for different controllers, select Macro in **/robot/HardwareBridge.cpp**
 * **\#define JPOS_CTRL** for MiLAB_JPos_Controller
 * **\#define CMPC_CTRL** for MiLAB_Controller
+* **\#define SPI_CTRL** for MiLAB_Spi_Controller
