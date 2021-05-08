@@ -769,11 +769,11 @@ void MilabHardwareBridge::logMicrostrain() {
 void MilabHardwareBridge::runSpi() {
     spi_command_t* cmd = get_spi_command();
     spi_data_t* data = get_spi_data();
-
-    memcpy(cmd, &_spiCommand, sizeof(spi_command_t));
+    // Send and Receive data and commands through spi hardware for leg-level controller
+    memcpy(cmd, &_spiCommand, sizeof(spi_command_t)); //copy spi_data_t data to _spiData
     spi_driver_run();
-    memcpy(&_spiData, data, sizeof(spi_data_t));
-
+    memcpy(&_spiData, data, sizeof(spi_data_t)); //copy spi_data_t data to _spiData
+    // nobody subscribe following lcm --WYN
     _spiLcm.publish("spi_data", data);
     _spiLcm.publish("spi_command", cmd);
 }

@@ -236,7 +236,7 @@ Example:
 i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
 s: simulation,  r: robot
 ## Change Controller or Robot
-Go to the [Instruction of changing Controllers or robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/user/README.md) for details.
+Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/user/ChangeController.md) for details.
 
 ## Run Real Robot
 0. Find detailed guidance in [Running Mini Cheetah](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.md)
