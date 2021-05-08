@@ -144,7 +144,7 @@ This output should hopefully end with
 * For more info, go to see [simulation example](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/sim_example.md)
 
 ## Run Real Robot
-* Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board. 
+* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](). 
 * [Install all Dependencies except Qt](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on robot's UP-board.
 * Open terminal and create mc-build folder:
     ```
@@ -286,9 +286,26 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
         sudo ldconfig
         ```
 
-## Linux RT Kernel
+## Install Linux RT Kernel for UP-board
+To keep real time performance of controller running on UP-board, the ubuntu rt kernel need to be installed.
+* Install Ubuntu System
+     * Download Ubuntu 16.04.6 ISO from the Ubuntu download page (works with desktop and server edition)
+       http://releases.ubuntu.com/16.04/ubuntu-16.04.6-desktop-amd64.iso
+       http://releases.ubuntu.com/16.04/ubuntu-16.04.6-server-amd64.iso
+     * Burn the downloaded image on a USB stick. We suggest to use etcher for doing that. You can download it from:
+       https://etcher.io
+     * Insert the USB thumb drive in a empty USB port and proceed with a normal Ubuntu installation.
 
-
+* Install RT Kernel
+     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/UP-board-4.4.86-rt99.tar) for UP-board.
+     * Unzip it in /usr/src
+          ```
+          cd /usr/src
+          tar xvf UP-board-4.4.86-rt99.tar
+          cd UP-board-4.4.86-rt99.tar
+          
+          ```
+     
       
 ## Change Controller or Robot
 Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/ChangeController.md) for details.
