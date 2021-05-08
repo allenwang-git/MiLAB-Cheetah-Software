@@ -61,9 +61,11 @@ Total robot|    \   | **26.35**
 The rotation axis of the ab/ad joints is the x axis, and the rotation axis of the hip joint and the knee joint is the y axis. 
 Due to joint limitation, although we indicate the nominal zero position of knee joints, it's not actually possible to reach there.\
 <img src="https://user-images.githubusercontent.com/69251304/112633818-cbb63a80-8e74-11eb-9679-37c465ab8043.png" width="500" height="500" alt="The Coordinate Definition"/><br/>
+
 * The joint rotation axis definition in simulation is shown as below.\
 Note that our joint rotation axis definition is different from UNITREE, but it is consistent with MIT, and the positive direction of rotation conforms to the right-hand rule.\
 <img src="https://user-images.githubusercontent.com/69251304/112635651-0c16b800-8e77-11eb-9bb2-08ddf950ed4c.png" width="500" height="500" alt="The motorframe"/><br/>
+
 * The actual motor rotation axis definition is shown as below.\
 For each motor in our robot, the rotation axis points along the motor shaft from the motor output to the motor driver.\
 <img src="https://user-images.githubusercontent.com/69251304/115496834-12912780-a29d-11eb-8142-d62174f64656.png" width="300" height="300" alt="real motorframe"/><br/>
@@ -184,7 +186,6 @@ Go to the [Instruction of changing Controller Parameters or Robots](https://gith
 * [Simulation operation guide]()
 
 ## Dependencies
-
 To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
 * Update linux software repositories:
     ```
@@ -194,7 +195,11 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
     ```
 * Intall dependent packages:
     ```
-    sudo apt install mesa-common-dev freeglut3-dev coinor-libipopt-dev libblas-dev liblapack-dev gfortran liblapack-dev coinor-libipopt-dev cmake gcc build-essential libglib2.0-dev
+    sudo apt install mesa-common-dev freeglut3-dev coinor-libipopt-dev libblas-dev liblapack-dev gfortran cmake gcc build-essential libglib2.0-dev
+    ```
+* Check cmake version (Must higher than 3.5)
+    ```
+    cmake --version
     ```
 * Install gcc (If lower than 5.0): 
     ```
@@ -226,24 +231,55 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
     ```
     sudo apt-get install libeigen3-dev
     ```
-* Install Qt5 (Recommend Qt5.10)
+* Install Qt5 on Ubuntu 16.04 (Recommend Qt5.10)
     * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/qt-opensource-linux-x64-5.10.0.run) 
     * Run installer 
       ```
       sudo chmod a+x qt-opensource-linux-x64-5.10.0.run
       ./qt-opensource-linux-x64-5.10.0.run
       ```
-    * Follow [config instructions]()
-
-Others:
-- LCM 1.3.1 (it says Java 6, but you can use newer) (https://lcm-proj.github.io/)
-- Qt 5.10.0 or newer (requires the gamepad library) (https://www.qt.io/download-qt-installer)
-- Eigen (http://eigen.tuxfamily.org/)
-
-NOTE: on Ubuntu 18.10 or 19.04, you may instead install Qt with
-```
-sudo apt install libqt5 libqt5gamepad5
-```
+    * Follow [config instructions](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/qt_install.md)
+    * On Ubuntu 18.10 or 19.04, you may instead install Qt directly with command:
+        ```
+        sudo apt install libqt5 libqt5gamepad5
+        ```
+* Install IPOPT (Recommend ipopt-3.12.7 or newer)
+    * Install dependency
+        ```  
+        sudo apt-get install cppad subversion patch wget checkinstall
+        ```
+    * Download package [ipopt.3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/qt-opensource-linux-x64-5.10.0.run) 
+    * Unzip to /home and install third-party lib
+        ```
+        unzip Ipopt-3.12.7.zip
+        cd Ipopt-3.12.7
+        ```
+        ```
+        cd ThirdParty/Blas
+        ./get.Blas
+    
+        cd ../ASL
+        ./get.ASL
+    
+        cd ../Lapack
+        ./get.Lapack
+    
+        cd ../Mumps
+        ./get.Mumps
+    
+        cd ../Metis
+        ./get.Metis
+        ```
+    * Make and install on /usr/local
+        ```
+        cd ../..
+        mkdir build && cd build
+        ../configure --prefix=/usr/local/
+        sudo make
+        sudo make test
+        sudo make install
+        sudo ldconfig
+        ```
 
 ## Change Log
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \

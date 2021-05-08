@@ -1,23 +1,3 @@
-# Getting Started
-This page explains how to download and install the software, run the MIT Controller, and how to create a controller of your own.
-
-# Install dependencies
-
-Packages:
-```
-sudo apt install mesa-common-dev freeglut3-dev coinor-libipopt-dev libblas-dev liblapack-dev gfortran liblapack-dev coinor-libipopt-dev cmake gcc build-essential libglib2.0-dev
-```
-
-Others:
-- LCM 1.3.1 (it says Java 6, but you can use newer) (https://lcm-proj.github.io/)
-- Qt 5.10.0 or newer (requires the gamepad library) (https://www.qt.io/download-qt-installer)
-- Eigen (http://eigen.tuxfamily.org/)
-
-NOTE: on Ubuntu 18.10 or 19.04, you may instead install Qt with
-```
-sudo apt install libqt5 libqt5gamepad5
-```
-
 
 # Download and build code
 
