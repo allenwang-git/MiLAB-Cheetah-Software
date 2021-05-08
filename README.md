@@ -71,7 +71,7 @@ For each motor in our robot, the rotation axis points along the motor shaft from
 <img src="https://user-images.githubusercontent.com/69251304/115496834-12912780-a29d-11eb-8142-d62174f64656.png" width="300" height="300" alt="real motorframe"/><br/>
 
 ## Build 
-* Install all Dependencies on computer.
+* [Install all Dependencies](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/README.md#dependencies) on computer.
 * To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt:
     ```
     set(CMAKE_PREFIX_PATH ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64)
@@ -133,7 +133,7 @@ This output should hopefully end with
 
 ## Run Real Robot
 * Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board. 
-* Install all Dependencies except Qt on robot's UP-board.
+* [Install all Dependencies except Qt](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/README.md#dependencies) on robot's UP-board.
 * Open terminal and create mc-build folder:
     ```
     cd MiLAB-Cheetah-Software
