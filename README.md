@@ -70,6 +70,12 @@ Note that our joint rotation axis definition is different from UNITREE, but it i
 For each motor in our robot, the rotation axis points along the motor shaft from the motor output to the motor driver.\
 <img src="https://user-images.githubusercontent.com/69251304/115496834-12912780-a29d-11eb-8142-d62174f64656.png" width="300" height="300" alt="real motorframe"/><br/>
 
+## Download
+```
+cd 
+git clone https://github.com/AWang-Cabin/MiLAB-Cheetah-Software.git
+```
+
 ## Build 
 * Install all Dependencies on computer.
 * To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt:
@@ -181,6 +187,11 @@ This output should hopefully end with
 ## Change Controller or Robot
 Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/ChangeController.md) for details.
 
+## Joystick of Simulation
+We use the Logitech F310 controller. There's a switch in the back, which should be in the "X" position. The controller needs to reconnected if you change the switch position.  Also, the LED on the front near the mode button should be off.
+(https://www.amazon.com/Logitech-940-000110-Gamepad-F310/dp/B003VAHYQY)
+
+
 ## Operation Guide
 * [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
 * [Simulation operation guide]()
@@ -248,7 +259,7 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
         ```  
         sudo apt-get install cppad subversion patch wget checkinstall
         ```
-    * Download package [ipopt.3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/qt-opensource-linux-x64-5.10.0.run) 
+    * Download package [Ipopt-3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/Ipopt-3.12.7.zip) 
     * Unzip to /home and install third-party lib
         ```
         unzip Ipopt-3.12.7.zip
