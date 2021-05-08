@@ -7,16 +7,16 @@
 #include <thread>
 #include <mutex>
 
-class MiniCheetahSpi_Controller : public RobotController {
+class MiLAB_Spi_Controller : public RobotController {
 public:
-  MiniCheetahSpi_Controller():RobotController(), _lcm(getLcmUrl(255)) {
+  MiLAB_Spi_Controller(): RobotController(), _lcm(getLcmUrl(255)) {
 
-    _lcm.subscribe("spi_debug_cmd", &MiniCheetahSpi_Controller::handleLcm, this);
+    _lcm.subscribe("spi_debug_cmd", &MiLAB_Spi_Controller::handleLcm, this);
     _lcmThread = std::thread([&](){
       for(;;) _lcm.handle();
     });
   }
-  virtual ~MiniCheetahSpi_Controller(){}
+  virtual ~MiLAB_Spi_Controller(){}
 
   virtual void initializeController(){}
   virtual void runController();

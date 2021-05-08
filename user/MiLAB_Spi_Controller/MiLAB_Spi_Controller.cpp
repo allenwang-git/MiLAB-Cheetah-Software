@@ -1,6 +1,6 @@
-#include "MiniCheetahSpi_Controller.h"
+#include "MiLAB_Spi_Controller.h"
 
-void MiniCheetahSpi_Controller::runController() {
+void MiLAB_Spi_Controller::runController() {
   _mutex.lock();
 
   u32 idx = 0;
