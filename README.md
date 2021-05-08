@@ -191,7 +191,6 @@ This output should hopefully end with
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
-To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
 * Update linux software repositories:
     ```
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -285,6 +284,7 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
         sudo make install
         sudo ldconfig
         ```
+    * To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
 
 ## Install Linux RT Kernel for UP-board
 To keep real time performance of controller running on UP-board, the ubuntu rt kernel need to be installed.
