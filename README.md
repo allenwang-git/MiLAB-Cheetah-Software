@@ -186,7 +186,6 @@ Go to the [Instruction of changing Controller Parameters or Robots](https://gith
 * [Simulation operation guide]()
 
 ## Dependencies
-To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
 * Update linux software repositories:
     ```
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -280,7 +279,8 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
         sudo make install
         sudo ldconfig
         ```
-
+    * To use Ipopt, use CMake Ipopt option. Example: `cmake -DIPOPT_OPTION=ON ..`
+    
 ## Change Log
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
 Remember to check corresponding include files of following source files. \
