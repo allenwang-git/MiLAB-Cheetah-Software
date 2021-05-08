@@ -200,7 +200,7 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
     ```
 * Intall dependent packages:
     ```
-    sudo apt install mesa-common-dev freeglut3-dev coinor-libipopt-dev libblas-dev liblapack-dev gfortran cmake gcc build-essential libglib2.0-dev
+    sudo apt install mesa-common-dev freeglut3-dev coinor-libipopt-dev libblas-dev liblapack-dev gfortran cmake gcc build-essential libglib2.0-dev git
     ```
 * Check cmake version (Must higher than 3.5)
     ```
@@ -297,16 +297,77 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
      * Insert the USB thumb drive in a empty USB port and proceed with a normal Ubuntu installation.
 
 * Install RT Kernel
+     * System required: Ubuntu 16.04 
+     * There are several different methods to install rt kernel. Here we choose an easiest way. If you want to build from source code, go to https://github.com/AWang-Cabin/Ubuntu-RT-UP-Board for more instruction about it.
      * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/UP-board-4.4.86-rt99.tar) for UP-board.
      * Unzip it in /usr/src
           ```
           cd /usr/src
           tar xvf UP-board-4.4.86-rt99.tar
-          cd UP-board-4.4.86-rt99.tar
-          
           ```
-     
-      
+     * Install kernel
+          ```
+          cd UP-board-4.4.86-rt99.tar
+          sudo dpkg -i linux-*.deb
+          sudo update-grub
+          reboot
+          ```
+          If you want to modify GRUB configuration, 
+          ```
+          sudo gedit /etc/default/grub
+          sudo update-grub
+          reboot
+          ```
+     * Check and Config
+          Check kernel:
+          ```
+          uname -r
+          ```
+          If rt kernel installed, you will get:
+          ```
+          4.4.86-rt99
+          ```
+          Check spi driver:
+          ```
+          ls /dev/spidev*
+          ```
+          If driver installed, you will get: 
+          ```
+          /dev/spidev2.0  /dev/spidev2.1
+          ```
+          Enable the HAT functionality from userspace:
+          ```
+          sudo add-apt-repository ppa:ubilinux/up
+          sudo apt install upboard-extras
+          sudo usermod -a -G gpio ${USER}
+          sudo usermod -a -G leds ${USER}
+          sudo usermod -a -G spi ${USER}
+          sudo usermod -a -G i2c ${USER}
+          sudo usermod -a -G dialout ${USER}
+          sudo reboot
+          ```
+     * Test 
+          Install requirement
+          ```
+          sudo apt install rt-tests stress gnuplot
+          ```
+          Download [rt-kernel-test](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/rt-kernal-test.tar.gz) and unzip
+          ```
+          tar xvf rt-kernel-test.tar.gz
+          cd rt-kernel-test
+          chmod +777 *.sh
+          ```
+          blink test and then the green led of UP board will blink
+          ```
+          sudo ./blink.sh
+          ```
+          real time latency test
+          ```
+          sudo ./rt-test.sh
+          ```
+          rt test result will be saved in the directory
+   
+          
 ## Change Controller or Robot
 Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/ChangeController.md) for details.
 
