@@ -83,7 +83,7 @@ git clone https://github.com/AWang-Cabin/MiLAB-Cheetah-Software.git
 ```
 
 ## Build 
-* Install all Dependencies on computer.
+* [Install all Dependencies](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on computer.
 * To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt:
     ```
     set(CMAKE_PREFIX_PATH ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64)
@@ -145,7 +145,7 @@ This output should hopefully end with
 
 ## Run Real Robot
 * Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board. 
-* Install all Dependencies except Qt on robot's UP-board.
+* [Install all Dependencies except Qt](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on robot's UP-board.
 * Open terminal and create mc-build folder:
     ```
     cd MiLAB-Cheetah-Software
@@ -163,7 +163,7 @@ This output should hopefully end with
         ```
         ssh robot@10.0.0.21
         ``` 
-    * By WIFI without other pre-settings:
+    * By WIFI without other pre-settings: 
         ```
         ssh robot@10.61.6.124
         ``` 
