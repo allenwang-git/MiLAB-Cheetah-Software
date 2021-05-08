@@ -68,7 +68,184 @@ Note that our joint rotation axis definition is different from UNITREE, but it i
 For each motor in our robot, the rotation axis points along the motor shaft from the motor output to the motor driver.\
 <img src="https://user-images.githubusercontent.com/69251304/115496834-12912780-a29d-11eb-8142-d62174f64656.png" width="300" height="300" alt="real motorframe"/><br/>
 
-## Workload List
+## Build 
+* Install all Dependencies on computer.
+* To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt:
+    ```
+    set(CMAKE_PREFIX_PATH ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64)
+
+    set(Qt5Core_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Core)
+    set(Qt5Widgets_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Widgets)
+    set(Qt5Gamepad_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Gamepad)
+    ```
+* To avoid Stack Overflow, append following commands to the end of ~/.bashrc (Not a mandatory step):
+    ```
+    ulimit -s 102400
+    echo "[Bash Info] Stack size has been changed to $(ulimit -s) KB for Milab Quadrupedal"
+    ```
+* To build all code:
+    ```
+    mkdir build
+    cd build
+    cmake ..
+    ./../scripts/make_types.sh
+    make -j8
+    ```
+
+If you are building code on your computer that you would like to copy over to the real robot, go to [Run Real Robot] for details.
+
+If you are building code on the robot's UP-board, you do not need to change above commands.
+
+This build process builds the common library, robot code, and simulator. If you just change robot code, you can simply run `make -j4` again. 
+
+If you change LCM types, you'll need to run `cmake ..; make -j8`. This automatically runs `make_types.sh`.
+
+To test the common library, run `common/test-common`. To run the robot code, run `robot/robot`. To run the simulator, run `sim/sim`.
+
+Part of this build process will automatically download the googletest software testing framework and sets it up. 
+
+After it is done building, it will produce a `libbiomimetics.a` static library and an executable `test-common`.  Run the tests with `common/test-common`. 
+
+This output should hopefully end with
+```
+[----------] Global test environment tear-down
+[==========] 97 tests from 20 test suites ran. (1212 ms total)
+[  PASSED  ] 97 tests.
+```
+## Run simulator
+* To run the simulator, open a command window:
+    ```
+    cd MiLAB-Cheetah-Software/build
+    ./sim/sim
+    ```
+* In the another command window in the same path, run the robot controller:
+    ```
+    ./user/${controller_folder}/${controller_name} ${robot_name} ${target_system}
+    ``` 
+    Example:
+    ```
+    ./user/MiLAB_Controller/milab_ctrl i s 
+    ```
+    i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
+    s: simulation,  r: robot
+
+## Run Real Robot
+* Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board. 
+* Install all Dependencies except Qt on robot's UP-board.
+* Open terminal and create mc-build folder:
+    ```
+    cd MiLAB-Cheetah-Software
+    mkdir mc-build && cd mc-build
+    ```
+* Build for milab robot: 
+    ```
+    cmake -DMILAB_BUILD=TRUE ..
+    make -j8
+    ``` 
+* In a new terminal, connect to robot's UP-board over ethernet or WIFI:
+    *  By ethernet: 
+        * Set server PC's ethernet ip as`10.0.0.2` 
+        * robot's ethernet ip as`10.0.0.21` and then
+        ```
+        ssh robot@10.0.0.21
+        ``` 
+    * By WIFI without other pre-settings:
+        ```
+        ssh robot@10.61.6.124
+        ``` 
+    The password of robot's UP-board is `1`
+
+* Go back to the terminal that under server PC account and mc-build path.
+* Copy robot-software to robot's UP-board with: 
+    ```
+    sh ../scripts/milab_scripts/send_to_milab_cheetah.sh
+    ``` 
+   *More details in **send_to_milab_cheetah.sh**, default option is sending MiLAB_Controller by WIFI if not specified*
+
+* Go to ssh terminal and enter the robot program folder: 
+    ```
+    cd robot-software-XXX
+    ```
+* Run robot controller: 
+    ```
+    ./run_mc.sh ./milab_ctrl
+    ``` 
+    or
+    ```
+    ./run_mc.sh ./jpos_ctrl
+    ```
+ * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_real_robot.md).
+
+## Change Controller or Robot
+Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/ChangeController.md) for details.
+
+## Operation Guide
+* [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
+* [Simulation operation guide]()
+
+## Dependencies
+
+To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
+* Update linux software repositories:
+    ```
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    sudo apt update
+    sudo apt upgrade
+    ```
+* Intall dependent packages:
+    ```
+    sudo apt install mesa-common-dev freeglut3-dev coinor-libipopt-dev libblas-dev liblapack-dev gfortran liblapack-dev coinor-libipopt-dev cmake gcc build-essential libglib2.0-dev
+    ```
+* Install gcc (If lower than 5.0): 
+    ```
+    g++ --version
+    gcc -v
+    ```
+    ```
+    sudo apt-get install gcc-5 g++-5
+    sudo updatedb && sudo ldconfig
+    ```
+* Install openjdk (Must installed before LCM):
+    ```
+    sudo apt-get install openjdk-8-jdk default-jdk
+    ```
+* Install LCM (Recommend lcm-1.4)
+    * Download package [lcm-1.4.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/lcm-1.4.0.zip) 
+    * Unzip to /home and install (Must unzip to /home)
+        ```
+        cd lcm-1.4.0
+        mkdir build && cd build
+        cmake ..
+        make -j4
+        sudo make install
+        sudo ldconfig
+        ```
+    * [LCM main page](https://lcm-proj.github.io/)
+
+* Install [Eigen](http://eigen.tuxfamily.org/)
+    ```
+    sudo apt-get install libeigen3-dev
+    ```
+* Install Qt5 (Recommend Qt5.10)
+    * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/qt-opensource-linux-x64-5.10.0.run) 
+    * Run installer 
+      ```
+      sudo chmod a+x qt-opensource-linux-x64-5.10.0.run
+      ./qt-opensource-linux-x64-5.10.0.run
+      ```
+    * Follow [config instructions]()
+
+Others:
+- LCM 1.3.1 (it says Java 6, but you can use newer) (https://lcm-proj.github.io/)
+- Qt 5.10.0 or newer (requires the gamepad library) (https://www.qt.io/download-qt-installer)
+- Eigen (http://eigen.tuxfamily.org/)
+
+NOTE: on Ubuntu 18.10 or 19.04, you may instead install Qt with
+```
+sudo apt install libqt5 libqt5gamepad5
+```
+
+## Change Log
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
 Remember to check corresponding include files of following source files. \
 Whenever you change or add other project files, please update this list. \
@@ -77,6 +254,9 @@ Whenever you change or add other project files, please update this list. \
 **todo**: plan to modify recently or still have *TODO* tips in the file \
 **new**: new file specifically for Milab robot
 ```
+**********/MiLAB-Cheetah-Software********************************************
+CMakeLists.txt                     *
+
 ********/resources*********************************************
                                   done   doing    todo    new
 milab_body.obj                     *                       *
@@ -121,6 +301,7 @@ utilities.h                        *
 RobotRunner.cpp                    * todo
 main_helper.cpp                    *
 HardwareBridge.cpp                 *
+SimulationBridge.cpp                 *
 ****/rt**
 rt_rc_interface.cpp                *
 rt_subs.cpp                        *
@@ -128,6 +309,12 @@ rt_spi.cpp                         *todo
 
 ******/include**
 HardwareBridge.h                   *
+
+
+********/scripts***********************************************
+******/milab_scripts**           done   doing    todo     new
+send_to_milab_cheetah.sh           *                       *
+run_milab.sh                       *                       *
 
 
 ********/sim***************************************************
@@ -178,87 +365,3 @@ leg_controller_plot.py             *                        *
 positive_matrix_check.py           *                        *
 
 ```
-
-## Build
-To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt
-```
-set(CMAKE_PREFIX_PATH ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64)
-
-set(Qt5Core_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Core)
-set(Qt5Widgets_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Widgets)
-set(Qt5Gamepad_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Gamepad)
-```
-To build all code:
-```
-mkdir build
-cd build
-cmake ..
-./../scripts/make_types.sh
-make -j4
-```
-
-If you are building code on your computer that you would like to copy over to the real robot, you must replace the cmake command with
-```
-cmake -DMINI_CHEETAH_BUILD=TRUE
-```
-otherwise it will not work.  If you are building mini cheetah code on the mini cheetah computer, you do not need to do this.
-
-This build process builds the common library, robot code, and simulator. If you just change robot code, you can simply run `make -j4` again. If you change LCM types, you'll need to run `cmake ..; make -j4`. This automatically runs `make_types.sh`.
-
-To test the common library, run `common/test-common`. To run the robot code, run `robot/robot`. To run the simulator, run `sim/sim`.
-
-Part of this build process will automatically download the gtest software testing framework and sets it up. After it is done building, it will produce a `libbiomimetics.a` static library and an executable `test-common`.  Run the tests with `common/test-common`. This output should hopefully end with
-
-```
-[----------] Global test environment tear-down
-[==========] 18 tests from 3 test cases ran. (0 ms total)
-[  PASSED  ] 18 tests.
-```
-## Run simulator
-1.To avoid Stack Overflow, append following commands to the end of ~/.bashrc (Not a mandatory step):
-```
-ulimit -s 102400
-echo "[Bash Info] Stack size has been changed to $(ulimit -s) KB for Milab Quadrupedal"
-```
-2.To run the simulator, open a command window:
-```
-cd MiLAB-Cheetah-Software/build
-./sim/sim
-```
-3.In the another command window in the same path, run the robot controller:
-```
-./user/${controller_folder}/${controller_name} ${robot_name} ${target_system}
-```
-Example:
-```
-./user/MIT_Controller/mit_ctrl i s 
-```
-i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
-s: simulation,  r: robot
-## Change Controller or Robot
-Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/user/ChangeController.md) for details.
-
-## Run Real Robot
-0. Find detailed guidance in [Running Mini Cheetah](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_mini_cheetah.md)
-1. Create build folder `mkdir mc-build`
-2. Build as mini cheetah executable `cd mc-build; cmake -DMINI_CHEETAH_BUILD=TRUE ..; make -j`
-3. Connect to mini cheetah over ethernet, verify you can ssh in
-4. Copy program to mini cheetah with `../scripts/send_to_mini_cheetah.sh`
-5. ssh into the mini cheetah `ssh user@10.0.0.34`
-6. Enter the robot program folder `cd robot-software-....`
-7. Run robot code `./run_mc.sh` 
-
-## Operation Guide
-* [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
-* [Simulation operation guide]()
-
-## Dependencies
-- Qt 5.10 - https://www.qt.io/download-qt-installer
-- LCM - https://lcm-proj.github.io/ (Please make it sure that you have a java to let lcm compile java-extension together)
-- Eigen - http://eigen.tuxfamily.org
-- `mesa-common-dev`
-- `freeglut3-dev`
-- `libblas-dev liblapack-dev`
-
-To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
-

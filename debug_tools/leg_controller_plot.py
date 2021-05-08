@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import numpy as np
-
+# Author: Yinuo Wang
+# Date: 03/16/21
+# Email: dbdxwyn@163.com
 # This tool file is used to visualize robot Joint PD or Foot Cartesian Trajectory PD tracking performance
 # You can switch between above two plotting modes by changing JOINT_PD value. Data format of input file is
 # as follow and the sampling frequency is about 50Hz (0.02s), which can be changed in LegController.cpp.
@@ -15,16 +17,13 @@ import numpy as np
 #  30           ...              39                           64-66   67-69                                    84-86
 #                                           40-42     43-45                         70-72         73-75
 #
-# Author: Yinuo Wang
-# Date: 03/16/21
-# Email: dbdxwyn@163.com
 
-# JOINT_PD = True  #Joint PD
-JOINT_PD = False  # Cartesian PD
+JOINT_PD = True  #Joint PD
+# JOINT_PD = False  # Cartesian PD
 TORQUE_PLOT = True
 # TORQUE_PLOT = False
-FF_F_PLOT = True
-# FF_F_PLOT = False
+# FF_F_PLOT = True
+FF_F_PLOT = False
 FILE_NAME = 'leg_controller_data.txt'
 
 ## read force data from file
