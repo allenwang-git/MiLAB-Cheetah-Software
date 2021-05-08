@@ -5,7 +5,7 @@
 *Email: dbdxwyn@163.com*
 
 ## Introduction
-Based on [MIT-Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Software) open-source project, we developed this repository which contains the Robot and Simulation software for our MiLAB quadruped robot. For a getting started guide, see [Getting Started](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/getting_started.md).
+Based on [MIT-Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Software) open-source project, we developed this repository which contains the Robot and Simulation software for our MiLAB quadruped robot.
 
 * The **common** folder contains the common library with dynamics and utilities
 * The **resources** folder will contain data files, like CAD of the robot used for the visualization
@@ -29,6 +29,12 @@ Mass:             kg
 Inertia tensor:   kg·m^2
 ```
 * Serial numbers of the legs, joints and links:
+```
+     FRONT
+LEFT 1  0 RIGHT
+     3  2
+     BACK
+```
 ```
 leg 0: FR -- Front-Right           joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
 leg 1: FL -- Front-Left            joint 1: Hip                              link 1: Upper link   
@@ -99,7 +105,6 @@ git clone https://github.com/AWang-Cabin/MiLAB-Cheetah-Software.git
     ./../scripts/make_types.sh
     make -j8
     ```
-
 If you are building code on your computer that you would like to copy over to the real robot, go to [Run Real Robot] for details.
 
 If you are building code on the robot's UP-board, you do not need to change above commands.
@@ -136,6 +141,7 @@ This output should hopefully end with
     ```
     i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
     s: simulation,  r: robot
+* For more info, go to see [simulation example]()
 
 ## Run Real Robot
 * Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board. 
@@ -183,18 +189,6 @@ This output should hopefully end with
     ./run_mc.sh ./jpos_ctrl
     ```
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_real_robot.md).
-
-## Change Controller or Robot
-Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/ChangeController.md) for details.
-
-## Joystick of Simulation
-We use the Logitech F310 controller. There's a switch in the back, which should be in the "X" position. The controller needs to reconnected if you change the switch position.  Also, the LED on the front near the mode button should be off.
-(https://www.amazon.com/Logitech-940-000110-Gamepad-F310/dp/B003VAHYQY)
-
-
-## Operation Guide
-* [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
-* [Simulation operation guide]()
 
 ## Dependencies
 To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
@@ -291,6 +285,65 @@ To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
         sudo make install
         sudo ldconfig
         ```
+
+## Linux RT Kernel
+
+
+      
+## Change Controller or Robot
+Go to the [Instruction of changing Controller Parameters or Robots](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/ChangeController.md) for details.
+
+## Joystick of Simulation
+We use the Logitech F310 controller. There's a switch in the back, which should be in the "X" position. 
+The controller needs to reconnected if you change the switch position. Also, the LED on the front near the mode button should be off.
+(https://www.amazon.com/Logitech-940-000110-Gamepad-F310/dp/B003VAHYQY)
+
+## LCM
+We use LCM (https://lcm-proj.github.io/) to connect the control interface to the actual mini cheetah hardware, 
+and also as a debugging tool when running the simulator.  
+The `make_types.sh` script runs an LCM tool to generate C++ header files for the LCM data types.  
+When the simulator is running, you can run `scripts/launch_lcm_spy.sh` to open the LCM spy utility, which shows detailed information from the simulator and controller.  
+You can click on data streams to plot them, which is nice for debugging.  There is also a tool called `lcm-logger` which can save LCM data to a file.
+
+## Operation Guide
+* [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
+* [Simulation operation guide]()
+
+## Writing New Controller
+To add your own robot controller, you should add a folder under `Cheetah-Software/user`, and add the folder to the `CMakeLists.txt` in `user`.  
+The `JPos_Controller` is an example of a very simple controller.  
+The `JPosUserParameters.h` file has an example of declaring two user parameters which can be adjusted from the simulator interface, but using user parameters is optional.  
+The `JPos_Controller.hpp` and `JPos_Controller.cpp` files are the actual controller, which should extend `RobotController`.  
+Notice that in the `JPos_Controller.hpp` file, the `getUserControlParameters` method retuns a pointer to the user parameters.  
+If you do not use user parameters, your `getUserControlParameters` should return `nullptr`.  
+Finally, your `main` function must be like the example main function in `main.cpp`.
+
+The `runController` method of your controller will be called automatically at 1 kHz. 
+Here, you have access to the following:
+- `_quadruped` : contains constant parameters about the robot (link lengths, gear ratios, inertias...).  The `getHipLocation` function returns the location of the "hip" in the body coordinate system.  The x-axis points forward, y-axis to the left, and z-axis up.  T
+- `_model` : a dynamics model of the robot.  This can be used to compute forward kinematics, Jacobians, etc...
+- `_legController`: Interface to the robot's legs. This data is syncronized with the hardware at around 700 Hz. There are multiple ways to control the legs, and the result from all the controllers are added together.
+    - `commands[leg_id].tauFeedForward` : Leg torque (Nm, at the joint).  Order is ab/ad, hip, knee.
+    - `commands[leg_id].forceFeedForward` : Force to apply at foot (N), in hip frame. (Same orientation as body frame, origin is the hip)
+    - `commands[leg_id].qDes` : Desired joint position for joint PD controller (radians). Order is ab/ad, hip, knee.  `(0,0,0)` is leg pointing straight down.
+    - `commands[leg_id].qdDes` : Desired joint velocity for joint PD controller (rad/sec).
+    - `commands[leg_id].pDes, vDes` : Desired foot position/velocity for cartesian PD controller (meters, hip frame)
+    - `commands[leg_id].kpCartesian, kdCartesian, kpJoint, kdJoint` : Gains for PD controllers (3x3 matrix).  Use the diagonal entries only.
+    - `datas[leg_id].q` : Leg joint encoder (radians).  Order is ab/ad, hip, knee.  `(0,0,0)` is leg pointing straight down.
+    - `datas[leg_id].qd` : Leg joint velocity (radians/sec).  Same order as `q`.
+    - `datas[leg_id].p`  : Foot cartesian position, in hip frame. (Same orientation as body frame, origin is the hip)
+    - `datas[leg_id].v`  : Foot cartesian velocity, in hip frame. 
+    - `datas[leg_id].tau` : Estimate of motor torque from combination of all controllers
+The joint PD control actually runs at 40 kHz on the motor controllers.
+- `_stateEstimate, _stateEstimatorContainer` The result and interface for the provided state estimator.  If you provide the contact state of the robot (which feet are touching the ground), it will determine the robot's position/velocity in the world.
+- `_driverCommand` : inputs from the game pad.
+- `_controlParameters` : values from the center robot control parameters panel
+- `_visualizationData` : interface to add debugging visualizations to the simulator window
+- `_robotType` : If you are the mini Cheetah or Cheetah 3 robot.
+
+If you would like to see more of how this works, look at the `robot` folder.  
+The `RobotRunner` class actually runs the control code, and connects it with either the `HardwareBridge` or `SimulationBridge`.  
+The code in the `rt` folder actually interacts with the hardware.
 
 ## Change Log
 This list records nearly all files we modified or created for our own MiLAB quadrupedal. \
