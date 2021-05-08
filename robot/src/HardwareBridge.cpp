@@ -22,7 +22,8 @@
 #include "Utilities/Utilities_print.h"
 
 #define USE_MICROSTRAIN
-#define JPOS_CTRL
+//#define JPOS_CTRL
+#define SPI_CTRL
 //#define CMPC_CTRL
 /*!
  * If an error occurs during initialization, before motors are enabled, print
@@ -656,6 +657,11 @@ void MilabHardwareBridge::run() {
                 #ifdef JPOS_CTRL
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/jpos-user-parameters.yaml");
                 std::string yamlName = "jpos-user-parameters.yaml";
+                printf("Loaded user parameters from yaml file: %s\n", yamlName.c_str());
+                #endif
+                #ifdef SPI_CTRL
+                _userControlParameters->initializeFromYamlFile(THIS_COM "config/no-parameters.yaml");
+                std::string yamlName = "no-parameters.yaml";
                 printf("Loaded user parameters from yaml file: %s\n", yamlName.c_str());
                 #endif
             } catch(std::exception& e) {

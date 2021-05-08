@@ -1,11 +1,11 @@
 __collection-name__: user-parameter-file
 
 # Jpos_Controller
-file_name : "jpos-user-parameters.yaml"
+#file_name : "jpos-user-parameters.yaml"
 
 # Cheetah_Controller
 #file_name : "milab-user-parameters.yaml"
 #file_name : "mc-mit-ctrl-user-parameters.yaml"
 
 # Spi_Controller
-#file_name : "no-parameters.yaml"
+file_name : "no-parameters.yaml"
