@@ -188,7 +188,7 @@ This output should hopefully end with
     ```
     ./run_mc.sh ./jpos_ctrl
     ```
- * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/master/documentation/running_real_robot.md).
+ * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
 To use Ipopt, use CMake Ipopt option. Example: cmake -DIPOPT_OPTION=ON ..
