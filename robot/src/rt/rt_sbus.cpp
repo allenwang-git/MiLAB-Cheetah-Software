@@ -38,8 +38,8 @@ uint16_t channel_data[18];
 /**@brief Name of SBUS serial port on the mini cheetah*/
 #define K_SBUS_PORT_MC "/dev/ttyS4"
 
-/* 对AT9S通道进行矫正时候打开此宏,将数值填写到下面到*/
-//#define Show_RT9S_Celebration
+/* Set AT9S channel range */
+#define Show_RT9S_Celebration
 
 #define Left_Stick_LRight_Max 1745//1700
 #define Left_Stick_LRight_Min 372//320
@@ -101,23 +101,24 @@ void unpack_sbus_data(uint8_t sbus_data[], uint16_t *channels_) {
     #ifdef Show_RT9S_Celebration
     static int show_rt9s_times=0;
     show_rt9s_times++;
-    if(show_rt9s_times%100)
+    if(show_rt9s_times%10000)
     {
-        printf("Left_Stick_LRight_value =\t %d\n",channel_data[0]);
-        printf("Left_Stick_FBack_value = \t%d\n",channel_data[1]);
-        printf("Right_Stick_FBack_value = \t%d\n",channel_data[2]);
-        printf("Right_Stick_LRight_value = \t%d\n",channel_data[3]);
+        printf("Iteration stamp:\t%d\n",show_rt9s_times/10000);
+        printf("------------------------------------------\n");
+        printf("Left_LR =\t%d\n",channel_data[0]);
+        printf("Left_FB =\t%d\n",channel_data[1]);
+        printf("Right_FB =\t%d\n",channel_data[2]);
+        printf("Right_LR =\t%d\n",channel_data[3]);
+        printf("SWA =\t%d\n",channel_data[6]);
+        printf("SWB =\t%d\n",channel_data[7]);
+        printf("SWC =\t%d\n",channel_data[8]);
+        printf("SWD =\t%d\n",channel_data[9]);
+        printf("SWE =\t%d\n",channel_data[4]);
+        printf("SWG =\t%d\n",channel_data[5]);
+        printf("VRB =\t%f\n",(channel_data[7]-1000) / 700.0);
         printf("------------------------------------------\n");
     }
     #endif
-    // for(int i = 0; i < 18; i++) {
-    //   printf("[%2d] %04d ", i, channel_data[i]);
-    // }
-    // printf("\n");
-    // for(int i = 0; i < 24; i++) {
-    //   printf("[%2d] %04d ", i, sbus_data[i]);
-    // }
-    // printf("\n\n");
 
   } else {
      printf("Bad Packet\n");
@@ -247,7 +248,7 @@ void update_taranis_x7(Taranis_X7_data* data) {
 
 #ifdef RC_AT9S
 
-static AT9s_SwitchStateBool map_switch_bool(uint16_t in) {
+static AT9s_SwitchStateBool map_switch_bool(uint16_t in, char sw) {
     switch (in) {
         case 305:
         case 306:
@@ -256,12 +257,12 @@ static AT9s_SwitchStateBool map_switch_bool(uint16_t in) {
         case 1694:
             return AT9s_SwitchStateBool::AT9S_BOOL_DOWN;
         default:
-            printf("[SBUS] switch returned bad value %d\n", in);
+            printf("[SBUS] Bool switch %c returned bad value %d\n", sw, in);
             return AT9s_SwitchStateBool::AT9S_BOOL_DOWN;
     }
 }
 
-static AT9s_SwitchStateTri map_switch_tri(uint16_t in) {
+static AT9s_SwitchStateTri map_switch_tri(uint16_t in, char sw) {
     switch (in) {
         case 305:
         case 306:
@@ -272,7 +273,7 @@ static AT9s_SwitchStateTri map_switch_tri(uint16_t in) {
         case 1694:
             return AT9s_SwitchStateTri::AT9S_TRI_DOWN;
         default:
-            printf("[SBUS] switch returned bad value %d\n", in);
+            printf("[SBUS] Tri switch %c returned bad value %d\n", sw, in);
             return AT9s_SwitchStateTri::AT9S_TRI_UP;
     }
 }
@@ -320,16 +321,16 @@ void update_at9s(AT9s_data *data) {
         data->right_stick_y = 0;
 
 //  Switch
-    data->SWE = map_switch_tri(channel_data[4]);
-    data->SWG = map_switch_tri(channel_data[5]);
+    data->SWE = map_switch_tri(channel_data[4],'E');
+    data->SWG = map_switch_tri(channel_data[5],'G');
     // locomotion mode
-    data->SWA = map_switch_bool(channel_data[6]);
-    data->SWB = map_switch_bool(channel_data[7]);
+    data->SWA = map_switch_bool(channel_data[6],'A');
+    data->SWB = map_switch_bool(channel_data[7],'B');
     // step height
     data->varB = (channel_data[7] - 1000) / 700.0; // 300 - 1700
     // gait type
-    data->SWC = map_switch_tri(channel_data[8]);
-    data->SWD = map_switch_bool(channel_data[9]);
+    data->SWC = map_switch_tri(channel_data[8],'C');
+    data->SWD = map_switch_bool(channel_data[9],'D');
 
     pthread_mutex_unlock(&sbus_data_m);
 }

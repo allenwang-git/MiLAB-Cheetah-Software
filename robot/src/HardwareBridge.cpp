@@ -25,6 +25,7 @@
 //#define JPOS_CTRL
 #define SPI_CTRL
 //#define CMPC_CTRL
+
 /*!
  * If an error occurs during initialization, before motors are enabled, print
  * error and exit.
