@@ -5,8 +5,6 @@
 # Unlike MIT, we can select milab_cheetah's ip address and controller by options.
 # wifi ip is the default address and the milab_ctrl is the default controller if don't specify it.
 
-echo "[USAGE] sh send_to_milab_cheetah.sh [Controller_path/executable] [wifi|wire]"
-echo "[EXAMPLE] sh send_to_milab_cheetah.sh MiLAB_Controller/milab_ctrl wifi"
 ## Set robot's ip
 wifiip=10.61.6.124
 wireip=10.0.0.21
@@ -17,23 +15,39 @@ set -e
 #DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DIR="$(pwd)"
 cd ${DIR}/../../mc-build/
-rm -rf robot-software
+sudo rm -rf robot-software
 mkdir robot-software
-mkdir robot-software/build
-#cp common/test-common robot-software/build
+mkdir robot-software/build robot-software/log
+
+## Select controller
 if [ -z $1 ]
 then
+  echo "[INFO] Copying dafault controller: milab_ctrl..."
   cp ../mc-build/user/MiLAB_Controller/milab_ctrl robot-software/build
 else
-  cp ../mc-build/user/$1 robot-software/build
+  if [ "$1" = "jpos" ]; then
+    echo "[INFO] Copying jpos_ctrl ..."
+    cp ../mc-build/user/MiLAB_JPos_Controller/jpos_ctrl robot-software/build
+  elif [ "$1" = "spi" ]; then
+    echo "[INFO] Copying spi_ctrl..."
+    cp ../mc-build/user/MiLAB_Spi_Controller/spi_ctrl robot-software/build
+  else
+    echo "[ERROR] $1 is not a existed controller"
+    echo "[USAGE] sh send_to_milab_cheetah.sh [ |spi|jpd] [ |wifi|wire]"
+    echo "[EXAMPLE] sh send_to_milab_cheetah.sh spi wifi"
+    exit 1
+  fi
 fi
+
+## Copy files
 find . -name \*.so* -exec cp {} ./robot-software/build \;
-cp ../scripts/run* ./robot-software/build
+cp ../scripts/run_milab* ./robot-software/build
 cp ../scripts/setup_network_mc.py ./robot-software/build
-cp ../scripts/run_mc_debug.sh ./robot-software/build
+#cp ../scripts/run_mc_debug.sh ./robot-software/build
 cp ../scripts/config_network_lcm.sh ./robot-software
 cp -r ../robot robot-software
 cp -r ../config robot-software
+chmod +x ./robot-software/build/*
 
 ## Send dir to real robot's computer
 if [ -n "$2" ]
@@ -43,10 +57,15 @@ then
     echo "[INFO] Using Wifi connection ip address."
     echo "[INFO] Sending ... (It may take few minutes)."
     scp -rq robot-software $name@$wifiip:~/
-  else
+  elif [ "$2" = "wire" ]; then
     echo "[INFO] Using wire connection ip address.  "
     echo "[INFO] Sending ... (It may take few minutes)."
     scp -rq robot-software $name@$wireip:~/
+  else
+    echo "[ERROR] $2 is not a supported connection type"
+    echo "[USAGE] sh send_to_milab_cheetah.sh [ |spi|jpd] [ |wifi|wire]"
+    echo "[EXAMPLE] sh send_to_milab_cheetah.sh spi wifi"
+    exit 1
   fi
 else
     echo "[INFO] No connection type specified, using wifi connection as default."
@@ -58,6 +77,8 @@ fi
 if [ $? -eq 0 ]
 then
   echo "[INFO] Finish software sending successfully."
+  exit 0
 else
   echo "[ERROR] Something wrong, sending failed."
+  exit 1
 fi
