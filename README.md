@@ -144,8 +144,9 @@ This output should hopefully end with
 * For more info, go to see [simulation example](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/sim_example.md)
 
 ## Run Real Robot
-* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](). 
+* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies). 
 * [Install all Dependencies except Qt](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on robot's UP-board.
+* [Finish LCM UDP Multicast Setup](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) fot PC and UP-board.
 * Open terminal and create mc-build folder:
     ```
     cd MiLAB-Cheetah-Software
@@ -171,8 +172,9 @@ This output should hopefully end with
 
 * Go back to the terminal that under server PC account and mc-build path.
 * Copy robot-software to robot's UP-board with: 
+    For example:
     ```
-    sh ../scripts/milab_scripts/send_to_milab_cheetah.sh
+    sh ../scripts/milab_scripts/send_to_milab_cheetah.sh 
     ``` 
    *More details in **send_to_milab_cheetah.sh**, default option is sending MiLAB_Controller by WIFI if not specified*
 
@@ -182,11 +184,11 @@ This output should hopefully end with
     ```
 * Run robot controller: 
     ```
-    ./run_mc.sh ./milab_ctrl
+    ./run_milab.sh mpc f l
     ``` 
     or
     ```
-    ./run_mc.sh ./jpos_ctrl
+    ./run_mc.sh jpos f
     ```
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
@@ -377,11 +379,29 @@ The controller needs to reconnected if you change the switch position. Also, the
 (https://www.amazon.com/Logitech-940-000110-Gamepad-F310/dp/B003VAHYQY)
 
 ## LCM
-We use LCM (https://lcm-proj.github.io/) to connect the control interface to the actual mini cheetah hardware, 
-and also as a debugging tool when running the simulator.  
-The `make_types.sh` script runs an LCM tool to generate C++ header files for the LCM data types.  
-When the simulator is running, you can run `scripts/launch_lcm_spy.sh` to open the LCM spy utility, which shows detailed information from the simulator and controller.  
+We use LCM (https://lcm-proj.github.io/) to connect the control interface to the actual robot hardware, 
+and also as a debugging tool when running the simulator. Also, LCM can connect between your PC and robot UP-board by UDP Multicast setup. 
+The `make_types.sh` script runs an LCM tool to generate C++ header files for the LCM data types. You can create and make your own lcm data types by `lcm-gen`. 
+When the simulator is running, you can run command`lcm-spy` to open the LCM spy utility, which shows detailed information from the simulator and controller.  
 You can click on data streams to plot them, which is nice for debugging.  There is also a tool called `lcm-logger` which can save LCM data to a file.
+### UDP Multicast Setup
+* Using LCM on a single host
+     If your computer(**UP-board**) is not connected to any network, you need to explicitly enable multicast traffic by adding multicast entries to your system's routing table. On Linux, you can setup the loopback interface for multicast with the following commands:
+     ```
+     sudo ifconfig lo multicast
+     sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev lo
+     ```
+     Remember, you must always do this to use LCM if your machine is not connected to any external network.\
+     **Note**: Above commands have been added into `run_milab.sh`, so actually you don't need to worry about it now. 
+* Using LCM across multiple hosts
+     LCM defaultly uses a time-to-live (TTL) value of **0**. This will prevent any LCM packets from being transmitted on the wire. Only local applications will see them. Choose a value of **1** for the entire subnet to see the traffic. Even larger values will enable the packets to pass through routers. However, these routers must be set up with multicast routing tables in order to successfully relay multicast traffic.
+     If you want to enable communication between PC and UP-board by LCM, firstly make sure they are connected by ethernet wire and can ssh successfully into each other. Then, you only need to run following commands on both mechines at the first time:
+     ```
+     echo "export LCM_DEFAULT_URL=udpm://239.255.76.67:7667?ttl=1" >> ~/.bashrc
+     source ~/.bashrc
+     ```
+     **Note**: If you only want to run simulator on you PC, you don't need to do above steps. And multi-host LCM can only run on computers connected by ethernet.
+* Learn More  (https://lcm-proj.github.io/multicast_setup.html)
 
 ## Operation Guide
 * [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
