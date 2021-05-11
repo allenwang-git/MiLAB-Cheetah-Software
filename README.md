@@ -5,8 +5,6 @@
 *Email: dbdxwyn@163.com*
 
 ## Contents
-
-
 1. [Introduction](#Introduction)
 2. [Robot Basic Definition](#Robot-Basic-Definition)
 3. [Coordinate Definition](#Coordinate-Definition)
@@ -145,7 +143,7 @@ This output should hopefully end with
 [==========] 97 tests from 20 test suites ran. (1212 ms total)
 [  PASSED  ] 97 tests.
 ```
-## Run simulator
+## Run Simulator
 * To run the simulator, open a command window:
     ```
     cd MiLAB-Cheetah-Software/build
@@ -164,9 +162,9 @@ This output should hopefully end with
 * For more info, go to see [simulation example](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/sim_example.md)
 
 ## Run Real Robot
-* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#install-linux-rt-kernel-for-up-board). 
-* [Install all Dependencies except Qt](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on robot's UP-board.
-* [Finish LCM UDP Multicast Setup](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#udp-multicast-setup) fot both PC and UP-board.
+* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](#install-linux-rt-kernel-for-up-board). 
+* [Install all Dependencies except Qt](#dependencies) on robot's UP-board.
+* [Finish LCM UDP Multicast Setup](#udp-multicast-setup) fot both PC and UP-board.
 * Open terminal and create mc-build folder:
     ```
     cd MiLAB-Cheetah-Software
