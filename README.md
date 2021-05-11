@@ -144,9 +144,9 @@ This output should hopefully end with
 * For more info, go to see [simulation example](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/sim_example.md)
 
 ## Run Real Robot
-* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies). 
+* [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/README.md#install-linux-rt-kernel-for-up-board). 
 * [Install all Dependencies except Qt](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on robot's UP-board.
-* [Finish LCM UDP Multicast Setup](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) fot PC and UP-board.
+* [Finish LCM UDP Multicast Setup](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/README.md#udp-multicast-setup) fot both PC and UP-board.
 * Open terminal and create mc-build folder:
     ```
     cd MiLAB-Cheetah-Software
