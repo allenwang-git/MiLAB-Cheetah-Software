@@ -87,7 +87,7 @@ SwG = DWN
 
 * Switch Gaits
 
-<img src="https://user-images.githubusercontent.com/69251304/114671531-c727c800-9d36-11eb-8d2f-8a24a7f084c4.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671542-ca22b880-9d36-11eb-889f-cb7eaca6088a.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671590-d7d83e00-9d36-11eb-84d5-75a8535a36e3.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671599-d9a20180-9d36-11eb-8b6a-31e914889c65.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671633-e0307900-9d36-11eb-8608-6aa1592ab685.jpg" width="250" height="300"/><br/>
+<img src="https://user-images.githubusercontent.com/69251304/114671531-c727c800-9d36-11eb-8d2f-8a24a7f084c4.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671542-ca22b880-9d36-11eb-889f-cb7eaca6088a.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671590-d7d83e00-9d36-11eb-84d5-75a8535a36e3.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671599-d9a20180-9d36-11eb-8b6a-31e914889c65.jpg" width="250" height="300"/><br/>
 ```
 SwA = DWN
 SwE = UP
