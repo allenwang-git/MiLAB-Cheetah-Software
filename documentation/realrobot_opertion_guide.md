@@ -30,9 +30,6 @@ JOYSTICK: Left Stick, Right Stick
             MID--BalanceStand Mode
             DWN--Locomotion Mode (0.50m)
 
-* Switch B: UP-- Work with SwC to select 6 Locomotion gaits
-            DWN--Standing gait
-
 * Switch C: UP-- Trotting gait    /  Walking gait
             MID--Trotrunning gait /  Pronking gait
             DWN--Pacing gait      /  Galloping gait
@@ -48,7 +45,6 @@ JOYSTICK: Left Stick, Right Stick
 <img src="https://user-images.githubusercontent.com/69251304/114666456-de63b700-9d30-11eb-8eac-3709a0d2f4b8.png" width="350" height="400"/>  <img src="https://user-images.githubusercontent.com/69251304/114668072-e1f83d80-9d32-11eb-9e97-1f8280d150a0.png" width="350" height="400"/><br/>
 ```
 SwA = UP
-SwB = UP
 SwC = UP
 SwD = UP
 SwE = UP
@@ -59,7 +55,6 @@ SwG = UP
 <img src="https://user-images.githubusercontent.com/69251304/114670896-0f92b600-9d36-11eb-954b-871278e042f2.jpg" width="350" height="400"/> <img src="https://user-images.githubusercontent.com/69251304/114669538-98105700-9d34-11eb-8252-f92dfd722140.png" width="350" height="400"/><br/>
 ```
 SwA = DWN
-SwB = UP
 SwC = UP
 SwD = UP
 SwE = UP
@@ -72,7 +67,6 @@ SwG = UP
 
 ```
 SwA = DWN
-SwB = UP
 SwC = UP
 SwD = UP
 SwE = UP
@@ -85,7 +79,6 @@ SwG = MID
 
 ```
 SwA = DWN
-SwB = UP
 SwC = UP
 SwD = UP
 SwE = UP
@@ -107,9 +100,7 @@ SwD = UP    |   Trotting   |     Walking    |
 SwD = MID   | Trotrunning  |    Pronking    |
 SwD = DWN   |    Pacing    |    Galloping   |
 ---------------------------------------------
----------------------------------------------
-SwB = DWN   |            Standing           |
----------------------------------------------
+
 ```
 
 * Emergency Stop\
@@ -125,7 +116,6 @@ SwA = UP
 <img src="https://user-images.githubusercontent.com/69251304/114672524-d3605500-9d37-11eb-93cb-e3b02ffd8671.jpg" width="350" height="400"/><br/>
 ```
 SwA = DWN
-SwB = UP
 SwC = UP
 SwD = UP
 SwE = MID
@@ -137,7 +127,6 @@ SwG = UP
 <img src="https://user-images.githubusercontent.com/69251304/114672542-d8bd9f80-9d37-11eb-8f1e-55caf8009318.jpg" width="350" height="400"/><br/>
 ```
 SwA = DWN
-SwB = UP
 SwC = UP
 SwD = UP
 SwE = DWN
