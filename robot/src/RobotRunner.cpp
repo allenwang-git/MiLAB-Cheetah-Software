@@ -114,8 +114,10 @@ void RobotRunner::run() {
   } else {
     _legController->setEnabled(true);
 
-    if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if(count_ini%10000 ==0)   printf("[RobotRunner] use_rc = 1, turn it to 0 to start controller\n");
+    if( rc_control.mode == 0 && controlParameters->use_rc ) {
+      if(count_ini%10000 ==0) {
+              printf("[RobotRunner] ESTOP mode && use_rc = 1, wait to start...\n");
+      }
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }
@@ -184,12 +186,12 @@ void RobotRunner::run() {
  */
 void RobotRunner::setupStep() {
   // Update the leg data
-  if (robotType == RobotType::MINI_CHEETAH) {
+  if (robotType == RobotType::MILAB) {
     _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateData(tiBoardData);
-  } else if (robotType == RobotType::MILAB) {
-      _legController->updateData(spiData);
+//  } else if (robotType == RobotType::MILAB) {
+//      _legController->updateData(spiData);
   } else {
     assert(false);
   }
@@ -222,12 +224,12 @@ void RobotRunner::setupStep() {
  * After the user code, send leg commands, update state estimate, and publish debug data
  */
 void RobotRunner::finalizeStep() {
-  if (robotType == RobotType::MINI_CHEETAH) {
+  if (robotType == RobotType::MILAB) {
     _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateCommand(tiBoardCommand);
-  } else if (robotType == RobotType::MILAB) {
-      _legController->updateCommand(spiCommand);
+//  } else if (robotType == RobotType::MILAB) {
+//      _legController->updateCommand(spiCommand);
   } else {
     assert(false);
   }

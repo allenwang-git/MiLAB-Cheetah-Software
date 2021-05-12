@@ -40,6 +40,7 @@ else
 fi
 
 ## Copy files
+cp common/test-common ./robot-software/build
 find . -name \*.so* -exec cp {} ./robot-software/build \;
 cp ../scripts/run_milab* ./robot-software/build
 cp ../scripts/setup_network_mc.py ./robot-software/build

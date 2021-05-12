@@ -96,10 +96,12 @@ void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
         x_vel_cmd = rc_cmd->v_des[0];
         y_vel_cmd = rc_cmd->v_des[1] * 0.5;
         _body_height += rc_cmd->height_variation * 0.08;
+        step_height = rc_cmd->step_height*0.1;
     }else{ //simulation gamepad
         _yaw_turn_rate = data._desiredStateCommand->rightAnalogStick[0]*1.0;
         x_vel_cmd = data._desiredStateCommand->leftAnalogStick[1]*2.5;
         y_vel_cmd = data._desiredStateCommand->leftAnalogStick[0];
+        step_height = data.userParameters->Swing_traj_height;
     }
     _x_vel_des = _x_vel_des*(1-filter) + x_vel_cmd * filter;
     _y_vel_des = _y_vel_des*(1-filter) + y_vel_cmd * filter;
@@ -245,7 +247,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         for(int i = 0; i < 4; i++)
         {
 
-            footSwingTrajectories[i].setHeight(data.userParameters->Swing_traj_height);
+            footSwingTrajectories[i].setHeight(step_height);
             footSwingTrajectories[i].setInitialPosition(pFoot[i]);
             footSwingTrajectories[i].setFinalPosition(pFoot[i]);
 
@@ -272,7 +274,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
             swingTimeRemaining[i] -= dt;
         }
         //if(firstSwing[i]) {
-        footSwingTrajectories[i].setHeight(data.userParameters->Swing_traj_height);
+        footSwingTrajectories[i].setHeight(step_height);
 
         Vec3<float> offset;
         if (data._quadruped->_robotType == RobotType::MILAB){

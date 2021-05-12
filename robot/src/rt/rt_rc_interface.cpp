@@ -178,18 +178,18 @@ void sbus_packet_complete_at9s() {
     AT9s_data data;
     update_at9s(&data);
     float v_scale = 1.5;
-    float w_scale = 2 * v_scale;
+    float w_scale = v_scale;
 
     auto estop_switch = data.SWA;
     auto stand_switch = data.SWE;
     auto QP_Locomotion_switch = data.SWG;
-    auto locomotion_stand_switch = data.SWB;
+//    auto locomotion_stand_switch = data.SWB;
 
     auto left_select = data.SWC;
     auto right_select = data.SWD;
 
     auto roll_show = 0.0;
-    auto step_height = data.varB + 1.0;
+    auto step_height = data.varB + 1.0; // 0~1
     int selected_mode = 0;
 
     if (estop_switch == AT9S_BOOL_UP)
@@ -222,9 +222,9 @@ void sbus_packet_complete_at9s() {
                     data.right_stick_y = deadband(data.right_stick_y, 0.1, -1., 1.);
 
                     int gait_id = 9;
-                    if (locomotion_stand_switch == AT9S_BOOL_DOWN)
-                        gait_id = 4;
-                    else if (locomotion_stand_switch == AT9S_BOOL_UP) {
+//                    if (locomotion_stand_switch == AT9S_BOOL_DOWN)
+//                        gait_id = 4;
+//                    else if (locomotion_stand_switch == AT9S_BOOL_UP) {
                         if (right_select == AT9S_BOOL_UP) {
                             if (left_select == AT9S_TRI_UP)
                                 gait_id = 9; // trotting
@@ -240,7 +240,7 @@ void sbus_packet_complete_at9s() {
                             else if (left_select == AT9S_TRI_DOWN)
                                 gait_id = 6; // galloping
                         }
-                    }
+//                    }
                     rc_control.variable[0] = gait_id;
                     rc_control.v_des[0] =
                             data.right_stick_x > 0 ? v_scale * data.right_stick_x : v_scale / 2.0 * data.right_stick_x;

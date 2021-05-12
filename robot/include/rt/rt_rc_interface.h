@@ -10,11 +10,11 @@ class rc_control_settings {
     double     mode;
     double     p_des[2]; // (x, y) -1 ~ 1
     double     height_variation; // -1 ~ 1
-    double     v_des[3]; // -1 ~ 1 * (scale 0.5 ~ 1.5)
+    double     v_des[3]; // -1 ~ 1 * (v_scale)
     double     rpy_des[3]; // -1 ~ 1
-    double     omega_des[3]; // -1 ~ 1
+    double     omega_des[3]; // -1 ~ 1 * (w_scale)
     double     variable[3];
-    double     step_height; //foot step height  WYN
+    double     step_height; //foot step height 0~2 WYN
 };
 
 

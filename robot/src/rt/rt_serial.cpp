@@ -55,7 +55,7 @@ tty.c_cflag |= CS8;
   // tty.c_lflag = 0;         // no signaling chars, no echo,
   // // no canonical processing
   // tty.c_oflag = 0;      // no remapping, no delays
-  tty.c_cc[VMIN] = 1;   // read doesn't block
+  tty.c_cc[VMIN] = 0;//1;   // read doesn't block
   tty.c_cc[VTIME] = 1;  // 0.5 seconds read timeout
 
   // tty.c_iflag &= ~(IXON | IXOFF | IXANY);  // shut off xon/xoff ctrl

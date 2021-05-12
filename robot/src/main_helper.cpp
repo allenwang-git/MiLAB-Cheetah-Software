@@ -39,8 +39,8 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
 
   if (argv[1][0] == 'i') {
     gMasterConfig._robot = RobotType::MILAB;
-  } else if (argv[1][0] == 'm') {
-    gMasterConfig._robot = RobotType::MINI_CHEETAH;
+//  } else if (argv[1][0] == 'm') {
+//    gMasterConfig._robot = RobotType::MINI_CHEETAH;
   } else if (argv[1][0] == '3') {
       gMasterConfig._robot = RobotType::CHEETAH_3;
   } else {
@@ -59,10 +59,10 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
 
   if(argc == 4 && argv[3][0] == 'f') {
     gMasterConfig.load_from_file = true;
-    printf("Load parameters from file\n");
+    printf("[main] Load parameters from file\n");
   } else {
     gMasterConfig.load_from_file = false;
-    printf("Load parameters from network\n");
+    printf("[main] Load parameters from network\n");
   }
 
   printf("[Quadruped] Cheetah Software\n");

@@ -105,17 +105,19 @@ u16 mip_sdk_port_open(void **port_handle, int port_num, int baudrate)
  int hardware_bit_baud, status;
  struct termios options;
 
-//#ifdef USE_USB_CONNECTION
- 
- //all USB connections appear on ttyACM# 
- strcat(port_name, "/dev/ttyACM");
-//
-//#else
-//
-// //USART connections occur on ttyS#
+
+//USB connections
+#ifdef USE_LordIMU
+    strcat(port_name, "/dev/ttyACM");
+#endif
+#ifdef USE_SelfIMU
+    strcat(port_name, "/dev/ttyUSB");
+#endif
+
+//USART connections occur on ttyS*
 // strcat(port_name, "/dev/ttyS");
-//
-//#endif
+
+
 
  printf("[LORD IMU] Port name is %s\n", port_name);
 
@@ -123,18 +125,22 @@ u16 mip_sdk_port_open(void **port_handle, int port_num, int baudrate)
  sprintf(&port_index[0],"%u",port_num);
  strcat(port_name, port_index);
 
- printf("Attempting to open port: %s\n",port_name);
+ printf("[lORD IMU] Attempting to open port: %s\n",port_name);
  //Attempt to open the specified port
  local_port_handle = open(port_name, O_RDWR | O_NOCTTY);
 
  //Check for an invalid handle
  if(local_port_handle == -1)
  {
-   printf("Unable to open com Port %s\n Errno = %i\n", port_name, errno);
-
-  return MIP_USER_FUNCTION_ERROR;
+   printf("[lORD IMU] Unable to open com Port %s\n Errno = %i\n", port_name, errno);
+     local_port_handle = open(port_name, O_RDWR | O_NOCTTY); //try again
+     if(local_port_handle == -1) //still fail
+     {
+         printf("[LORD IMU] Unable to open com Port twice %s\n Errno = %i\n", port_name, errno);
+         return MIP_USER_FUNCTION_ERROR;
+     }
  }
- printf("Port: %s opened successfully.\n",port_name);
+ printf("[lORD IMU] Port: %s opened successfully.\n",port_name);
  
  //Convert specified baud to hardware specific value
  switch (baudrate)
