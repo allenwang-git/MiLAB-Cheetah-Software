@@ -12,7 +12,6 @@ name=robot
 
 ## Create a prepare dir robot-software
 set -e
-#DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DIR="$(pwd)"
 cd ${DIR}/../../mc-build/
 sudo rm -rf robot-software
@@ -20,7 +19,7 @@ mkdir robot-software
 mkdir robot-software/build robot-software/log
 
 ## Select controller
-if [ -z $1 ]
+if [ -z $1 -o "$1" = "mpc" ]
 then
   echo "[INFO] Copying dafault controller: milab_ctrl..."
   cp ../mc-build/user/MiLAB_Controller/milab_ctrl robot-software/build
@@ -33,22 +32,23 @@ else
     cp ../mc-build/user/MiLAB_Spi_Controller/spi_ctrl robot-software/build
   else
     echo "[ERROR] $1 is not a existed controller"
-    echo "[USAGE] sh send_to_milab_cheetah.sh [ |spi|jpd] [ |wifi|wire]"
+    echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpd| ] [ |wifi|wire]"
     echo "[EXAMPLE] sh send_to_milab_cheetah.sh spi wifi"
     exit 1
   fi
 fi
 
 ## Copy files
-cp common/test-common ./robot-software/build
+
 find . -name \*.so* -exec cp {} ./robot-software/build \;
 cp ../scripts/run_milab* ./robot-software/build
 cp ../scripts/*test*sh ./robot-software/build
-cp ../scripts/setup_network_mc.py ./robot-software/build
-#cp ../scripts/run_mc_debug.sh ./robot-software/build
-cp ../scripts/config_network_lcm.sh ./robot-software
-cp -r ../robot robot-software
+#cp ../scripts/setup_network_mc.py ./robot-software/build
+#cp ../scripts/config_network_lcm.sh ./robot-software
+#cp -r ../robot robot-software
 cp -r ../config robot-software
+cp common/test-common ./robot-software/build
+cp rc_test/rc_test ./robot-software/build
 chmod +x ./robot-software/build/*
 
 ## Send dir to real robot's computer
@@ -65,7 +65,7 @@ then
     scp -rq robot-software $name@$wireip:~/
   else
     echo "[ERROR] $2 is not a supported connection type"
-    echo "[USAGE] sh send_to_milab_cheetah.sh [ |spi|jpd] [ |wifi|wire]"
+    echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpd| ] [ |wifi|wire]"
     echo "[EXAMPLE] sh send_to_milab_cheetah.sh spi wifi"
     exit 1
   fi
