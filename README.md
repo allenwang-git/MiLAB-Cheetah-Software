@@ -172,7 +172,8 @@ This output should hopefully end with
     ```
 * Build for milab robot: 
     ```
-    cmake -DMILAB_BUILD=TRUE ..
+    cmake -DUP_BOARD=TRUE ..
+    ../scripts/make_types.sh
     make -j8
     ``` 
 * In a new terminal, connect to robot's UP-board over ethernet or WIFI:
@@ -192,15 +193,19 @@ This output should hopefully end with
 * Copy robot-software to robot's UP-board with: 
     For example:
     ```
-    sh ../scripts/milab_scripts/send_to_milab_cheetah.sh 
+    sh ../scripts/milab_scripts/send_to_milab_cheetah.sh mpc wire
     ``` 
    *More details in **send_to_milab_cheetah.sh**, default option is sending MiLAB_Controller by WIFI if not specified*
 
 * Go to ssh terminal and enter the robot program folder: 
     ```
-    cd robot-software-XXX
+    cd robot-software-XXX/build
     ```
-* Run robot controller: 
+* To check the project, you can run test first:
+    ```
+    ./run_test_common.sh
+    ```
+* If all 97 tests passed, you can run robot controller: 
     ```
     ./run_milab.sh mpc f l
     ``` 
@@ -509,6 +514,7 @@ ControlParameters.h                *
 RobotParameters.h                  *
 ****/SimUtilities**
 SpineBoard.h                       *
+IMUTypes.h
 ****/Utilities**
 utilities.h                        *
 
@@ -522,16 +528,22 @@ SimulationBridge.cpp                 *
 rt_rc_interface.cpp                *
 rt_subs.cpp                        *
 rt_spi.cpp                         *todo
+rt_serial.cpp                      *
 
 ******/include**
 HardwareBridge.h                   *
+RobotRunner.h                      *
+rt_subs.h                          *
+rt_spi.h                           *
+rt_rc_interface.h                  *
+
 
 
 ********/scripts***********************************************
 ******/milab_scripts**           done   doing    todo     new
 send_to_milab_cheetah.sh           *                       *
 run_milab.sh                       *                       *
-
+run_test_common.sh                 *                       *
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo     new
@@ -562,6 +574,7 @@ WBC_Ctrl.cpp                       * todo
 LocomotionCtrl.cpp                 * todo
 
 ****/FSM_States**
+ControlFSM.cpp                     *
 FSM_State.cpp                      * todo
 FSM_State_Locomotion.cpp           * todo
 FSM_State_RecoveryStand.cpp        * todo
@@ -574,6 +587,15 @@ SafetyChecker.cpp                  *
 ******/MiLAB_JPos_Controller**
 jpos_user_parameters.cpp           *
 JPosUserParameters.h               *
+
+********/third-party*********************************************
+******/lord_imu**                 done   doing    todo     new
+LordImu.cpp                        *
+LordImu.h                          *
+****/Source**
+mip_sdk_user_functions.c           *
+****/Include**
+mip_sdk_user_functions.h           *
 
 
 ********/debug-data**********************************************
