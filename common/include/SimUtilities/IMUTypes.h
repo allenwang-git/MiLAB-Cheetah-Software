@@ -8,9 +8,9 @@
 #include "cppTypes.h"
 
 /*!
- * Mini Cheetah's IMU
+ * Cheetah's IMU
  */
-struct VectorNavData {
+struct ImuData {
   Vec3<float> accelerometer;
   Vec3<float> gyro;
   Quat<float> quat;

@@ -37,12 +37,12 @@ vn_sensor vn;
 
 static lcm::LCM* vectornav_lcm;
 vectornav_lcmt vectornav_lcm_data;
-static VectorNavData* g_vn_data = nullptr;
+static ImuData* g_vn_data = nullptr;
 
 /*!
  * Initialize Vectornav communication and set up sensor
  */
-bool init_vectornav(VectorNavData* vn_data) {
+bool init_vectornav(ImuData* vn_data) {
   g_vn_data = vn_data;
   printf("[Simulation] Setup LCM...\n");
   vectornav_lcm = new lcm::LCM(getLcmUrl(255));

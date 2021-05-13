@@ -35,7 +35,7 @@ TEST(ImuSimulator, passThrough) {
   xfb.bodyVelocity = v0;
   xfbd.dBodyVelocity = v0;
 
-  VectorNavData vn;
+  ImuData vn;
 
   // update data
   imuSim.updateVectornav(xfb, xfbd, &vn);
@@ -81,7 +81,7 @@ TEST(ImuSimulator, orientation) {
   xfbd.dBodyPosition = velocity.tail<3>();
   xfbd.dBodyVelocity = acceleration;
 
-  VectorNavData vn;
+  ImuData vn;
 
   // update data
   imuSim.updateVectornav(xfb, xfbd, &vn);
@@ -126,7 +126,7 @@ TEST(ImuSimulator, omega) {
   xfbd.dBodyPosition = velocity.tail<3>();
   xfbd.dBodyVelocity = acceleration;
 
-  VectorNavData vn;
+  ImuData vn;
 
   // update data
   imuSim.updateVectornav(xfb, xfbd, &vn);
@@ -170,7 +170,7 @@ TEST(ImuSimulator, omegaCrossV) {
   xfbd.dBodyPosition = velocity.tail<3>();
   xfbd.dBodyVelocity = acceleration;
 
-  VectorNavData vn;
+  ImuData vn;
 
   // update data
   imuSim.updateVectornav(xfb, xfbd, &vn);
@@ -226,7 +226,7 @@ TEST(ImuSimulator, noise) {
   xfbd.dBodyPosition = velocity.tail<3>();
   xfbd.dBodyVelocity = acceleration;
 
-  VectorNavData vn;
+  ImuData vn;
 
   Vec3<float> rpy_ref = ori::quatToRPY(quat.cast<float>());
   Vec3<float> rpy_avg(0, 0, 0);

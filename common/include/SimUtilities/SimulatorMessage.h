@@ -36,7 +36,7 @@ struct SimulatorToRobotMessage {
   RobotType robotType;  // which robot the simulator thinks we are simulating
 
   // imu data
-  VectorNavData vectorNav;
+  ImuData vectorNav;
   CheaterState<double> cheaterState;
 
   // leg data
