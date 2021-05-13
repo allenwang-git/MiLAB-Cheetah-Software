@@ -28,7 +28,7 @@
 #include "rt/rt_serial.h"
 
 void init_serial_for_sbus(int fd, int baud) {
-  printf("\t[RT SERIAL] Configuring serial device...\n");
+  printf("[RT SERIAL] Configuring serial device...\n");
   struct termios2 tty;
 
   ioctl(fd, TCGETS2, &tty);

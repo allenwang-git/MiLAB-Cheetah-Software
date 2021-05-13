@@ -22,9 +22,10 @@
 #include "Utilities/Utilities_print.h"
 
 #define USE_MICROSTRAIN
+//#define IMU_DEBUG_SHOW
 //#define JPOS_CTRL
-#define SPI_CTRL
-//#define CMPC_CTRL
+//#define SPI_CTRL
+#define CMPC_CTRL
 
 /*!
  * If an error occurs during initialization, before motors are enabled, print
@@ -57,7 +58,6 @@ void HardwareBridge::initCommon() {
     printf("[HardwareBridge] Subscribe LCM\n");
     _interfaceLCM.subscribe("interface", &HardwareBridge::handleGamepadLCM, this);
     _interfaceLCM.subscribe("interface_request", &HardwareBridge::handleControlParameter, this);
-    //_interfaceLCM.subscribe ("t265_position_msg", &HardwareBridge::handleT265LCM , this );
 
     printf("[HardwareBridge] Start interface LCM handler\n");
     _interfaceLcmThread = std::thread(&HardwareBridge::handleInterfaceLCM, this);
@@ -313,7 +313,7 @@ void MiniCheetahHardwareBridge::run() {
     _robotRunner->spiData = &_spiData;
     _robotRunner->spiCommand = &_spiCommand;
     _robotRunner->robotType = RobotType::MINI_CHEETAH;
-    _robotRunner->vectorNavData = &_vectorNavData;
+    _robotRunner->vectorNavData = &_imuData;
     _robotRunner->controlParameters = &_robotParams;
     _robotRunner->visualizationData = &_visualizationData;
     _robotRunner->cheetahMainVisualization = &_mainCheetahVisualization;
@@ -364,14 +364,14 @@ void MiniCheetahHardwareBridge::runMicrostrain() {
     while(true) {
         _microstrainImu.run();
 
-#ifdef USE_MICROSTRAIN
-        _vectorNavData.accelerometer = _microstrainImu.acc;
-        _vectorNavData.quat[0] = _microstrainImu.quat[1];
-        _vectorNavData.quat[1] = _microstrainImu.quat[2];
-        _vectorNavData.quat[2] = _microstrainImu.quat[3];
-        _vectorNavData.quat[3] = _microstrainImu.quat[0];
-        _vectorNavData.gyro = _microstrainImu.gyro;
-#endif
+        #ifdef USE_MICROSTRAIN
+        _imuData.accelerometer = _microstrainImu.acc;
+        _imuData.quat[0] = _microstrainImu.quat[1];
+        _imuData.quat[1] = _microstrainImu.quat[2];
+        _imuData.quat[2] = _microstrainImu.quat[3];
+        _imuData.quat[3] = _microstrainImu.quat[0];
+        _imuData.gyro = _microstrainImu.gyro;
+        #endif
     }
 
 }
@@ -385,14 +385,14 @@ void MiniCheetahHardwareBridge::logMicrostrain() {
  * Initialize Mini Cheetah specific hardware
  */
 void MiniCheetahHardwareBridge::initHardware() {
-    _vectorNavData.quat << 1, 0, 0, 0;
-#ifndef USE_MICROSTRAIN
+    _imuData.quat << 1, 0, 0, 0;
+    #ifndef USE_MICROSTRAIN
     printf("[MiniCheetahHardware] Init vectornav\n");
-  if (!init_vectornav(&_vectorNavData)) {
+    if (!init_vectornav(&_imuData)) {
     printf("Vectornav failed to initialize\n");
     //initError("failed to initialize vectornav!\n", false);
-  }
-#endif
+    }
+    #endif
 
     init_spi();
     _microstrainInit = _microstrainImu.tryInit(0, 460800);//921600); // lord设置921600,
@@ -419,9 +419,9 @@ void MiniCheetahHardwareBridge::runSpi() {
  * Following class functions are specifically defined for Cheetah 3 robot
  */
 void Cheetah3HardwareBridge::initHardware() {
-    _vectorNavData.quat << 1, 0, 0, 0;
+    _imuData.quat << 1, 0, 0, 0;
     printf("[Cheetah 3 Hardware] Init vectornav\n");
-    if (!init_vectornav(&_vectorNavData)) {
+    if (!init_vectornav(&_imuData)) {
         printf("Vectornav failed to initialize\n");
         printf_color(PrintColor::Red, "****************\n"
                                       "**  WARNING!  **\n"
@@ -562,7 +562,7 @@ void Cheetah3HardwareBridge::run() {
     _robotRunner->controlParameters = &_robotParams;
     _robotRunner->visualizationData = &_visualizationData;
     _robotRunner->cheetahMainVisualization = &_mainCheetahVisualization;
-    _robotRunner->vectorNavData = &_vectorNavData;
+    _robotRunner->vectorNavData = &_imuData;
 
     _robotRunner->init();
     _firstRun = false;
@@ -583,7 +583,7 @@ void Cheetah3HardwareBridge::run() {
     // visualization start
     PeriodicMemberFunction<Cheetah3HardwareBridge> visualizationLCMTask(
             &taskManager, .0167, "lcm-vis",
-            &MiniCheetahHardwareBridge::publishVisualizationLCM, this);
+            &Cheetah3HardwareBridge::publishVisualizationLCM, this);
     visualizationLCMTask.start();
 
     // rc controller disabled for now
@@ -612,10 +612,10 @@ MilabHardwareBridge::MilabHardwareBridge(RobotController* robot_ctrl, bool load_
  * Initialize Milab specific hardware
  */
 void MilabHardwareBridge::initHardware() {
-    _vectorNavData.quat << 1, 0, 0, 0;
+    _imuData.quat << 1, 0, 0, 0;
 #ifndef USE_MICROSTRAIN
     printf("[MilabHardware] Init vectornav\n");
-  if (!init_vectornav(&_vectorNavData)) {
+  if (!init_vectornav(&_imuData)) {
     printf("Vectornav failed to initialize\n");
     //initError("failed to initialize vectornav!\n", false);
   }
@@ -650,21 +650,21 @@ void MilabHardwareBridge::run() {
 
         if(_userControlParameters) {
             try {
-#ifdef CMPC_CTRL
+                #ifdef CMPC_CTRL
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/milab-user-parameters.yaml");
                 std::string yamlName = "milab-user-parameters.yaml";
                 printf("[Hardware Bridge] Loaded user parameters from yaml file: %s\n", yamlName.c_str());
-#endif
-#ifdef JPOS_CTRL
+                #endif
+                #ifdef JPOS_CTRL
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/jpos-user-parameters.yaml");
                 std::string yamlName = "jpos-user-parameters.yaml";
                 printf("[Hardware Bridge] Loaded user parameters from yaml file: %s\n", yamlName.c_str());
-#endif
-#ifdef SPI_CTRL
+                #endif
+                #ifdef SPI_CTRL
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/no-parameters.yaml");
                 std::string yamlName = "no-parameters.yaml";
                 printf("[Hardware Bridge] Loaded user parameters from yaml file: %s\n", yamlName.c_str());
-#endif
+                #endif
             } catch(std::exception& e) {
                 printf("[Hardware Bridge] Failed to initialize user parameters from yaml file: %s\n", e.what());
                 exit(1);
@@ -705,7 +705,7 @@ void MilabHardwareBridge::run() {
     _robotRunner->spiData = &_spiData;
     _robotRunner->spiCommand = &_spiCommand;
     _robotRunner->robotType = RobotType::MILAB;
-    _robotRunner->vectorNavData = &_vectorNavData;
+    _robotRunner->vectorNavData = &_imuData;
     _robotRunner->controlParameters = &_robotParams;
     _robotRunner->visualizationData = &_visualizationData;
     _robotRunner->cheetahMainVisualization = &_mainCheetahVisualization;
@@ -753,17 +753,31 @@ void MilabHardwareBridge::run() {
 
 void MilabHardwareBridge::runMicrostrain() {
     printf("[HardwareBridge] Start microstrain\n");
+    u64 imu_times=0;
+
     while (true) {
         _microstrainImu.run();
 
-#ifdef USE_MICROSTRAIN
-        _vectorNavData.accelerometer = _microstrainImu.acc;
-        _vectorNavData.quat[0] = _microstrainImu.quat[1];
-        _vectorNavData.quat[1] = _microstrainImu.quat[2];
-        _vectorNavData.quat[2] = _microstrainImu.quat[3];
-        _vectorNavData.quat[3] = _microstrainImu.quat[0];
-        _vectorNavData.gyro = _microstrainImu.gyro;
-#endif
+        #ifdef USE_MICROSTRAIN
+        _imuData.accelerometer = _microstrainImu.acc;
+        _imuData.quat[0] = _microstrainImu.quat[1];
+        _imuData.quat[1] = _microstrainImu.quat[2];
+        _imuData.quat[2] = _microstrainImu.quat[3];
+        _imuData.quat[3] = _microstrainImu.quat[0];
+        _imuData.gyro = _microstrainImu.gyro;
+        #endif
+        imu_times++;
+        #ifdef IMU_DEBUG_SHOW
+        if(imu_times%1000==0)
+        {
+            printf("Iteration stamp:\t%d\n",(int)imu_times);
+            printf("--------------------------------------------------\n");
+            printf("ACC = [%f, %f, %f]\n", _imuData.accelerometer[0], _imuData.accelerometer[1], _imuData.accelerometer[2]);
+            printf("QUAT = [%f, %f, %f, %f]\n", _imuData.quat[0], _imuData.quat[1], _imuData.quat[2], _imuData.quat[3]);
+            printf("GYRO =[%f, %f, %f]\n", _imuData.gyro[0], _imuData.gyro[1], _imuData.gyro[2]);
+            printf("--------------------------------------------------\n");
+        }
+        #endif
     }
 }
 

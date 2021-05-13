@@ -20,7 +20,6 @@
 #include "Controllers/PositionVelocityEstimator.h"
 #include <fstream>
 
-//#include "rt/rt_interface_lcm.h"
 //#define OUTPUT_LEG_DATA
 
 RobotRunner::RobotRunner(RobotController* robot_ctrl, 
@@ -115,7 +114,7 @@ void RobotRunner::run() {
     _legController->setEnabled(true);
 
     if( rc_control.mode == 0 && controlParameters->use_rc ) {
-      if(count_ini%10000 ==0) {
+      if(count_ini%1000 ==0) {
               printf("[RobotRunner] ESTOP mode && use_rc = 1, wait to start...\n");
       }
       for (int leg = 0; leg < 4; leg++) {
@@ -190,8 +189,8 @@ void RobotRunner::setupStep() {
     _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateData(tiBoardData);
-//  } else if (robotType == RobotType::MILAB) {
-//      _legController->updateData(spiData);
+  } else if (robotType == RobotType::MILAB) {
+      _legController->updateData(spiData);
   } else {
     assert(false);
   }
@@ -228,8 +227,8 @@ void RobotRunner::finalizeStep() {
     _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateCommand(tiBoardCommand);
-//  } else if (robotType == RobotType::MILAB) {
-//      _legController->updateCommand(spiCommand);
+  } else if (robotType == RobotType::MILAB) {
+      _legController->updateCommand(spiCommand);
   } else {
     assert(false);
   }

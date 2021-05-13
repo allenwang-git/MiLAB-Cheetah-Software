@@ -39,8 +39,8 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
 
   if (argv[1][0] == 'i') {
     gMasterConfig._robot = RobotType::MILAB;
-//  } else if (argv[1][0] == 'm') {
-//    gMasterConfig._robot = RobotType::MINI_CHEETAH;
+  } else if (argv[1][0] == 'm') {
+    gMasterConfig._robot = RobotType::MINI_CHEETAH;
   } else if (argv[1][0] == '3') {
       gMasterConfig._robot = RobotType::CHEETAH_3;
   } else {
@@ -79,6 +79,10 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
       return EXIT_FAILURE;
     }
     if (gMasterConfig._robot == RobotType::MILAB) {
+        SimulationBridge simulationBridge(gMasterConfig._robot, ctrl);
+        simulationBridge.run();
+        printf("[Quadruped] SimDriver run() has finished!\n");
+    } else if (gMasterConfig._robot == RobotType::MINI_CHEETAH) {
       SimulationBridge simulationBridge(gMasterConfig._robot, ctrl);
       simulationBridge.run();
       printf("[Quadruped] SimDriver run() has finished!\n");

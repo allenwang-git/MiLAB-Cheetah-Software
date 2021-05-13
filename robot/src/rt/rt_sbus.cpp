@@ -24,7 +24,6 @@
 
 #include <termios.h>
 
-//#include "rt/rt_interface_lcm.h"
 #include "rt/rt_sbus.h"
 #include "rt/rt_serial.h"
 
@@ -35,7 +34,7 @@ uint16_t channel_data[18];
 
 /**@brief Name of SBUS serial port in simulator*/
 #define K_SBUS_PORT_SIM "/dev/ttyUSB0"
-/**@brief Name of SBUS serial port on the mini cheetah*/
+/**@brief Name of SBUS serial port on the real robot*/
 #define K_SBUS_PORT_MC "/dev/ttyS4"
 
 /* Uncomment when setting AT9S channel range */
@@ -57,9 +56,7 @@ uint16_t channel_data[18];
 #define Right_Stick_LRight_Min 284
 #define Right_Stick_LRight_Zero 1001
 
-#ifdef Show_RT9S_Celebration
 static int show_rt9s_times=0;
-#endif
 /*!
  * Unpack sbus message into channels
  */
@@ -101,11 +98,12 @@ void unpack_sbus_data(uint8_t sbus_data[], uint16_t *channels_) {
     //printf("\n\n");
     pthread_mutex_unlock(&sbus_data_m);
 
-    #ifdef Show_RT9S_Celebration
     show_rt9s_times++;
-    if(!show_rt9s_times%100)
+//    printf("%d\n",show_rt9s_times);
+    #ifdef Show_RT9S_Celebration
+    if(show_rt9s_times%10==0)
     {
-        printf("Iteration stamp:\t%d\n",show_rt9s_times/100);
+        printf("Iteration stamp:\t%d\n",show_rt9s_times);
         printf("------------------------------------------\n");
         printf("Left_LR =\t%d\n",channel_data[0]);
         printf("Left_FB =\t%d\n",channel_data[1]);

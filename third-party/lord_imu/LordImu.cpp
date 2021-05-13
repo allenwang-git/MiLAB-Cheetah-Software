@@ -54,19 +54,19 @@ void LordImu::init(u32 port, u32 baud_rate) {
         throw std::runtime_error("Failed to initialize MIP interface for IMU\n");
     }
 
-    printf("[Lord IMU] Port open. Mode setup...\n");
+//    printf("[Lord IMU] Port open. Mode setup...\n");
     //mode_setup();
-    printf("[Lord IMU] Get info...\n");
+//    printf("[Lord IMU] Get info...\n");
     //get_device_info();
-    printf("[Lord IMU] Self test...\n");
+//    printf("[Lord IMU] Self test...\n");
     //self_test();
-    printf("[Lord IMU] Basic report...\n");
+//    printf("[Lord IMU] Basic report...\n");
     // basic_report();
 //  printf("[Lord IMU] Zero Gyro...\n");
 //  zero_gyro();
     printf("[Lord IMU] Setup IMU...\n");
     setup_streaming();
-    printf("[Lord IMU] Enable Data...\n");
+//    printf("[Lord IMU] Enable Data...\n");
     //enable();
 #endif
 }

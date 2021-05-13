@@ -101,7 +101,7 @@ class MiniCheetahHardwareBridge : public HardwareBridge {
   void abort(const char* reason);
 
  private:
-  VectorNavData _vectorNavData;
+  ImuData _imuData;
   lcm::LCM _spiLcm;
   lcm::LCM _microstrainLcm;
   std::thread _microstrainThread;
@@ -123,7 +123,7 @@ public:
     void logMicrostrain();
 
 private:
-    VectorNavData _vectorNavData;
+    ImuData _imuData;
     lcm::LCM _spiLcm;
     lcm::LCM _microstrainLcm;
     std::thread _microstrainThread;
@@ -143,7 +143,7 @@ public:
   // todo imu?
 
 private:
-  VectorNavData _vectorNavData;
+  ImuData _imuData;
   lcm::LCM _ecatLCM;
   ecat_command_t ecatCmdLcm;
   ecat_data_t ecatDataLcm;
