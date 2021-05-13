@@ -98,7 +98,10 @@ void ControlFSM<T>::runFSM() {
 
   if(data.controlParameters->use_rc){
     int rc_mode = data._desiredStateCommand->rcCommand->mode;
-    if(rc_mode == RC_mode::RECOVERY_STAND){
+    if(rc_mode == RC_mode::OFF){
+          printf("K_PASSIVE\n");
+          data.controlParameters->control_mode = K_PASSIVE;
+    }else if(rc_mode == RC_mode::RECOVERY_STAND){
       data.controlParameters->control_mode = K_RECOVERY_STAND;
 
     } else if(rc_mode == RC_mode::LOCOMOTION){
