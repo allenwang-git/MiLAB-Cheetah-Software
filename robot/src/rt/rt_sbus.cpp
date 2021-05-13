@@ -191,7 +191,7 @@ int init_sbus(int is_simulator) {
   } else {
     port1 = K_SBUS_PORT_MC;
   }
-//  printf("[RT SBUS] sbus port: %s\n", port1.c_str());
+  printf("[RT SBUS] sbus port: %s\n", port1.c_str());
   if (pthread_mutex_init(&sbus_data_m, NULL) != 0) {
     printf("Failed to initialize sbus data mutex.\n");
   }
