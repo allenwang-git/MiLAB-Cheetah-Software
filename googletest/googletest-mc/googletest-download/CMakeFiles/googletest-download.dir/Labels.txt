@@ -1,0 +1,14 @@
+# Target labels
+ googletest-download
+# Source files and their labels
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/CMakeFiles/googletest-download
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/CMakeFiles/googletest-download.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/CMakeFiles/googletest-download-complete.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-install.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-mkdir.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-download.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-patch.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-configure.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-build.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-test.rule
+/~/MiLAB-Cheetah-Software/mc-build/googletest-download/googletest-download-prefix/src/googletest-download-stamp/googletest-download-skip-update.rule
