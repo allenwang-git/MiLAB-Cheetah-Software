@@ -10,7 +10,7 @@
 #include <QMessageBox>
 #include <ParamHandler.hpp>
 #include <leg_control_command_lcmt.hpp>
-#include "../build/sim/ui_SimControlPanel.h"
+#include "ui_SimControlPanel.h"
 #include "JoystickTest.h"
 
 // Todo: the Milab robot default joint angles for go-home button (883)
