@@ -7,7 +7,20 @@ if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 endif ()
 
 set(CMAKE_COLOR_MAKEFILE   ON)
-#execute_process(COMMAND ../scripts/make_types.sh)
+
+# Copy googletest form local dir
+if (UP_BOARD)
+  set(MY_GOOGLE_PATH ${PROJECT_SOURCE_DIR}/googletest/googletest-mc)
+  set(MY_BUILD_PATH ${PROJECT_SOURCE_DIR}/mc-build)
+else()
+  set(MY_GOOGLE_PATH ${PROJECT_SOURCE_DIR}/googletest)
+  set(MY_BUILD_PATH ${PROJECT_SOURCE_DIR}/build)
+endif ()
+execute_process(COMMAND cp -r ${MY_GOOGLE_PATH}/googletest-src ${MY_BUILD_PATH}
+                COMMAND  cp -r ${MY_GOOGLE_PATH}/googletest-download ${MY_BUILD_PATH}
+                COMMAND  cp -r ${MY_GOOGLE_PATH}/googletest-build ${MY_BUILD_PATH}
+                )
+message("-- Googletest is ready")
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
