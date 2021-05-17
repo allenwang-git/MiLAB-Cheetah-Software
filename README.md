@@ -267,7 +267,7 @@ This output should hopefully end with
       sudo chmod a+x qt-opensource-linux-x64-5.10.0.run
       ./qt-opensource-linux-x64-5.10.0.run
       ```
-    * Follow [config instructions](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/qt_install.md)
+    * Follow [config instructions](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/qt_install.md), we recommand you to rename qt install directory to `Qt5.10.0`
     * On Ubuntu 18.10 or 19.04, you may instead install Qt directly with command:
         ```
         sudo apt install libqt5 libqt5gamepad5
