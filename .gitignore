@@ -1,6 +1,7 @@
 build/
 mc-build/
 cmake-build-debug/
+googletest/
 .idea/
 lcm-types/cheetahlcm
 lcm-types/c_lcm_files
@@ -26,4 +27,4 @@ documentation/doxygen/latex
 documentation/doxygen/html
 .DS_Store
 tags
-/debug_tools/leg_controller_data.txt
+debug_tools/leg_controller_data.txt
