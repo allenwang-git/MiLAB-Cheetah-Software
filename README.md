@@ -161,7 +161,7 @@ This output should hopefully end with
     ```
     i: Milab robot,  3: Cheetah 3,  m: Mini Cheetah \
     s: simulation,  r: robot
-* For more info, go to see [simulation example](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/documentation/sim_example.md)
+* For more info, go to see [simulation example](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/sim_example.md)
 
 ## Run Real Robot
 * [Install Linux System (Recommend Ubuntu 16.04) and RT kernel for UP-board](#install-linux-rt-kernel-for-up-board). 
