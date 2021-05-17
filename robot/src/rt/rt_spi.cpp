@@ -16,7 +16,7 @@
 
 #define HIP_OFFSET_POS 4.189f
 #define KNEE_OFFSET_POS 2.897f
-
+//#define SPI_STATUS
 unsigned char spi_mode = SPI_MODE_0;
 unsigned char spi_bits_per_word = 8;
 unsigned int spi_speed = 6000000;
@@ -253,7 +253,7 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
 /*!
  * convert spine_data_t to spi data
  */
-void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) {
+void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) { //leg_0 means spi_board number = 0,2
   for (int i = 0; i < 2; i++) {
     data->q_abad[i + leg_0] = (spine_data->q_abad[i] - abad_offset[i + leg_0]) *
                               abad_side_sign[i + leg_0];
@@ -273,8 +273,12 @@ void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) {
 
   uint32_t calc_checksum = xor_checksum((uint32_t *)spine_data, 14);
   if (calc_checksum != (uint32_t)spine_data->checksum)
-    printf("SPI ERROR BAD CHECKSUM GOT 0x%hx EXPECTED 0x%hx\n", calc_checksum,
+      printf("SPI %d ERROR BAD CHECKSUM GOT 0x%hx EXPECTED 0x%hx\n",leg_0,  calc_checksum,
            spine_data->checksum);
+#ifdef SPI_STATUS
+  else
+      printf("SPI %d WORKS NORMAL\n",leg_0);
+#endif
 }
 
 /*!
