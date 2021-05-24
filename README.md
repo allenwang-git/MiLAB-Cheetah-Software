@@ -587,8 +587,9 @@ FSM_SquatDown.h                    *                        *
 SafetyChecker.cpp                  *
 
 ******/MiLAB_JPos_Controller**
-jpos_user_parameters.cpp           *
 JPosUserParameters.h               *
+JPos_Controller.cpp                *
+JPos_Controller.hpp                *
 
 ********/third-party*********************************************
 ******/lord_imu**                 done   doing    todo     new
