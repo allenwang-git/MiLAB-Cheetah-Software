@@ -131,6 +131,7 @@ private:
     microstrain_lcmt _microstrainData;
     bool _microstrainInit = false;
     bool _load_parameters_from_file;
+    u64 spi_times=0;
 };
 
 class Cheetah3HardwareBridge : public HardwareBridge {

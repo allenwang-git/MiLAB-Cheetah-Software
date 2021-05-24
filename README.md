@@ -25,15 +25,16 @@
 ## Introduction
 Based on [MIT-Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Software) open-source project, we developed this repository which contains the Robot and Simulation software for our MiLAB quadruped robot.
 
-* The **common** folder contains the common library with dynamics and utilities
-* The **resources** folder will contain data files, like CAD of the robot used for the visualization
-* The **robot** folder will contain the robot program
+* The **common** folder contains the common library with dynamics and utilities.
+* The **resources** folder will contain data files, like CAD of the robot used for the visualization.
+* The **robot** folder will contain the robot hardware program including serial port, remote commander and spi board.
 * The **sim** folder will contain the simulation program. It is the only program which depends on QT.
-* The **third-party** will contain *small* third party libraries that we have modified. This should just be libsoem for Cheetah 3, which Pat modified at one point.
+* The **third-party** folder contains *small* third party libraries that we used, including qp solvers, imu api and other libraries. 
 * The **config** folder contains simulator and robot's configuration or parameter files.
-* The **scripts** folder will be used when run in a real robot.
+* The **scripts** folder contains many shell scripts used when running in a real robot.
 * The **lcm-types** folder contains all lcm message definition files and corresponding compiled include files in ./cpp folder.
 * The **debug-tools** folder contains several debug tool written in Python when develop this project.
+* The **googletest** folder contains googletest files downloaded from github so you can run cmake command without network connection.
 
 ## Robot Basic Definition
 Although part of the following definitions and settings are also applicable to MIT or UNITREE robots, they are specifically written for MiLAB Robot.
@@ -101,15 +102,16 @@ git clone https://github.com/AWang-Cabin/MiLAB-Cheetah-Software.git
 ```
 
 ## Build 
-* [Install all Dependencies](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software#dependencies) on computer.
+* [Install all Dependencies](#dependencies) on computer.
 * To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt:
     ```
-    set(CMAKE_PREFIX_PATH ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64)
+    set(CMAKE_PREFIX_PATH {Your_Qt_PATH}/{Your_Qt_VERSION}/gcc_64)
 
-    set(Qt5Core_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Core)
-    set(Qt5Widgets_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Widgets)
-    set(Qt5Gamepad_DIR ~/Your_Qt_PATH/Your_Qt_VERSION/gcc_64/lib/cmake/Qt5Gamepad)
+    set(Qt5Core_DIR {Your_Qt_PATH}/{Your_Qt_VERSION}/gcc_64/lib/cmake/Qt5Core)
+    set(Qt5Widgets_DIR {Your_Qt_PATH"/{Your_Qt_VERSION}/gcc_64/lib/cmake/Qt5Widgets)
+    set(Qt5Gamepad_DIR {Your_Qt_PATH"/{Your_Qt_VERSION}/gcc_64/lib/cmake/Qt5Gamepad)
     ```
+    The default Qt path and version is`~/Qt5.10.0/5.10.0/gcc/...`, so we highly recommand you to install Qt5.10.0 under `/home/user` directory and rename Qt directory to `Qt5.10.0`, which means you do not need to modify CMakeLists.txt any more. 
 * To avoid Stack Overflow, append following commands to the end of ~/.bashrc (Not a mandatory step):
     ```
     ulimit -s 102400
@@ -585,8 +587,9 @@ FSM_SquatDown.h                    *                        *
 SafetyChecker.cpp                  *
 
 ******/MiLAB_JPos_Controller**
-jpos_user_parameters.cpp           *
 JPosUserParameters.h               *
+JPos_Controller.cpp                *
+JPos_Controller.hpp                *
 
 ********/third-party*********************************************
 ******/lord_imu**                 done   doing    todo     new

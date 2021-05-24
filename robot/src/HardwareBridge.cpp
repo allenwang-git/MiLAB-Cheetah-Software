@@ -23,9 +23,10 @@
 
 #define USE_MICROSTRAIN
 //#define IMU_DEBUG_SHOW
+//#define SPI_DEBUG_SHOW
 //#define JPOS_CTRL
-//#define SPI_CTRL
-#define CMPC_CTRL
+#define SPI_CTRL
+//#define CMPC_CTRL
 
 /*!
  * If an error occurs during initialization, before motors are enabled, print
@@ -792,9 +793,33 @@ void MilabHardwareBridge::runSpi() {
     spi_command_t* cmd = get_spi_command();
     spi_data_t* data = get_spi_data();
     // Send and Receive data and commands through spi hardware for leg-level controller
-    memcpy(cmd, &_spiCommand, sizeof(spi_command_t)); //copy spi_data_t data to _spiData
+    memcpy(cmd, &_spiCommand, sizeof(spi_command_t)); //copy spiCommand to spi_command_t
     spi_driver_run();
     memcpy(&_spiData, data, sizeof(spi_data_t)); //copy spi_data_t data to _spiData
+    spi_times++;
+    #ifdef SPI_DEBUG_SHOW
+    if(spi_times%1000==0)
+        {
+            printf("Iteration stamp:\t%d\n",(int)spi_times);
+            printf("--------------------DATA--------------------------\n");
+            printf("ABAD Q = [%f, %f, %f, %f]\n", _spiData.q_abad[0],_spiData.q_abad[1],_spiData.q_abad[2],_spiData.q_abad[3]);
+            printf("HIP Q = [%f, %f, %f, %f]\n", _spiData.q_hip[0],_spiData.q_hip[1],_spiData.q_hip[2],_spiData.q_hip[3]);
+            printf("KNEE Q = [%f, %f, %f, %f]\n", _spiData.q_knee[0],_spiData.q_knee[1],_spiData.q_knee[2],_spiData.q_knee[3]);
+            printf("-------------------COMMAND------------------------\n");
+            printf("ABAD DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_abad[0],_spiCommand.q_des_abad[1],_spiCommand.q_des_abad[2],_spiCommand.q_des_abad[3]);
+            printf("HIP DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_hip[0],_spiCommand.q_des_hip[1],_spiCommand.q_des_hip[2],_spiCommand.q_des_hip[3]);
+            printf("KNEE DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_knee[0],_spiCommand.q_des_knee[1],_spiCommand.q_des_knee[2],_spiCommand.q_des_knee[3]);
+            printf("KP = [%f, %f, %f]\n", _spiCommand.kp_abad[0],_spiCommand.kp_hip[1],_spiCommand.kp_knee[2]);
+            printf("KD = [%f, %f, %f]\n", _spiCommand.kd_abad[0],_spiCommand.kd_hip[1],_spiCommand.kd_knee[2]);
+            printf("ABAD DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_abad_ff[0],_spiCommand.tau_abad_ff[1],_spiCommand.tau_abad_ff[2],_spiCommand.tau_abad_ff[3]);
+            printf("HIP DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_hip_ff[0],_spiCommand.tau_hip_ff[1],_spiCommand.tau_hip_ff[2],_spiCommand.tau_hip_ff[3]);
+            printf("KNEE DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_knee_ff[0],_spiCommand.tau_knee_ff[1],_spiCommand.tau_knee_ff[2],_spiCommand.tau_knee_ff[3]);
+
+            printf("--------------------------------------------------\n");
+        }
+    #endif
+
+
     // nobody subscribe following lcm --WYN
     _spiLcm.publish("spi_data", data);
     _spiLcm.publish("spi_command", cmd);
