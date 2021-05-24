@@ -313,7 +313,7 @@ Vec4<T> stringToVec4(const std::string& str) {
     if (str.at(i) == '[') {
         i++;
     } else {
-        throw std::runtime_error("stringToVec3 didn't find open bracket");
+        throw std::runtime_error("stringToVec4 didn't find open bracket");
     }
 
     // seek past whitespace
@@ -333,7 +333,7 @@ Vec4<T> stringToVec4(const std::string& str) {
 
     while (str.at(i) == ' ') i++;
     start = i;
-    while (str.at(i) != ']') i++;
+    while (str.at(i) != ',') i++;
     v[2] = stringToNumber<T>(str.substr(start, i - start));
     i++;
 
