@@ -9,11 +9,6 @@
  */
 void JPos_Controller::initializeController(){
 
-    //kpMat << 20, 0, 0, 0, 20, 0, 0, 0, 20;
-    //kdMat << 2.1, 0, 0, 0, 2.1, 0, 0, 0, 2.1;
-    kpMat << userParameters.kp[0], 0, 0, 0,  userParameters.kp[1], 0, 0, 0,  userParameters.kp[2];
-    kdMat << userParameters.kd[0], 0, 0, 0, userParameters.kd[1], 0, 0, 0, userParameters.kd[2];
-
     _legController->_maxTorque = userParameters.max_tau;
     _legController->_legsEnabled = true;
 
@@ -34,30 +29,32 @@ void JPos_Controller::initializeController(){
 
 void JPos_Controller::runController(){
 
+    kpMat << userParameters.kp[0], 0, 0, 0,  userParameters.kp[1], 0, 0, 0,  userParameters.kp[2];
+    kdMat << userParameters.kd[0], 0, 0, 0, userParameters.kd[1], 0, 0, 0, userParameters.kd[2];
 
-    ++iter;
+    ++j_iter;
     // Get robot initial joint position
-    if(iter < 100){
+    if(j_iter < 100){
         for(int leg(0); leg<4; ++leg){
             for(int jidx(0); jidx<3; ++jidx){
                 _jpos_ini[leg][jidx] = _legController->datas[leg].q[jidx];
             }
         }
     }
+//    std::cout<<_jpos_ini[0]<<std::endl;
+    if (j_iter%5000 == 0 && j_iter < userParameters.max_iter)
+        printf("[Jpos_Ctrl] INFO: Control iteration is %ld now ...\n\n", j_iter);
 
-    if (iter%5000 == 0 && iter < userParameters.max_iter)
-        printf("[Jpos_Ctrl] INFO: Control iteration is %ld now ...\n\n", iter);
-
-    if(userParameters.calibrate <= 0.4 && !_legController->_zeroEncoders) {  // These params are only used in TI board in Cheetah3
+    if(userParameters.calibrate <= 0.4 && !_legController->_zeroEncoders) {
         /*
          * This is a test code which used to control any legs or any joints dependently to move a sine trajectory
          * */
         #ifdef JPOS_TEST
-        if (iter>= 100 && iter <= userParameters.max_iter){
+        if (j_iter>= 100 && j_iter <= userParameters.max_iter){
             for(int leg(0); leg<4; ++leg){
                 if (userParameters.leg_enable[leg]){ // check leg enable state
                     for(int jidx(0); jidx<3; ++jidx){
-                        float pos = std::sin(.001f * (iter-100));
+                        float pos = std::sin(.001f * (j_iter-100));
 
                         if (userParameters.joint_enable[jidx]){ //check joint enable state
                             if (jidx == 2)
@@ -74,7 +71,6 @@ void JPos_Controller::runController(){
                     }
                     _legController->commands[leg].kpJoint = kpMat;
                     _legController->commands[leg].kdJoint = kdMat;
-//                        std::cout<<_legController->commands[leg].kpJoint<<std::endl;
                 }else{
                     leg_Passive(leg);
                 }
@@ -91,8 +87,7 @@ void JPos_Controller::runController(){
 
         motion_iter++;
 //          fold legs
-        if (iter>= 100 && flag == FOLDLEG){
-//            motion_iter = iter - 100;
+        if (j_iter>= 100 && flag == FOLDLEG){
             for (int leg = 0; leg < 4; ++leg) {
                 if (motion_iter >= fold_iter+wait_iter){
                     motion_iter =0;
@@ -127,7 +122,6 @@ void JPos_Controller::runController(){
                     leg_Interpolation(motion_iter, squad_iter, leg, _jpos_stand[leg], _jpos_fold[leg]);
             }
         }
-
 #endif
     }
 }
@@ -138,7 +132,7 @@ void JPos_Controller::leg_Interpolation(const size_t & curr_iter, size_t max_ite
     float a(0.f);
     float b(1.f);
 
-    // if we're done interpolating
+    // interpolating
     if(curr_iter <= max_iter) {
       b = (float)curr_iter/(float)max_iter;
       a = 1.f - b;

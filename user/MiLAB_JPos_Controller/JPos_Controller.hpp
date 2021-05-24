@@ -4,8 +4,8 @@
 #include <RobotController.h>
 #include "JPosUserParameters.h"
 
-//#define JPOS_TEST
-#define JPOS_UP_DOWN
+#define JPOS_TEST
+//#define JPOS_UP_DOWN
 class JPos_Controller:public RobotController{
   public:
     JPos_Controller():RobotController(){ }
@@ -40,7 +40,7 @@ class JPos_Controller:public RobotController{
     static const int STANDUP =1;
     static const int SQUAD =2;
     int flag = FOLDLEG;
-    long iter=0;
+    long j_iter=0;
     int motion_iter=0;
 };
 
