@@ -786,7 +786,6 @@ void SimControlPanel::on_userControlTable_cellChanged(int row, int column) {
 
   try {
     parameter.setFromString(ui->userControlTable->item(row, 1)->text().toStdString());
-      std::cout<<ui->userControlTable->item(row, 1)->text().toStdString();
   } catch (std::exception& e) {
     success = false;
   }
