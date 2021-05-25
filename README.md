@@ -215,6 +215,9 @@ This output should hopefully end with
     ```
     ./run_mc.sh jpos f
     ```
+    mpc: MPC controller, spi: Spi connection test, jpos: Joint PD controller
+    f: Load parameters from files, l: Load from LCM
+    l: Print output to log file (This is an optional param)
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
