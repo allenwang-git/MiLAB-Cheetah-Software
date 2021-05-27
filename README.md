@@ -181,7 +181,7 @@ This output should hopefully end with
 * In a new terminal, connect to robot's UP-board over ethernet or WIFI:
     *  By ethernet: 
         * Set server PC's ethernet ip as`10.0.0.2` 
-        * robot's ethernet ip as`10.0.0.21` and then
+        * Set robot's ethernet ip as`10.0.0.21` and then
         ```
         ssh robot@10.0.0.21
         ``` 
