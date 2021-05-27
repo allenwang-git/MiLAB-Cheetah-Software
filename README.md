@@ -218,6 +218,7 @@ This output should hopefully end with
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
+*Following Dependencies Have Been Tested On Ubuntu 16.04 Successfully, But May Meet Some Problem On Other Ubuntu Versions.*
 * Update linux software repositories:
     ```
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -499,7 +500,7 @@ jpos-user-parameters.yaml          *                       *
 ********/common************************************************
 ******/src**                     done   doing    todo     new
 ****/Dynamics**
-Quadruped.cpp                      * todo
+Quadruped.cpp                      * 
 FloatingBaseModel.cpp              * 
 ****/SimUtilities**
 SpineBoard.cpp                     *
