@@ -249,7 +249,7 @@ This output should hopefully end with
     sudo apt-get install openjdk-8-jdk default-jdk
     ```
 * Install LCM (Recommend lcm-1.4)
-    * Download package [lcm-1.4.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/lcm-1.4.0.zip) 
+    * Download package [lcm-1.4.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/lcm-1.4.0.zip) 
     * Unzip to /home and install (Must unzip to /home)
         ```
         cd lcm-1.4.0
@@ -266,7 +266,7 @@ This output should hopefully end with
     sudo apt-get install libeigen3-dev
     ```
 * Install Qt5 on Ubuntu 16.04 (Recommend Qt5.10)
-    * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/qt-opensource-linux-x64-5.10.0.run) 
+    * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/qt-opensource-linux-x64-5.10.0.run) 
     * Run installer 
       ```
       sudo chmod a+x qt-opensource-linux-x64-5.10.0.run
@@ -282,7 +282,7 @@ This output should hopefully end with
         ```  
         sudo apt-get install cppad subversion patch wget checkinstall
         ```
-    * Download package [Ipopt-3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/Ipopt-3.12.7.zip) 
+    * Download package [Ipopt-3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/Ipopt-3.12.7.zip) 
     * Unzip to /home and install third-party lib
         ```
         unzip Ipopt-3.12.7.zip
@@ -329,7 +329,7 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
 * Install RT Kernel
      * System required: Ubuntu 16.04 
      * There are several different methods to install rt kernel. Here we choose an easiest way. If you want to build from source code, go to https://github.com/AWang-Cabin/Ubuntu-RT-UP-Board for more instruction about it.
-     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/UP-board-4.4.86-rt99.tar) for UP-board.
+     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/UP-board-4.4.86-rt99.tar) for UP-board.
      * Unzip it in /usr/src
           ```
           cd /usr/src
@@ -381,7 +381,7 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
           ```
           sudo apt install rt-tests stress gnuplot
           ```
-          Download [rt-kernel-test](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/rt-kernal-test.tar.gz) and unzip
+          Download [rt-kernel-test](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/rt-kernal-test.tar.gz) and unzip
           ```
           tar xvf rt-kernel-test.tar.gz
           cd rt-kernel-test
