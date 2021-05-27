@@ -1,5 +1,5 @@
 # MiLAB-Cheetah-Software 
-*Creation Date: 2020.03.01* \
+*Creation Date: 2021.03.01* \
 *Contributor: Wang Yinuo, Yang Shuyu* \
 *Current Maintainer: Wang Yinuo* \
 *Email: dbdxwyn@163.com*
@@ -433,7 +433,7 @@ You can click on data streams to plot them, which is nice for debugging.  There 
 
 ## Operation Guide
 * [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
-* [Simulation operation guide]()
+* [Simulation operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/simulation_opertion_guide.md)
 
 ## Writing New Controller
 To add your own robot controller, you should add a folder under `Cheetah-Software/user`, and add the folder to the `CMakeLists.txt` in `user`.  
