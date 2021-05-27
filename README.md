@@ -333,11 +333,11 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
      * Unzip it in /usr/src
           ```
           cd /usr/src
-          tar xvf UP-board-4.4.86-rt99.tar
+          tar xvf UP-board-4.4.86-rt99.zip
           ```
      * Install kernel
           ```
-          cd UP-board-4.4.86-rt99.tar
+          cd UP-board-4.4.86-rt99
           sudo dpkg -i linux-*.deb
           sudo update-grub
           reboot
