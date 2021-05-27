@@ -181,11 +181,12 @@ This output should hopefully end with
 * In a new terminal, connect to robot's UP-board over ethernet or WIFI:
     *  By ethernet: 
         * Set server PC's ethernet ip as`10.0.0.2` 
-        * Set robot's ethernet ip as`10.0.0.21` and then
+        * Set [robot's ethernet ip](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/wireadd.png) as`10.0.0.21` and then
         ```
         ssh robot@10.0.0.21
         ``` 
     * By WIFI without other pre-settings: 
+        * The [robot's ip](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/wifiadd.png) is `10.61.6.124`
         ```
         ssh robot@10.61.6.124
         ``` 
