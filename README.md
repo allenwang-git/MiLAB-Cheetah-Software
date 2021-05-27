@@ -329,7 +329,7 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
 * Install RT Kernel
      * System required: Ubuntu 16.04 
      * There are several different methods to install rt kernel. Here we choose an easiest way. If you want to build from source code, go to https://github.com/AWang-Cabin/Ubuntu-RT-UP-Board for more instruction about it.
-     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/UP-board-4.4.86-rt99.tar) for UP-board.
+     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/UP-board-4.4.86-rt99.zip) for UP-board.
      * Unzip it in /usr/src
           ```
           cd /usr/src
