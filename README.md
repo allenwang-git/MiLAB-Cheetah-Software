@@ -1,5 +1,5 @@
 # MiLAB-Cheetah-Software 
-*Creation Date: 2020.03.01* \
+*Creation Date: 2021.03.01* \
 *Contributor: Wang Yinuo, Yang Shuyu* \
 *Current Maintainer: Wang Yinuo* \
 *Email: dbdxwyn@163.com*
@@ -215,6 +215,9 @@ This output should hopefully end with
     ```
     ./run_mc.sh jpos f
     ```
+    mpc: MPC controller, spi: Spi connection test, jpos: Joint PD controller
+    f: Load parameters from files, l: Load from LCM
+    l: Print output to log file (This is an optional param)
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
@@ -247,7 +250,7 @@ This output should hopefully end with
     sudo apt-get install openjdk-8-jdk default-jdk
     ```
 * Install LCM (Recommend lcm-1.4)
-    * Download package [lcm-1.4.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/lcm-1.4.0.zip) 
+    * Download package [lcm-1.4.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/lcm-1.4.0.zip) 
     * Unzip to /home and install (Must unzip to /home)
         ```
         cd lcm-1.4.0
@@ -264,7 +267,7 @@ This output should hopefully end with
     sudo apt-get install libeigen3-dev
     ```
 * Install Qt5 on Ubuntu 16.04 (Recommend Qt5.10)
-    * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/qt-opensource-linux-x64-5.10.0.run) 
+    * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/qt-opensource-linux-x64-5.10.0.run) 
     * Run installer 
       ```
       sudo chmod a+x qt-opensource-linux-x64-5.10.0.run
@@ -280,7 +283,7 @@ This output should hopefully end with
         ```  
         sudo apt-get install cppad subversion patch wget checkinstall
         ```
-    * Download package [Ipopt-3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/Ipopt-3.12.7.zip) 
+    * Download package [Ipopt-3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/Ipopt-3.12.7.zip) 
     * Unzip to /home and install third-party lib
         ```
         unzip Ipopt-3.12.7.zip
@@ -327,15 +330,15 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
 * Install RT Kernel
      * System required: Ubuntu 16.04 
      * There are several different methods to install rt kernel. Here we choose an easiest way. If you want to build from source code, go to https://github.com/AWang-Cabin/Ubuntu-RT-UP-Board for more instruction about it.
-     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/UP-board-4.4.86-rt99.tar) for UP-board.
+     * Download the compiled rt kernel image package [4.4.86-rt99](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/UP-board-4.4.86-rt99.zip) for UP-board.
      * Unzip it in /usr/src
           ```
           cd /usr/src
-          tar xvf UP-board-4.4.86-rt99.tar
+          unzip UP-board-4.4.86-rt99.zip
           ```
      * Install kernel
           ```
-          cd UP-board-4.4.86-rt99.tar
+          cd UP-board-4.4.86-rt99
           sudo dpkg -i linux-*.deb
           sudo update-grub
           reboot
@@ -379,7 +382,7 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
           ```
           sudo apt install rt-tests stress gnuplot
           ```
-          Download [rt-kernel-test](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v0.9.6/rt-kernal-test.tar.gz) and unzip
+          Download [rt-kernel-test](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/rt-kernal-test.tar.gz) and unzip
           ```
           tar xvf rt-kernel-test.tar.gz
           cd rt-kernel-test
@@ -431,7 +434,7 @@ You can click on data streams to plot them, which is nice for debugging.  There 
 
 ## Operation Guide
 * [Real robot operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/realrobot_opertion_guide.md) 
-* [Simulation operation guide]()
+* [Simulation operation guide](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/simulation_opertion_guide.md)
 
 ## Writing New Controller
 To add your own robot controller, you should add a folder under `Cheetah-Software/user`, and add the folder to the `CMakeLists.txt` in `user`.  
