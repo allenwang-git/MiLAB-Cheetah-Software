@@ -9,7 +9,7 @@ move_range : 0.15
 move_offset : 0.0
 # motor selection
 leg_enable : [1,0,0,0]
-joint_enable : [0,1,0]
+joint_enable : [1,1,1]
 # control params
 kp : [350,350,450]
 kd : [8,13,15]

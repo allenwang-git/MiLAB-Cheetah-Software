@@ -802,9 +802,9 @@ void MilabHardwareBridge::runSpi() {
         {
             printf("Iteration stamp:\t%d\n",(int)spi_times);
             printf("--------------------DATA--------------------------\n");
-            printf("ABAD Q = [%f, %f, %f, %f]\n", _spiData.q_abad[0],_spiData.q_abad[1],_spiData.q_abad[2],_spiData.q_abad[3]);
-            printf("HIP Q = [%f, %f, %f, %f]\n", _spiData.q_hip[0],_spiData.q_hip[1],_spiData.q_hip[2],_spiData.q_hip[3]);
-            printf("KNEE Q = [%f, %f, %f, %f]\n", _spiData.q_knee[0],_spiData.q_knee[1],_spiData.q_knee[2],_spiData.q_knee[3]);
+            printf("ABAD Q = [%f, %f, %f, %f]\n", data->q_abad[0],data->q_abad[1],data->q_abad[2],data->q_abad[3]);
+            printf("HIP Q = [%f, %f, %f, %f]\n", data->q_hip[0],data->q_hip[1],data->q_hip[2],data->q_hip[3]);
+            printf("KNEE Q = [%f, %f, %f, %f]\n", data->q_knee[0],data->q_knee[1],data->q_knee[2],data->q_knee[3]);
             printf("-------------------COMMAND------------------------\n");
             printf("ABAD DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_abad[0],_spiCommand.q_des_abad[1],_spiCommand.q_des_abad[2],_spiCommand.q_des_abad[3]);
             printf("HIP DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_hip[0],_spiCommand.q_des_hip[1],_spiCommand.q_des_hip[2],_spiCommand.q_des_hip[3]);

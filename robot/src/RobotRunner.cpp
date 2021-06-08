@@ -121,6 +121,7 @@ void RobotRunner::run() {
         _legController->commands[leg].zero();
       }
       _robot_ctrl->Estop();
+        _legController->setEnabled(false);
     }else {
       // Controller
       /*

@@ -19,7 +19,7 @@ mkdir robot-software
 mkdir robot-software/build robot-software/log
 
 ## Select controller
-if [ -z $1 -o "$1" = "mpc" ]
+if [ -z "$1" -o "$1" = "mpc" ]
 then
   echo "[INFO] Copying dafault controller: milab_ctrl..."
   cp ../mc-build/user/MiLAB_Controller/milab_ctrl robot-software/build
@@ -42,13 +42,13 @@ fi
 
 find . -name \*.so* -exec cp {} ./robot-software/build \;
 cp ../scripts/run_milab* ./robot-software/build
-cp ../scripts/*test*sh ./robot-software/build
+#cp ../scripts/*test*sh ./robot-software/build
 #cp ../scripts/setup_network_mc.py ./robot-software/build
 #cp ../scripts/config_network_lcm.sh ./robot-software
 #cp -r ../robot robot-software
 cp -r ../config robot-software
-cp common/test-common ./robot-software/build
-cp rc_test/rc_test ./robot-software/build
+#cp common/test-common ./robot-software/build
+#cp rc_test/rc_test ./robot-software/build
 chmod +x ./robot-software/build/*
 
 ## Send dir to real robot's computer

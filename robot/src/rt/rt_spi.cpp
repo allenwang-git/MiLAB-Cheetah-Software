@@ -17,9 +17,10 @@
 #define HIP_OFFSET_POS 4.189f
 #define KNEE_OFFSET_POS 2.897f
 //#define SPI_STATUS
+//#define SPI_CAN
 unsigned char spi_mode = SPI_MODE_0;
 unsigned char spi_bits_per_word = 8;
-unsigned int spi_speed = 6000000;
+unsigned int spi_speed = 5000000;
 uint8_t lsb = 0x01;
 
 int spi_1_fd = -1;
@@ -279,6 +280,13 @@ void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) { //leg
   else
       printf("SPI %d WORKS NORMAL\n",leg_0);
 #endif
+#ifdef SPI_CAN
+    for (int j = 0; j < 4; ++j) {
+//        if ((data->flags[j])==1 && data->flags[j]!=57005 && data->flags[j]!=48879)
+            printf("CAN%d STATUS ERROR:%d\n",j,data->flags[j]);
+    }
+
+#endif
 }
 
 /*!
@@ -305,8 +313,11 @@ void spi_send_receive(spi_command_t *command, spi_data_t *data) {
     memset(rx_buf, 0, K_WORDS_PER_MESSAGE * sizeof(uint16_t));
 
     // copy into tx buffer flipping bytes
-    for (int i = 0; i < K_WORDS_PER_MESSAGE; i++)
-      tx_buf[i] = (cmd_d[i] >> 8) + ((cmd_d[i] & 0xff) << 8);
+    for (int i = 0; i < K_WORDS_PER_MESSAGE; i++){
+        tx_buf[i] = (cmd_d[i] >> 8) + ((cmd_d[i] & 0xff) << 8);
+//        printf("tx[%d]: %u\n",i,tx_buf[i]);
+    }
+
     // tx_buf[i] = __bswap_16(cmd_d[i]);
 
     // each word is two bytes long
@@ -326,12 +337,14 @@ void spi_send_receive(spi_command_t *command, spi_data_t *data) {
       spi_message[i].len = word_len * 66;
       spi_message[i].rx_buf = (uint64_t)rx_buf;
       spi_message[i].tx_buf = (uint64_t)tx_buf;
+//      printf("tx: %llu \nrx:  %llu \nlen: %d\nbits: %d\n",spi_message[0].tx_buf,spi_message[0].rx_buf,spi_message[0].len,spi_message[0].bits_per_word);
     }
 
     // do spi communication
     int rv = ioctl(spi_board == 0 ? spi_1_fd : spi_2_fd, SPI_IOC_MESSAGE(1),
                    &spi_message);
     (void)rv;
+    if (rv < 0) printf("[ERROR] SPI %d COMMUNICATION FAILED(%d).\n", spi_board,rv);
 
     // flip bytes the other way
     for (int i = 0; i < 30; i++)

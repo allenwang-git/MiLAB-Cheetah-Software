@@ -155,8 +155,8 @@ void JPos_Controller::leg_JointPD(int leg, Vec3<float> qDes, Vec3<float> qdDes) 
 
 void JPos_Controller::leg_Passive(int leg){
 
-    _legController->commands[leg].kpJoint = kpMat.setZero();
-    _legController->commands[leg].kdJoint = kdMat.setZero();
+    _legController->commands[leg].kpJoint.setZero();
+    _legController->commands[leg].kdJoint.setZero();
     for (int jidx = 0; jidx < 3; ++jidx) {
         _legController->commands[leg].tauFeedForward[jidx] = 0.;
     }
