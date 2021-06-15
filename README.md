@@ -125,6 +125,10 @@ git clone https://github.com/AWang-Cabin/MiLAB-Cheetah-Software.git
     ./../scripts/make_types.sh
     make -j8
     ```
+* After the first successful make in your pc, run following script to back up googletest dirs and you do not need to git clone it any more:
+    ```
+    ./../scripts/back_googletest.sh
+    ```
 If you are building code on your computer that you would like to copy over to the real robot, go to [Run Real Robot] for details.
 
 If you are building code on the robot's UP-board, you do not need to change above commands.
