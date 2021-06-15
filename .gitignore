@@ -1,7 +1,6 @@
 build/
 mc-build/
 cmake-build-debug/
-googletest/
 .idea/
 lcm-types/cheetahlcm
 lcm-types/c_lcm_files
