@@ -267,6 +267,20 @@ This output should hopefully end with
     ```
     sudo apt-get install libeigen3-dev
     ```
+    * You may meet problems if eigen3 was installed under `/usr/include` instead of `/usr/local/include`, you can try to fix it by:
+      ```
+      sudo cp -r /usr/include/eigen3 /usr/local/include 
+      ```
+    * Or I recommand another method to install this library:
+      (The default install path is /usr/local/inculde/eigen3)
+       ```
+       git clone https://github.com/eigenteam/eigen-git-mirror
+       cd eigen-git-mirror
+       mkdir build
+       cd build
+       cmake ..
+       sudo make install
+       ```
 * Install Qt5 on Ubuntu 16.04 (Recommend Qt5.10)
     * Download package [qt5.10.0](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/qt-opensource-linux-x64-5.10.0.run) 
     * Run installer 
@@ -275,7 +289,7 @@ This output should hopefully end with
       ./qt-opensource-linux-x64-5.10.0.run
       ```
     * Follow [config instructions](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/qt_install.md)
-    * On Ubuntu 18.10 or 19.04, you may instead install Qt directly with command:
+    * On Ubuntu 18.04 or 19.04, you may instead install Qt directly with command:
         ```
         sudo apt install libqt5 libqt5gamepad5
         ```
