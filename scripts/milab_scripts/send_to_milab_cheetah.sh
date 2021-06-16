@@ -32,7 +32,7 @@ else
     cp ../mc-build/user/MiLAB_Spi_Controller/spi_ctrl robot-software/build
   else
     echo "[ERROR] $1 is not a existed controller"
-    echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpd| ] [ |wifi|wire]"
+    echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpos| ] [ |wifi|wire]"
     echo "[EXAMPLE] sh send_to_milab_cheetah.sh spi wifi"
     exit 1
   fi
@@ -65,7 +65,7 @@ then
     scp -rq robot-software $name@$wireip:~/
   else
     echo "[ERROR] $2 is not a supported connection type"
-    echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpd| ] [ |wifi|wire]"
+    echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpos| ] [ |wifi|wire]"
     echo "[EXAMPLE] sh send_to_milab_cheetah.sh spi wifi"
     exit 1
   fi

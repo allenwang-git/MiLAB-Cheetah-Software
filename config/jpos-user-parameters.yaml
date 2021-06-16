@@ -3,9 +3,9 @@ __collection-name__: user-parameters
 # Parameters for JOINT PD CONTROL
 
 max_tau : 45.
-max_iter : 50000
+max_iter : 15000
 #　motor move param
-move_range : 0.15
+move_range : 0.2
 move_offset : 0.0
 # motor selection
 leg_enable : [1,0,0,0]

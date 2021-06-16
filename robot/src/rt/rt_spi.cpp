@@ -4,8 +4,6 @@
  */
 #ifdef linux
 // TODO: finally modify the joint offsets(55-57)
-#include <byteswap.h>
-#include <math.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <string.h>
@@ -20,7 +18,7 @@
 //#define SPI_CAN
 unsigned char spi_mode = SPI_MODE_0;
 unsigned char spi_bits_per_word = 8;
-unsigned int spi_speed = 5000000;
+unsigned int spi_speed = 6000000;
 uint8_t lsb = 0x01;
 
 int spi_1_fd = -1;

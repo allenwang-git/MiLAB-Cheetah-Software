@@ -23,7 +23,7 @@
 
 #define USE_MICROSTRAIN
 //#define IMU_DEBUG_SHOW
-//#define SPI_DEBUG_SHOW
+#define SPI_DEBUG_SHOW
 //#define JPOS_CTRL
 #define SPI_CTRL
 //#define CMPC_CTRL
@@ -124,7 +124,9 @@ void HardwareBridge::run_sbus() {
         if (x) {
             sbus_packet_complete_at9s();
         }
+        else  printf("[HARDWARE BRIDGE] Receive sbus failed.\n");
     }
+    else  printf("[HARDWARE BRIDGE] Run sbus failed, port<0\n");
 }
 
 /*!
@@ -803,16 +805,23 @@ void MilabHardwareBridge::runSpi() {
             printf("Iteration stamp:\t%d\n",(int)spi_times);
             printf("--------------------DATA--------------------------\n");
             printf("ABAD Q = [%f, %f, %f, %f]\n", data->q_abad[0],data->q_abad[1],data->q_abad[2],data->q_abad[3]);
-            printf("HIP Q = [%f, %f, %f, %f]\n", data->q_hip[0],data->q_hip[1],data->q_hip[2],data->q_hip[3]);
+            printf("HIP  Q = [%f, %f, %f, %f]\n", data->q_hip[0],data->q_hip[1],data->q_hip[2],data->q_hip[3]);
             printf("KNEE Q = [%f, %f, %f, %f]\n", data->q_knee[0],data->q_knee[1],data->q_knee[2],data->q_knee[3]);
+            printf("ABAD QD = [%f, %f, %f, %f]\n", data->qd_abad[0],data->qd_abad[1],data->qd_abad[2],data->qd_abad[3]);
+            printf("HIP  QD = [%f, %f, %f, %f]\n", data->qd_hip[0],data->qd_hip[1],data->qd_hip[2],data->qd_hip[3]);
+            printf("KNEE QD = [%f, %f, %f, %f]\n", data->qd_knee[0],data->qd_knee[1],data->qd_knee[2],data->qd_knee[3]);
             printf("-------------------COMMAND------------------------\n");
             printf("ABAD DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_abad[0],_spiCommand.q_des_abad[1],_spiCommand.q_des_abad[2],_spiCommand.q_des_abad[3]);
-            printf("HIP DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_hip[0],_spiCommand.q_des_hip[1],_spiCommand.q_des_hip[2],_spiCommand.q_des_hip[3]);
+            printf("HIP  DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_hip[0],_spiCommand.q_des_hip[1],_spiCommand.q_des_hip[2],_spiCommand.q_des_hip[3]);
             printf("KNEE DES Q = [%f, %f, %f, %f]\n", _spiCommand.q_des_knee[0],_spiCommand.q_des_knee[1],_spiCommand.q_des_knee[2],_spiCommand.q_des_knee[3]);
-            printf("KP = [%f, %f, %f]\n", _spiCommand.kp_abad[0],_spiCommand.kp_hip[1],_spiCommand.kp_knee[2]);
-            printf("KD = [%f, %f, %f]\n", _spiCommand.kd_abad[0],_spiCommand.kd_hip[1],_spiCommand.kd_knee[2]);
+            printf("KP A= [%f, %f, %f, %f]\n", _spiCommand.kp_abad[0],_spiCommand.kp_abad[1],_spiCommand.kp_abad[2],_spiCommand.kp_abad[3]);
+            printf("KP H= [%f, %f, %f, %f]\n", _spiCommand.kp_hip[0],_spiCommand.kp_hip[1],_spiCommand.kp_hip[2],_spiCommand.kp_hip[3]);
+            printf("KP K= [%f, %f, %f, %f]\n", _spiCommand.kp_knee[0],_spiCommand.kp_knee[1],_spiCommand.kp_knee[2],_spiCommand.kp_knee[3]);
+            printf("KD A= [%f, %f, %f, %f]\n", _spiCommand.kd_abad[0],_spiCommand.kd_abad[1],_spiCommand.kd_abad[2],_spiCommand.kd_abad[3]);
+            printf("KD H= [%f, %f, %f, %f]\n", _spiCommand.kd_hip[0],_spiCommand.kd_hip[1],_spiCommand.kd_hip[2],_spiCommand.kd_hip[3]);
+            printf("KD K= [%f, %f, %f, %f]\n", _spiCommand.kd_knee[0],_spiCommand.kd_knee[1],_spiCommand.kd_knee[2],_spiCommand.kd_knee[3]);
             printf("ABAD DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_abad_ff[0],_spiCommand.tau_abad_ff[1],_spiCommand.tau_abad_ff[2],_spiCommand.tau_abad_ff[3]);
-            printf("HIP DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_hip_ff[0],_spiCommand.tau_hip_ff[1],_spiCommand.tau_hip_ff[2],_spiCommand.tau_hip_ff[3]);
+            printf("HIP  DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_hip_ff[0],_spiCommand.tau_hip_ff[1],_spiCommand.tau_hip_ff[2],_spiCommand.tau_hip_ff[3]);
             printf("KNEE DES T = [%f, %f, %f, %f]\n", _spiCommand.tau_knee_ff[0],_spiCommand.tau_knee_ff[1],_spiCommand.tau_knee_ff[2],_spiCommand.tau_knee_ff[3]);
 
             printf("--------------------------------------------------\n");

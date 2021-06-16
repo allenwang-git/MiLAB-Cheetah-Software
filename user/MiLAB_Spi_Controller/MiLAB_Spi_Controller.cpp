@@ -9,9 +9,10 @@ void MiLAB_Spi_Controller::runController() {
 //      _legController->commands[leg].qDes[joint] = command.q_des[idx];
 //      _legController->commands[leg].kpJoint(joint,joint) = command.kp_joint[idx];
 //      _legController->commands[leg].kdJoint(joint,joint) = command.kd_joint[idx];
-      _legController->commands[leg].qDes[joint] = 0.1;
-      _legController->commands[leg].kpJoint(joint,joint) = 10;
-      _legController->commands[leg].kdJoint(joint,joint) = 1;
+      _legController->commands[leg].qDes[joint] = _legController->datas[leg].q[joint];
+      _legController->commands[leg].kpJoint(joint,joint) = 0;
+      _legController->commands[leg].kdJoint(joint,joint) = 0;
+      _legController->commands[leg].tauFeedForward[joint] = 0.;
       idx++;
     }
   }

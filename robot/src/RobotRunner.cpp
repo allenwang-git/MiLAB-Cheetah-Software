@@ -9,14 +9,11 @@
 #include <unistd.h>
 
 #include "RobotRunner.h"
-#include "Controllers/ContactEstimator.h"
 #include "Controllers/OrientationEstimator.h"
 #include "Dynamics/Cheetah3.h"
 #include "Dynamics/MiniCheetah.h"
 #include "Dynamics/Milab.h"
-#include "Utilities/Utilities_print.h"
 #include "ParamHandler.hpp"
-#include "Utilities/Timer.h"
 #include "Controllers/PositionVelocityEstimator.h"
 #include <fstream>
 
@@ -113,7 +110,8 @@ void RobotRunner::run() {
   } else {
     _legController->setEnabled(true);
 
-    if( rc_control.mode == 0 && controlParameters->use_rc ) {
+//    if( rc_control.mode == 0 && controlParameters->use_rc ) {
+    if(0){
       if(count_ini%1000 ==0) {
               printf("[RobotRunner] ESTOP mode && use_rc = 1, wait to start...\n");
       }
@@ -121,7 +119,8 @@ void RobotRunner::run() {
         _legController->commands[leg].zero();
       }
       _robot_ctrl->Estop();
-        _legController->setEnabled(false);
+//      rc motor test command
+//        _legController->setEnabled(false);
     }else {
       // Controller
       /*

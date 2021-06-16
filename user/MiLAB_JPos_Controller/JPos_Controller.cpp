@@ -1,5 +1,5 @@
 #include "JPos_Controller.hpp"
-# include <iostream>
+
 /*
  * This controller is able to control any number of legs and any number of joints by setting the joint_enable
  * and leg_enable param in jpos-user-parameters.yaml. KP, KD, feedforward-torque can also be tuned in that file.
@@ -57,8 +57,9 @@ void JPos_Controller::runController(){
                         float pos = std::sin(.001f * (j_iter-100));
 
                         if (userParameters.joint_enable[jidx]){ //check joint enable state
-                            if (jidx == 2)
-                                _legController->commands[leg].qDes[jidx] = userParameters.move_range * pos + _jpos_ini[leg][jidx] - userParameters.move_offset;
+                            if (jidx == 0)
+                                _legController->commands[leg].qDes[jidx] = _jpos_ini[leg][jidx];
+//                                        userParameters.move_range * pos + _jpos_ini[leg][jidx] - userParameters.move_offset;
                             else
                                 _legController->commands[leg].qDes[jidx] = userParameters.move_range * pos + _jpos_ini[leg][jidx];
                             _legController->commands[leg].qdDes[jidx] = 0.;
