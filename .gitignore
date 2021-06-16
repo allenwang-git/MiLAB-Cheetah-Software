@@ -1,7 +1,6 @@
 build/
 mc-build/
 cmake-build-debug/
-googletest/
 .idea/
 lcm-types/cheetahlcm
 lcm-types/c_lcm_files
@@ -28,3 +27,7 @@ documentation/doxygen/html
 .DS_Store
 tags
 debug_tools/leg_controller_data.txt
+googletest/googletest-mc/googletest-build
+googletest/googletest-mc/googletest-download
+googletest/googletest-build/
+googletest/googletest-download/
