@@ -8,8 +8,9 @@ buildpath=~/MiLAB-Cheetah-Software/build/googletest-build/
 mcbuildpath=~/MiLAB-Cheetah-Software/mc-build/googletest-build/
 
 if [ -e $buildpath ] ; then
-    sudo cp -r ../build/googletest-build $projpath/googletest
-    sudo cp -r ../build/googletest-download $projpath/googletest
+    sudo rm -rf $projpath/googletest/googletest-*
+    cp -r ../build/googletest-build $projpath/googletest
+    cp -r ../build/googletest-download $projpath/googletest
     echo Finshed back up build/googletest-* dir.
 else
     echo Failed to back up build/googletest-* dir, please run make command first.
@@ -17,8 +18,9 @@ else
 fi
 
 if [ -e $mcbuildpath ] ; then
-    sudo cp -r ../mc-build/googletest-build $projpath/googletest/googletest-mc
-    sudo cp -r ../mc-build/googletest-download $projpath/googletest/googletest-mc
+    sudo rm -rf $projpath/googletest/googletest-mc/googletest-*
+    cp -r ../mc-build/googletest-build $projpath/googletest/googletest-mc
+    cp -r ../mc-build/googletest-download $projpath/googletest/googletest-mc
     echo Finished back up mc-build/googletest-* dir.
 else
     echo Failed to back up mc-build/googletest-* dir, please run make command first.

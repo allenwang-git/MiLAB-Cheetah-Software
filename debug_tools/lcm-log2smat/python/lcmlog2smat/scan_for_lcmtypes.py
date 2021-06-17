@@ -67,8 +67,8 @@ def find_lcmtypes():
 
             # only recurse into subdirectories that correspond to python 
             # packages (i.e., they contain a file named "__init__.py")
-            subdirs_to_traverse = [ subdir_name for subdir_name in dirs \
-                    if os.path.exists(os.path.join(root, subdir_name, "__init__.py")) ]
+            subdirs_to_traverse = [subdir_name for subdir_name in dirs \
+                                   if os.path.exists(os.path.join(root, subdir_name, "__init__.py"))]
             del dirs[:]
             dirs.extend(subdirs_to_traverse)
     return lcmtypes
