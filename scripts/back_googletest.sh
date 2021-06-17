@@ -8,7 +8,7 @@ buildpath=~/MiLAB-Cheetah-Software/build/googletest-build/
 mcbuildpath=~/MiLAB-Cheetah-Software/mc-build/googletest-build/
 
 if [ -e $buildpath ] ; then
-    sudo rm -rf $projpath/googletest/googletest-*
+    sudo rm -rf $projpath/googletest/googletest-*d
     cp -r ../build/googletest-build $projpath/googletest
     cp -r ../build/googletest-download $projpath/googletest
     echo Finshed back up build/googletest-* dir.

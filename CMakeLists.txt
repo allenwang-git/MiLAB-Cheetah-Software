@@ -60,6 +60,7 @@ endif ()
 execute_process(COMMAND cp -r ${PROJECT_SOURCE_DIR}/googletest/googletest-src ${MY_BUILD_PATH}
                 COMMAND cp -r ${MY_GOOGLE_PATH}/googletest-download ${MY_BUILD_PATH}
                 COMMAND cp -r ${MY_GOOGLE_PATH}/googletest-build ${MY_BUILD_PATH}
+                ERROR_QUIET
                 )
 message("-- Googletest is ready")
 

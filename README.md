@@ -563,12 +563,14 @@ rt_spi.h                           *
 rt_rc_interface.h                  *
 
 
-
 ********/scripts***********************************************
 ******/milab_scripts**           done   doing    todo     new
 send_to_milab_cheetah.sh           *                       *
 run_milab.sh                       *                       *
 run_test_common.sh                 *                       *
+ssh_robot.sh                       *                       *
+back_googletest.sh                 *                       *
+
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo     new
