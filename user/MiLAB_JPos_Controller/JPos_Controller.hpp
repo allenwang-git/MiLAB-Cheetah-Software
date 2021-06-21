@@ -4,8 +4,8 @@
 #include <RobotController.h>
 #include "JPosUserParameters.h"
 
-#define JPOS_TEST
-//#define JPOS_UP_DOWN
+//#define JPOS_TEST
+#define JPOS_UP_DOWN
 class JPos_Controller:public RobotController{
   public:
     JPos_Controller():RobotController(){ }
@@ -26,6 +26,7 @@ class JPos_Controller:public RobotController{
     Vec3<float> _jpos_ini[4];
     Vec3<float> _jpos_fold[4];
     Vec3<float> _jpos_stand[4];
+    Vec3<float> _jpos_pre_off[4];
     Vec3<float> zero_vec3;
     JPosUserParameters userParameters;
   private:

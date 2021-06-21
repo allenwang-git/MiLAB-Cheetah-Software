@@ -24,6 +24,7 @@ void JPos_Controller::initializeController(){
     for (int leg = 0; leg < 4; ++leg) {
         _jpos_fold[leg] << 0.f, -1.65f, 2.6f;
         _jpos_stand[leg] << 0.f, -0.92f, 1.6f;
+        _jpos_pre_off[leg] << 0.f, -1.45f, 2.78f;
     }
 }
 
@@ -118,9 +119,9 @@ void JPos_Controller::runController(){
                 if (motion_iter >= squad_iter + wait_iter)
                     leg_Passive(leg);
                 else if (motion_iter > squad_iter && motion_iter < squad_iter + wait_iter)
-                    leg_JointPD(leg, _jpos_fold[leg], zero_vec3);
+                    leg_JointPD(leg, _jpos_pre_off[leg], zero_vec3);
                 else
-                    leg_Interpolation(motion_iter, squad_iter, leg, _jpos_stand[leg], _jpos_fold[leg]);
+                    leg_Interpolation(motion_iter, squad_iter, leg, _jpos_stand[leg], _jpos_pre_off[leg]);
             }
         }
 #endif
