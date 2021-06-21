@@ -40,25 +40,38 @@ Based on [MIT-Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Softw
 Although part of the following definitions and settings are also applicable to MIT or UNITREE robots, they are specifically written for MiLAB Robot.
 * Default Units in project
 ```
-Length:           m
-Angle:            rad
-Angular velocity: rad/s
-Torque:           N.m
-Mass:             kg
-Inertia tensor:   kg·m^2
+Length:              m
+Angle:               rad
+Angular velocity:    rad/s
+Torque:              N.m
+Mass:                kg
+Inertia tensor:      kg·m^2
 ```
 * Serial numbers of the legs, joints and links:
 ```
-     FRONT
-LEFT 1  0 RIGHT
-     3  2
-     BACK
+             FRONT
+       \     ____    /
+LEFT    \/ 1|    |0 \/     RIGHT
+       \    |    |    /
+        \/ 3|____|2 \/
+          
+             BACK
 ```
 ```
-leg 0: FR -- Front-Right           joint 0: Abduction/Adduction(Ab/Ad)       link 0: Hip link
-leg 1: FL -- Front-Left            joint 1: Hip                              link 1: Upper link   
-leg 2: RR -- Rear-Right            joint 2: Knee                             link 2: Lower link
+leg 0: FR -- Front-Right   
+leg 1: FL -- Front-Left  
+leg 2: RR -- Rear-Right   
 leg 3: RL -- Rear-Right
+```
+```
+joint 0: Abduction/Adduction(Ab/Ad)    can_ID: 0X01
+joint 1: Hip                           can_ID: 0X02
+joint 2: Knee                          can_ID: 0X03
+```
+```
+link 0: Hip link
+link 1: Upper link
+link 2: Lower link
 ```
 * Joint limitation
 
@@ -339,6 +352,7 @@ This output should hopefully end with
 ## Install Linux RT Kernel for UP-board
 To keep real time performance of controller running on UP-board, the ubuntu rt kernel need to be installed.
 * Install Ubuntu System
+     * **Make sure the robot's ubuntu version matching your pc's ubuntu version.**
      * Download Ubuntu 16.04.6 ISO from the Ubuntu download page (works with desktop and server edition)
        http://releases.ubuntu.com/16.04/ubuntu-16.04.6-desktop-amd64.iso  \
        http://releases.ubuntu.com/16.04/ubuntu-16.04.6-server-amd64.iso

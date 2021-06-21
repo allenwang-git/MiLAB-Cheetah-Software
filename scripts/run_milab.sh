@@ -4,19 +4,19 @@
 # This script can run any controller and output terminal log.
 
 # enable multicast and add route for lcm out the top
-#sudo ifconfig enxa0cec80e3ced multicast
-#sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev enxa0cec80e3ced
+sudo ifconfig enxa0cec80e3ced multicast
+sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev lo
 
 if [ -z $1 ]; then
   echo "[USAGE] ./run_milab.sh [mpc|jpos|spi] [f|l] [l| ]"
   echo "        mpc: milab_ctrl, jpos: jpos_ctrl, spi: spi_ctrl
-        f: param from file, l:param form lcm
+        f: param from file, l: param form lcm
         l: create terminal log, empty: no log"
   exit 1
 elif [ -z $2 ]; then
   echo "[USAGE] ./run_milab.sh [mpc|jpos|spi] [f|l] [l| ]"
   echo "        mpc: milab_ctrl, jpos: jpos_ctrl, spi: spi_ctrl
-        f: param from file, l:param form lcm
+        f: param from file, l: param form lcm
         l: create terminal log, empty: no log"
   exit 1
 else
@@ -31,7 +31,7 @@ else
     echo "[ERROR] $1 is not a existed controller"
     echo "[USAGE] ./run_milab.sh [mpc|jpos|spi] [f|l] [l| ]"
     echo "        mpc: milab_ctrl, jpos: jpos_ctrl, spi: spi_ctrl
-          f: param from file, l:param form lcm
+          f: param from file, l: param form lcm
           l: create terminal log, empty: no log"
     exit 1
   fi
@@ -40,7 +40,7 @@ else
     echo "[ERROR] $2 is not a valid param option"
     echo "[USAGE] ./run_milab.sh [mpc|jpos|spi] [f|l] [l| ]"
     echo "        mpc: milab_ctrl, jpos: jpos_ctrl, spi: spi_ctrl
-          f: param from file, l:param form lcm
+          f: param from file, l: param form lcm
           l: create terminal log, empty: no log"
     exit 1
   fi
@@ -56,7 +56,7 @@ else
       echo "[ERROR] $3 is not a valid log option"
       echo "[USAGE] ./run_milab.sh [mpc|jpos|spi] [f|l] [l| ]"
       echo "        mpc: milab_ctrl, jpos: jpos_ctrl, spi: spi_ctrl
-            f: param from file, l:param form lcm
+            f: param from file, l: param form lcm
             l: create terminal log, empty: no log"
       exit 1
   fi

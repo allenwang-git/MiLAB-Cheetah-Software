@@ -13,7 +13,7 @@ name=robot
 ## Create a prepare dir robot-software
 set -e
 DIR="$(pwd)"
-cd ${DIR}/../../mc-build/
+cd ${DIR}/../mc-build/
 sudo rm -rf robot-software
 mkdir robot-software
 mkdir robot-software/build robot-software/log
@@ -44,7 +44,7 @@ find . -name \*.so* -exec cp {} ./robot-software/build \;
 cp ../scripts/run_milab* ./robot-software/build
 #cp ../scripts/*test*sh ./robot-software/build
 #cp ../scripts/setup_network_mc.py ./robot-software/build
-#cp ../scripts/config_network_lcm.sh ./robot-software
+cp ../scripts/get_data_back.sh ./robot-software
 #cp -r ../robot robot-software
 cp -r ../config robot-software
 #cp common/test-common ./robot-software/build

@@ -12,15 +12,14 @@
 #include <fstream>
 using namespace std;
 
-//#define OUTPUT_LEG_DATA
-
 /*
  * Bdebug plot
  */
 template <typename T>
 void LegController<T>::output2File(){
         ofstream leg_data;
-        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt", ios::app);
+//        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt", ios::app);
+        leg_data.open("/home/robot/robot-software/log/leg_controller_data.txt", ios::app);
         if (!leg_data.is_open()) {
             cout << "[LegController] Open leg_control_data.txt failed!" << endl;
         } else {
@@ -277,7 +276,7 @@ void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
               commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
     }
 
-    // please only send 1 or 0 here or the robot will explode.
+    // please only send 1 or 0 here or the robot will explode.max
     tiBoardCommand[leg].enable = _legsEnabled ? 1 : 0;
     tiBoardCommand[leg].max_torque = _maxTorque;
     tiBoardCommand[leg].zero = _zeroEncoders ? 1 : 0;
