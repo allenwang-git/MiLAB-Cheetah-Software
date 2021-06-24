@@ -20,7 +20,7 @@ If you would like to open LCM spy, you can do this by running `../script/launch_
 
 On the UP-board, you will find a folder in the /home directory name `robot-software`.  Inside this folder is a copy of the configure lcm script.  Run `./configure_network_lcm.sh mc-top` if you are connected with the ethernet cable.
 
-To run the robot code, enter the build folder and run `mc_run.sh`.  The robot program will wait until the interface has been open and started in Cheetah, Robot mode.
+To run the robot code, enter the build folder and run `run_milab.sh`.  The robot program will wait until the interface has been open and started in Cheetah, Robot mode.
 
 The robot controller currently works with:
 

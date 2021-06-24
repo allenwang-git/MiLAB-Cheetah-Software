@@ -43,6 +43,7 @@ JOYSTICK: Left Stick, Right Stick
 * Initial Configuration
 
 <img src="https://user-images.githubusercontent.com/69251304/114666456-de63b700-9d30-11eb-8eac-3709a0d2f4b8.png" width="350" height="400"/>  <img src="https://user-images.githubusercontent.com/69251304/114668072-e1f83d80-9d32-11eb-9e97-1f8280d150a0.png" width="350" height="400"/><br/>
+
 ```
 SwA = UP
 SwC = UP
@@ -53,6 +54,7 @@ SwG = UP
 * Start Up To RecoveryStand Mode
 
 <img src="https://user-images.githubusercontent.com/69251304/114670896-0f92b600-9d36-11eb-954b-871278e042f2.jpg" width="350" height="400"/> <img src="https://user-images.githubusercontent.com/69251304/114669538-98105700-9d34-11eb-8252-f92dfd722140.png" width="350" height="400"/><br/>
+
 ```
 SwA = DWN
 SwC = UP
@@ -88,6 +90,7 @@ SwG = DWN
 * Switch Gaits
 
 <img src="https://user-images.githubusercontent.com/69251304/114671531-c727c800-9d36-11eb-8d2f-8a24a7f084c4.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671542-ca22b880-9d36-11eb-889f-cb7eaca6088a.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671590-d7d83e00-9d36-11eb-84d5-75a8535a36e3.jpg" width="250" height="300"/> <img src="https://user-images.githubusercontent.com/69251304/114671599-d9a20180-9d36-11eb-8b6a-31e914889c65.jpg" width="250" height="300"/><br/>
+
 ```
 SwA = DWN
 SwE = UP
@@ -96,9 +99,9 @@ SwG = DWN
 --------------------------------------------
 SwB = UP    |   SwD = UP   |    SwD = DWN   |
 ---------------------------------------------
-SwD = UP    |   Trotting   |     Walking    |
-SwD = MID   | Trotrunning  |    Pronking    |
-SwD = DWN   |    Pacing    |    Galloping   |
+SwC = UP    |   Trotting   |     Walking    |
+SwC = MID   | Trotrunning  |    Pronking    |
+SwC = DWN   |    Pacing    |    Galloping   |
 ---------------------------------------------
 
 ```

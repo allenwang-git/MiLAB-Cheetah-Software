@@ -33,10 +33,10 @@ class JPos_Controller:public RobotController{
     Mat3<float> kpMat;
     Mat3<float> kdMat;
     const int fold_iter = 500;
-    const int stand_iter = 500;
-    const int squad_iter = 500;
+    const int stand_iter = 800;
+    const int squad_iter = 800;
     const int wait_iter = 1000;
-    const int keep_iter = 5000;
+    const int keep_iter = 2000;
     static const int FOLDLEG =0;
     static const int STANDUP =1;
     static const int SQUAD =2;

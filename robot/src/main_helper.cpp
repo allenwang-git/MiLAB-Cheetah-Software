@@ -56,6 +56,7 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
     printUsage();
     return EXIT_FAILURE;
   }
+  flagSimReal = gMasterConfig.simulated;
 
   if(argc == 4 && argv[3][0] == 'f') {
     gMasterConfig.load_from_file = true;
