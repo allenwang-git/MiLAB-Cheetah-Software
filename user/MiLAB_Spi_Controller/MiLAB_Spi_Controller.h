@@ -3,7 +3,7 @@
 
 #include <RobotController.h>
 #include <lcm/lcm-cpp.hpp>
-
+#include "SpiUserParameters.h"
 #include <thread>
 #include <mutex>
 
