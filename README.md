@@ -197,7 +197,8 @@ This output should hopefully end with
     ``` 
 * In a new terminal, connect to robot's UP-board over ethernet or WIFI:
     *  By ethernet: 
-        * Set server PC's ethernet ip as`10.0.0.2` 
+        * Set the Gateway as `10.0.0.1` and Netmask as `255.255.255.0`
+        * Set server PC's ethernet ip as`10.0.0.2` (In fact, it can be any ip in `10.0.0.2-10.0.0.254` except `10.0.0.21`)
         * Set [robot's ethernet ip](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/wireadd.png) as`10.0.0.21` and then
         ```
         ssh robot@10.0.0.21
@@ -231,11 +232,29 @@ This output should hopefully end with
     ``` 
     or
     ```
-    ./run_mc.sh jpos f
+    ./run_milab.sh jpos f
     ```
     mpc: MPC controller, spi: Spi connection test, jpos: Joint PD controller
     f: Load parameters from files, l: Load from LCM
     l: Print output to log file (This is an optional param)
+ * If you choose ***LCM*** mode by`./run_milab.sh jpos l`, you can simulate the real time robot in simulator. For more guide, please follow the steps below:
+     * Make sure your pc has connected with robot up-board.
+     * In your terminal, run `./sim/sim` and select `Robot` mode.
+     * In robot terminal, run `./run_milab.sh jpos l`.
+     * When you see: 
+        ```
+        [Hardware Bridge] Loading parameters over LCM...
+        [Hardware Bridge] Waiting for robot parameters...
+        ```
+       Click ***Start*** button on simulator panel and you will see:
+       ```
+        [RobotInterface] Set parameter cheater_mode to 0
+        [RobotInterface] Set parameter control_mode to 6
+        [RobotInterface] Set parameter controller_dt to 0.002
+        ...
+        [Graphics 3D] Uploaded data (19.823902 MB)
+        ```
+       It means you have connected successfully and the robot is ready to run.
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
@@ -462,7 +481,7 @@ You can click on data streams to plot them, which is nice for debugging.  There 
      echo "export LCM_DEFAULT_URL=udpm://239.255.76.67:7667?ttl=1" >> ~/.bashrc
      source ~/.bashrc
      ```
-     **Note**: If you only want to run simulator on you PC, you don't need to do above steps. And multi-host LCM can only run on computers connected by ethernet.
+     **Note**: If you only want to run simulator on you PC, make sure your pc has connected to a network and you don't need to do above steps. And multi-host LCM can only run on computers connected by ethernet.
 * Learn More  (https://lcm-proj.github.io/multicast_setup.html)
 
 ## Operation Guide
@@ -584,7 +603,7 @@ run_milab.sh                       *                       *
 run_test_common.sh                 *                       *
 ssh_robot.sh                       *                       *
 back_googletest.sh                 *                       *
-
+get_data_back.sh                   *                       * 
 
 ********/sim***************************************************
 ******/src**                     done   doing    todo     new
