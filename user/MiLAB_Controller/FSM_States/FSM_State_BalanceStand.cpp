@@ -50,8 +50,8 @@ void FSM_State_BalanceStand<T>::onEnter() {
     && _ini_body_pos[2] < 0.25) {
       _ini_body_pos[2] = 0.30;
   }else if(this->_data->_quadruped->_robotType == RobotType::MILAB
-    && _ini_body_pos[2] < 0.40) {
-    _ini_body_pos[2] = 0.45;
+    && _ini_body_pos[2] < 0.46) {
+    _ini_body_pos[2] = 0.48;
   }
 
   last_height_command = _ini_body_pos[2];
@@ -247,12 +247,16 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   if(this->_data->controlParameters->use_rc){ // remote controller in reality
     const rc_control_settings* rc_cmd = this->_data->_desiredStateCommand->rcCommand;
     // Orientation
-    _wbc_data->pBody_RPY_des[0] = rc_cmd->rpy_des[0]*1.4;
-    _wbc_data->pBody_RPY_des[1] = rc_cmd->rpy_des[1]*0.46;
-    _wbc_data->pBody_RPY_des[2] -= rc_cmd->rpy_des[2];
-
+    _wbc_data->pBody_RPY_des[0] = rc_cmd->rpy_des[0] * rollLimit;
+    _wbc_data->pBody_RPY_des[1] = rc_cmd->rpy_des[1] * pitchLimit;
+    _wbc_data->pBody_RPY_des[2] -= rc_cmd->rpy_des[2] * yawLimit;
+//      float _body_height = 0.;
+//      _body_height += rc_cmd->height_variation * 0.08;
+//      float step_height = rc_cmd->step_height*0.1;
+//      printf("step height：%f\n", step_height);
+//      printf("body height：%f\n", _body_height);
     // Height
-    _wbc_data->pBody_des[2] += 0.12 * rc_cmd->height_variation;
+    _wbc_data->pBody_des[2] += 0.10 * rc_cmd->height_variation;
   }else{ // in simulation
     // Orientation
     _wbc_data->pBody_RPY_des[0] = 
@@ -298,7 +302,8 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
     }
   }
   last_height_command = _wbc_data->pBody_des[2];
-
+//  printf("rpy: [%f, %f, %f]\n",_wbc_data->pBody_RPY_des[0],_wbc_data->pBody_RPY_des[1],_wbc_data->pBody_RPY_des[2]);
+//  printf("height: %f\n\n",_wbc_data->pBody_des[2]);
   _wbc_ctrl->run(_wbc_data, *this->_data);
 }
 

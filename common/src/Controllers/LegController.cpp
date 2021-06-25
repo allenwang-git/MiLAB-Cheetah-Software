@@ -11,15 +11,18 @@
 #include "Controllers/LegController.h"
 #include <fstream>
 using namespace std;
-
+bool flagSimReal;
 /*
  * Bdebug plot
  */
 template <typename T>
 void LegController<T>::output2File(){
         ofstream leg_data;
-//        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt", ios::app);
+    if (flagSimReal) {
+        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt", ios::app);
+    } else {
         leg_data.open("/home/robot/robot-software/log/leg_controller_data.txt", ios::app);
+    }
         if (!leg_data.is_open()) {
             cout << "[LegController] Open leg_control_data.txt failed!" << endl;
         } else {

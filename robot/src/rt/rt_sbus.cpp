@@ -40,21 +40,21 @@ uint16_t channel_data[18];
 /* Uncomment when setting AT9S channel range */
 //#define Show_RT9S_Celebration
 /* Modify when setting AT9S channel range */
-#define Left_Stick_LRight_Max 1716
-#define Left_Stick_LRight_Min 330
-#define Left_Stick_LRight_Zero 1000
+#define Left_Stick_LRight_Max 1670//1716
+#define Left_Stick_LRight_Min 284//330
+#define Left_Stick_LRight_Zero 950//1000
 
 #define Left_Stick_FBack_Max 1670
-#define Left_Stick_FBack_Min 335
-#define Left_Stick_FBack_Zero 1000
+#define Left_Stick_FBack_Min 328//335
+#define Left_Stick_FBack_Zero 1043//1000
 
-#define Right_Stick_FBack_Max 1715
-#define Right_Stick_FBack_Min 377
-#define Right_Stick_FBack_Zero 982
+#define Right_Stick_FBack_Max 1677//1715
+#define Right_Stick_FBack_Min 346//377
+#define Right_Stick_FBack_Zero 947//982
 
-#define Right_Stick_LRight_Max 1670
-#define Right_Stick_LRight_Min 284
-#define Right_Stick_LRight_Zero 1001
+#define Right_Stick_LRight_Max 1732//1670
+#define Right_Stick_LRight_Min 346//284
+#define Right_Stick_LRight_Zero 1063//1001
 
 static int show_rt9s_times=0;
 /*!
@@ -281,7 +281,7 @@ static AT9s_SwitchStateTri map_switch_tri(uint16_t in, char sw) {
 
 void update_at9s(AT9s_data *data) {
     pthread_mutex_lock(&sbus_data_m);
-//  LEFT Y
+//  LEFT Y (-1~1)
     if (channel_data[0] < (Left_Stick_LRight_Zero - 2))
         data->left_stick_y = -1.0 + (channel_data[0] - Left_Stick_LRight_Min) * 1.0 /
                                     (Left_Stick_LRight_Zero - Left_Stick_LRight_Min);
@@ -291,7 +291,7 @@ void update_at9s(AT9s_data *data) {
     else
         data->left_stick_y = 0;
 
-//  LEFT X
+//  LEFT X (-1~1)
     if (channel_data[1] > (Left_Stick_FBack_Zero + 2))
         data->left_stick_x =
                 -1.0 - (channel_data[1] - Left_Stick_FBack_Max) * 1.0 / (Left_Stick_FBack_Max - Left_Stick_FBack_Zero);
@@ -301,7 +301,7 @@ void update_at9s(AT9s_data *data) {
     else
         data->left_stick_x = 0;
 
-//  RIGHT X
+//  RIGHT X (-1~1)
     if (channel_data[2] > (Right_Stick_FBack_Zero + 5))
         data->right_stick_x = -1.0 - (channel_data[2] - Right_Stick_FBack_Max) * 1.0 /
                                      (Right_Stick_FBack_Max - Right_Stick_FBack_Zero);
@@ -311,7 +311,7 @@ void update_at9s(AT9s_data *data) {
     else
         data->right_stick_x = 0.0;
 
-//  RIGHT Y
+//  RIGHT Y (-1~1)
     if (channel_data[3] < (Right_Stick_LRight_Zero - 5))
         data->right_stick_y = -1.0 + (channel_data[3] - Right_Stick_LRight_Min) * 1.0 /
                                      (Right_Stick_LRight_Zero - Right_Stick_LRight_Min);//

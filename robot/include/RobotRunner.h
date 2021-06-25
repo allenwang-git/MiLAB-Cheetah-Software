@@ -8,6 +8,10 @@
 #ifndef PROJECT_ROBOTRUNNER_H
 #define PROJECT_ROBOTRUNNER_H
 
+#define DEBUG_SHOW
+#define SIM_PATH "/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt"
+#define REAL_PATH "/home/robot/robot-software/log/leg_controller_data.txt"
+
 #include "ControlParameters/ControlParameterInterface.h"
 #include "ControlParameters/RobotParameters.h"
 #include "Controllers/StateEstimatorContainer.h"
@@ -57,12 +61,12 @@ class RobotRunner : public PeriodicTask {
 
  private:
   float _ini_yaw;
-
+  bool motorError = false;
   int iter = 0;
 
   void setupStep();
   void finalizeStep();
-
+  void debugPrint(LegController<float>* legs, StateEstimate<float> states);
   JPosInitializer<float>* _jpos_initializer;
   Quadruped<float> _quadruped;
   LegController<float>* _legController = nullptr;

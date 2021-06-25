@@ -47,9 +47,9 @@ class FSM_State_BalanceStand : public FSM_State<T> {
   T _body_weight;
 
   // Blance  Limitation
-  T const rollLimit = 0.523; // 40degrees
+  T const rollLimit = 0.523; // 30degrees
   T const pitchLimit = 0.523;
-  T const yawLimit = 0.523;
+  T const yawLimit = 0.436; //25degrees
   T const maxLegLength = 0.644;
   T const heightLimitUpper = 0.85 * maxLegLength;
   T const heightLimitLower = 0.3 * maxLegLength;

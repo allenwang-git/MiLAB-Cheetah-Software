@@ -4,8 +4,8 @@
 # This script can run any controller and output terminal log.
 
 # enable multicast and add route for lcm out the top
-sudo ifconfig enxa0cec80e3ced multicast
-sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev lo
+#sudo ifconfig lo multicast
+#sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev lo
 
 if [ -z $1 ]; then
   echo "[USAGE] ./run_milab.sh [mpc|jpos|spi] [f|l] [l| ]"

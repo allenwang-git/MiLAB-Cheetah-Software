@@ -23,10 +23,10 @@ FSM_State_SquatDown<T>::FSM_State_SquatDown(ControlFSMData<T>* _controlFSMData)
 
     zero_vec3.setZero();
 
-    squat_jpos[0] << -0.0f, -1.6f, 2.55f;
-    squat_jpos[1] << 0.0f, -1.6f, 2.55f;
-    squat_jpos[2] << -0.0f, -1.6f, 2.55f;
-    squat_jpos[3] << 0.0f, -1.6f, 2.55f;
+    squat_jpos[0] << -0.0f, -1.45f, 2.78f;
+    squat_jpos[1] << 0.0f, -1.45f, 2.78f;
+    squat_jpos[2] << -0.0f, -1.45f, 2.78f;
+    squat_jpos[3] << 0.0f, -1.45f, 2.78f;
     f_ff << 0.f, 0.f, -65.f;
 }
 
@@ -58,7 +58,7 @@ void FSM_State_SquatDown<T>::run() {
 
     T body_height = this->_data->_stateEstimator->getResult().position[2];
     bool something_wrong(false);
-    if( body_height > 0.5 || (body_height < 0.16 ) ) {
+    if( body_height > 0.5 || (body_height < 0.075 ) ) {
         something_wrong = true;
     }
     if(!something_wrong){

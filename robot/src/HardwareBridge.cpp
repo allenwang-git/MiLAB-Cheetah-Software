@@ -23,10 +23,10 @@
 
 #define USE_MICROSTRAIN
 //#define IMU_DEBUG_SHOW
-#define SPI_DEBUG_SHOW
+//#define SPI_DEBUG_SHOW
 //#define JPOS_CTRL
-#define SPI_CTRL
-//#define CMPC_CTRL
+//#define SPI_CTRL
+#define CMPC_CTRL
 
 /*!
  * If an error occurs during initialization, before motors are enabled, print

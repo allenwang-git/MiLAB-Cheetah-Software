@@ -47,8 +47,8 @@ private:
     Vec3<T> f_ff;
 
     // 0.5 kHz
-    const int squatdown_iter = 400;
-    const int suqatdown_settle_iter = 400;
+    const int squatdown_iter = 800;
+    const int suqatdown_settle_iter = 1000;
 
     void _SetJPosInterPts(
             const size_t & curr_iter, size_t max_iter, int leg,
