@@ -335,7 +335,7 @@ This output should hopefully end with
         sudo apt-get install cppad subversion patch wget checkinstall
         ```
     * Download package [Ipopt-3.12.7](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/Ipopt-3.12.7.zip) 
-    * Unzip to /home and install third-party lib
+    * Unzip to `/home/yourname/` and install third-party lib
         ```
         unzip Ipopt-3.12.7.zip
         cd Ipopt-3.12.7
