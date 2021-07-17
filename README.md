@@ -50,7 +50,7 @@ Inertia tensor:      kg·m^2
 * Serial numbers of the legs, joints and links:
 ```
              FRONT
-       \     ____    /
+       \     ____     /
 LEFT    \/ 1|    |0 \/     RIGHT
        \    |    |    /
         \/ 3|____|2 \/
