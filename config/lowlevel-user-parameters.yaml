@@ -1,0 +1,25 @@
+# Generated on 06/21/2021 by WANG YINUO
+__collection-name__: user-parameters
+# Parameters for LOW LEVEL JOINT PD CONTROL
+
+# Usually you only need to adjust kp, kd and max_iter params,
+# and modifying the parameters in this file does not require recompiling the project.
+
+# controller params
+max_tau : 45.
+max_iter : 10000
+
+# motor selection params
+leg_enable : [1,1,1,1]
+joint_enable : [1,1,1]
+
+# control params
+kp : [350,350,450]
+kd : [8,13,15]
+
+# useless params
+zero : 0
+calibrate : 0
+
+
+# Tip: This controller can not run normally when config/milab-robot-parameter.yaml cheater_mode = 1 !! keep it = 0
