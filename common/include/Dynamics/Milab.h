@@ -26,7 +26,9 @@ Quadruped<T> buildMilab() {
     milab._robotType = RobotType::MILAB;
 //    mass parameters
 //  Nominal Total Mass = 25.693
-    milab._bodyMass = 15;//13.777;
+//  Real Total Mass = 22.94 (without Nvidia and outer covering and 2 heads)
+    milab._bodyMass = 13.777;//11
+//  Other Parts Mass  11.916
     milab._abadMass = 0.766;
     milab._hipMass = 1.598;
     milab._kneeMass = 0.363;

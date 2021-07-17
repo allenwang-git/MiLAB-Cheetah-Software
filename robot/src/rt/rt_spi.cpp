@@ -35,7 +35,7 @@ spi_torque_t spi_torque;
 
 pthread_mutex_t spi_mutex;
 
-const float max_torque[3] = {48.f, 48.f, 48.f};
+const float max_torque[3] = {35.f, 35.f, 35.f};
 const float wimp_torque[3] = {6.f, 6.f, 6.f};
 const float disabled_torque[3] = {0.f, 0.f, 0.f};
 /*
@@ -210,7 +210,13 @@ int spi_driver_iterations = 0;
  * convert spi command to spine_cmd_t
  */
 void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
-  for (int i = 0; i < 2; i++) {
+    //    exchange forward and backward legs
+/*
+    if (leg_0==0) leg_0=2;
+    else if (leg_0==2) leg_0=0;
+*/
+
+    for (int i = 0; i < 2; i++) {
 
     spine_cmd->q_des_abad[i] =
         (cmd->q_des_abad[i + leg_0] * abad_side_sign[i + leg_0]) +
@@ -244,6 +250,21 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
     spine_cmd->tau_knee_ff[i] =
         cmd->tau_knee_ff[i + leg_0] * knee_side_sign[i + leg_0];
 
+    if (spine_cmd->tau_abad_ff[i] > max_torque[0])
+        spine_cmd->tau_abad_ff[i] = max_torque[0];
+    if (spine_cmd->tau_abad_ff[i] < -max_torque[0])
+        spine_cmd->tau_abad_ff[i] = -max_torque[0];
+
+    if (spine_cmd->tau_hip_ff[i] > max_torque[1])
+        spine_cmd->tau_hip_ff[i] = max_torque[1];
+    if (spine_cmd->tau_hip_ff[i] < -max_torque[1])
+        spine_cmd->tau_hip_ff[i] = -max_torque[1];
+
+    if (spine_cmd->tau_knee_ff[i] > max_torque[2])
+        spine_cmd->tau_knee_ff[i] = max_torque[2];
+    if (spine_cmd->tau_knee_ff[i] < -max_torque[2])
+        spine_cmd->tau_knee_ff[i] = -max_torque[2];
+
     spine_cmd->flags[i] = cmd->flags[i + leg_0];
   }
   spine_cmd->checksum = xor_checksum((uint32_t *)spine_cmd, 32);
@@ -253,6 +274,12 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
  * convert spine_data_t to spi data
  */
 void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) { //leg_0 means spi_board number = 0,2
+//    exchange forward and backward legs
+/*
+    if (leg_0==0) leg_0=2;
+    else if (leg_0==2) leg_0=0;
+*/
+
   for (int i = 0; i < 2; i++) {
     data->q_abad[i + leg_0] = (spine_data->q_abad[i] - abad_offset[i + leg_0]) *
                               abad_side_sign[i + leg_0];
@@ -266,7 +293,7 @@ void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) { //leg
     data->qd_hip[i + leg_0] = spine_data->qd_hip[i] * hip_side_sign[i + leg_0];
     data->qd_knee[i + leg_0] =
         spine_data->qd_knee[i] * knee_side_sign[i + leg_0];
-
+//    printf("LEG %d current: %f\n", leg_0+i, spine_data->qd_knee[i]);
     data->flags[i + leg_0] = spine_data->flags[i];
   }
 

@@ -195,7 +195,7 @@ void RobotRunner::setupStep() {
     _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateData(tiBoardData);
-  } else if (robotType == RobotType::MILAB) {
+  } else if (robotType == RobotType::MINI_CHEETAH) {
       _legController->updateData(spiData);
   } else {
     assert(false);
@@ -233,7 +233,7 @@ void RobotRunner::finalizeStep() {
     _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateCommand(tiBoardCommand);
-  } else if (robotType == RobotType::MILAB) {
+  } else if (robotType == RobotType::MINI_CHEETAH) {
       _legController->updateCommand(spiCommand);
   } else {
     assert(false);
@@ -280,16 +280,16 @@ void RobotRunner::cleanup() {}
 void RobotRunner::debugPrint(LegController<float>* legs, StateEstimate<float> states){
     if (_iterations==100){
         for (int i = 0; i < 4; ++i) {
-            if (std::abs(legs->datas[i].q[0]) > 0.18 || std::abs(legs->datas[i].q[0]) < 0.08)
+            if (std::abs(legs->datas[i].q[0]) > 0.19 || std::abs(legs->datas[i].q[0]) < 0.04)
                 motorError = true;
             if (legs->datas[i].q[1] > -1.25 || legs->datas[i].q[1] < -1.35)
                 motorError = true;
-            if (legs->datas[i].q[2] > 2.91 || legs->datas[i].q[2] < 2.81)
+            if (legs->datas[i].q[2] > 2.92 || legs->datas[i].q[2] < 2.80)
                 motorError = true;
         }
     }
 
-    if (_iterations%100==0)
+    if (_iterations%10000==0)
     {
         if (motorError && !flagSimReal){
             printf("\033[1;33m**************************************************\n");
@@ -314,19 +314,19 @@ void RobotRunner::debugPrint(LegController<float>* legs, StateEstimate<float> st
         printf("ABAD QD = [%f, %f, %f, %f]\n", legs->datas[0].qd[0],legs->datas[1].qd[0],legs->datas[2].qd[0],legs->datas[3].qd[0]);
         printf("HIP  QD = [%f, %f, %f, %f]\n", legs->datas[0].qd[1],legs->datas[1].qd[1],legs->datas[2].qd[1],legs->datas[3].qd[1]);
         printf("KNEE QD = [%f, %f, %f, %f]\n", legs->datas[0].qd[2],legs->datas[1].qd[2],legs->datas[2].qd[2],legs->datas[3].qd[2]);
-        printf("-------------------COMMAND------------------------\n");
-        printf("ABAD DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[0],legs->commands[1].qDes[0],legs->commands[2].qDes[0],legs->commands[3].qDes[0]);
-        printf("HIP  DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[1],legs->commands[1].qDes[1],legs->commands[2].qDes[1],legs->commands[3].qDes[1]);
-        printf("KNEE DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[2],legs->commands[1].qDes[2],legs->commands[2].qDes[2],legs->commands[3].qDes[2]);
-        printf("KP A= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(0,0),legs->commands[1].kpJoint(0,0),legs->commands[2].kpJoint(0,0),legs->commands[3].kpJoint(0,0));
-        printf("KP H= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(1,1),legs->commands[1].kpJoint(1,1),legs->commands[2].kpJoint(1,1),legs->commands[3].kpJoint(1,1));
-        printf("KP K= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(2,2),legs->commands[1].kpJoint(2,2),legs->commands[2].kpJoint(2,2),legs->commands[3].kpJoint(2,2));
-        printf("KD A= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(0,0),legs->commands[1].kdJoint(0,0),legs->commands[2].kdJoint(0,0),legs->commands[3].kdJoint(0,0));
-        printf("KD H= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(1,1),legs->commands[1].kdJoint(1,1),legs->commands[2].kdJoint(1,1),legs->commands[3].kdJoint(1,1));
-        printf("KD K= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(2,2),legs->commands[1].kdJoint(2,2),legs->commands[2].kdJoint(2,2),legs->commands[3].kdJoint(2,2));
-        printf("ABAD DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[0],legs->commands[1].tauFeedForward[0],legs->commands[2].tauFeedForward[0],legs->commands[3].tauFeedForward[0]);
-        printf("HIP  DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[1],legs->commands[1].tauFeedForward[1],legs->commands[2].tauFeedForward[1],legs->commands[3].tauFeedForward[1]);
-        printf("KNEE DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[2],legs->commands[1].tauFeedForward[2],legs->commands[2].tauFeedForward[2],legs->commands[3].tauFeedForward[2]);
+//        printf("-------------------COMMAND------------------------\n");
+//        printf("ABAD DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[0],legs->commands[1].qDes[0],legs->commands[2].qDes[0],legs->commands[3].qDes[0]);
+//        printf("HIP  DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[1],legs->commands[1].qDes[1],legs->commands[2].qDes[1],legs->commands[3].qDes[1]);
+//        printf("KNEE DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[2],legs->commands[1].qDes[2],legs->commands[2].qDes[2],legs->commands[3].qDes[2]);
+//        printf("KP A= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(0,0),legs->commands[1].kpJoint(0,0),legs->commands[2].kpJoint(0,0),legs->commands[3].kpJoint(0,0));
+//        printf("KP H= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(1,1),legs->commands[1].kpJoint(1,1),legs->commands[2].kpJoint(1,1),legs->commands[3].kpJoint(1,1));
+//        printf("KP K= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(2,2),legs->commands[1].kpJoint(2,2),legs->commands[2].kpJoint(2,2),legs->commands[3].kpJoint(2,2));
+//        printf("KD A= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(0,0),legs->commands[1].kdJoint(0,0),legs->commands[2].kdJoint(0,0),legs->commands[3].kdJoint(0,0));
+//        printf("KD H= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(1,1),legs->commands[1].kdJoint(1,1),legs->commands[2].kdJoint(1,1),legs->commands[3].kdJoint(1,1));
+//        printf("KD K= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(2,2),legs->commands[1].kdJoint(2,2),legs->commands[2].kdJoint(2,2),legs->commands[3].kdJoint(2,2));
+//        printf("ABAD DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[0],legs->commands[1].tauFeedForward[0],legs->commands[2].tauFeedForward[0],legs->commands[3].tauFeedForward[0]);
+//        printf("HIP  DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[1],legs->commands[1].tauFeedForward[1],legs->commands[2].tauFeedForward[1],legs->commands[3].tauFeedForward[1]);
+//        printf("KNEE DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[2],legs->commands[1].tauFeedForward[2],legs->commands[2].tauFeedForward[2],legs->commands[3].tauFeedForward[2]);
         printf("--------------------------------------------------\n");
     }
 }

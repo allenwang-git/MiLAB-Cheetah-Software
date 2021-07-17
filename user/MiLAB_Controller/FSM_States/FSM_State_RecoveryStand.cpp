@@ -65,14 +65,15 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
       fold_jpos[3] << 0.0f, -1.6f, 2.55f;
       // Stand Up
       for(size_t i(0); i<4; ++i){
-          stand_jpos[i] << 0.f, -0.92f, 1.6f;
+//          stand_jpos[i] << 0.f, -0.92f, 1.6f;
+          stand_jpos[i] << 0.f, -0.78f, 1.36f;
       }
       // Rolling
       rolling_jpos[0] << -1.3f, -1.8f, 2.8f;
       rolling_jpos[1] << 1.2f, -3.1f, 2.8f;
       rolling_jpos[2] << -1.3f, -1.8f, 2.8f;
       rolling_jpos[3] << 1.2f, -3.1f, 2.8f;
-//      f_ff << 0.f, 0.f, -65.f;
+      f_ff << 0.f, 0.f, -65.f;
   }else{ // MINI CHEETAH & CHEETAH 3
       // Folding
       fold_jpos[0] << -0.0f, -1.4f, 2.7f;
@@ -355,7 +356,7 @@ void FSM_State_RecoveryStand<T>::_MilabFoldLegs(const int & curr_iter){
 template <typename T>
 FSM_StateName FSM_State_RecoveryStand<T>::checkTransition() {
   this->nextStateName = this->stateName;
-  iter++;
+//  iter++;
 
   // Switch FSM control mode 0,1,2,3,4,6
   switch ((int)this->_data->controlParameters->control_mode) {

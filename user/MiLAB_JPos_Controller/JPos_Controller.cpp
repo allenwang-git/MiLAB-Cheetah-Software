@@ -22,16 +22,26 @@ void JPos_Controller::initializeController(){
         }
     }
     for (int leg = 0; leg < 4; ++leg) {
-        _jpos_fold[leg] << 0.f, -1.65f, 2.6f;
-        _jpos_stand[leg] << 0.f, -0.92f, 1.6f;
-        _jpos_pre_off[leg] << 0.f, -1.45f, 2.78f;
+        _jpos_fold[leg] << 0.f, -1.4f, 2.7f;
+        _jpos_stand[leg] << 0.f, -0.8f, 1.6f;
     }
 }
 
 void JPos_Controller::runController(){
 
-    kpMat << userParameters.kp[0], 0, 0, 0,  userParameters.kp[1], 0, 0, 0,  userParameters.kp[2];
-    kdMat << userParameters.kd[0], 0, 0, 0, userParameters.kd[1], 0, 0, 0, userParameters.kd[2];
+    Mat3 <float> r ;//= _stateEstimate->rBody;
+    r << 1,0,0,0,1,0,0,0,1;
+    Vec3 <float> p = _stateEstimate->position;
+    Vec3 <float> v = _stateEstimate->vWorld;
+//    Joint pd
+    kpMat << userParameters.kpj[0], 0, 0, 0,  userParameters.kpj[1], 0, 0, 0,  userParameters.kpj[2];
+    kdMat << userParameters.kdj[0], 0, 0, 0, userParameters.kdj[1], 0, 0, 0, userParameters.kdj[2];
+//    Cartesian pd
+    kpcMat << userParameters.kpc[0], 0, 0, 0,  userParameters.kpc[1], 0, 0, 0,  userParameters.kpc[2];
+    kdcMat << userParameters.kdc[0], 0, 0, 0, userParameters.kdc[1], 0, 0, 0, userParameters.kdc[2];
+
+    Vec3 <float> phip = _quadruped->getHipLocation(0);
+
 
     ++j_iter;
     // Get robot initial joint position
@@ -50,7 +60,7 @@ void JPos_Controller::runController(){
         /*
          * This is a test code which used to control any legs or any joints dependently to move a sine trajectory
          * */
-        #ifdef JPOS_TEST
+#ifdef JPOS_TEST
         if (j_iter>= 100 && j_iter <= userParameters.max_iter){
             for(int leg(0); leg<4; ++leg){
                 if (userParameters.leg_enable[leg]){ // check leg enable state
@@ -119,9 +129,54 @@ void JPos_Controller::runController(){
                 if (motion_iter >= squad_iter + wait_iter)
                     leg_Passive(leg);
                 else if (motion_iter > squad_iter && motion_iter < squad_iter + wait_iter)
-                    leg_JointPD(leg, _jpos_pre_off[leg], zero_vec3);
+                    leg_JointPD(leg, _jpos_fold[leg], zero_vec3);
                 else
-                    leg_Interpolation(motion_iter, squad_iter, leg, _jpos_stand[leg], _jpos_pre_off[leg]);
+                    leg_Interpolation(motion_iter, squad_iter, leg, _jpos_stand[leg], _jpos_fold[leg]);
+            }
+        }
+#endif
+#ifdef JPOS_CARTESIAN
+        motion_iter++;
+//          fold legs
+        if (j_iter>= 100 && flag == FOLDLEG){
+            for (int leg = 0; leg < 4; ++leg) {
+                if (motion_iter >= fold_iter+wait_iter){
+                    motion_iter =0;
+                    flag = STANDUP;
+                }
+                else if (motion_iter > fold_iter && motion_iter < fold_iter+wait_iter)
+                    leg_JointPD(leg, _jpos_fold[leg], zero_vec3);
+                else
+                    leg_Interpolation(motion_iter,fold_iter,leg,_jpos_ini[leg],_jpos_fold[leg]);
+            }
+
+//            stand up and keep standing
+        } else if (flag == STANDUP){
+            for (int leg = 0; leg < 4; ++leg) {
+                if (motion_iter >= stand_iter+keep_iter){
+                    motion_iter =0;
+                    flag = CARTESIAN;
+
+                    _pfoot_ini = p + r.transpose() * (phip +_legController->datas[0].p);
+
+                }
+                else if (motion_iter > stand_iter && motion_iter < stand_iter+keep_iter)
+                    leg_JointPD(leg, _jpos_stand[leg], zero_vec3);
+                else
+                    leg_Interpolation(motion_iter,stand_iter,leg,_jpos_fold[leg],_jpos_stand[leg]);
+            }
+//            squad down and motor switch down
+        } else if (flag == CARTESIAN) {
+            for (int leg = 0; leg < 4; ++leg) {
+                if (leg != 0 && motion_iter < cart_iter)
+                    leg_JointPD(leg, _jpos_stand[leg], zero_vec3);
+                else if (leg ==0 && motion_iter < cart_iter ) {
+                    double stepHeight = userParameters.step_height;
+                    leg_Passive(leg);
+                    leg_CartesianPD(leg, stepHeight, motion_iter,r,p,v,phip);
+                } else
+                    leg_JointPD(leg, _jpos_stand[leg], zero_vec3);
+
             }
         }
 #endif
@@ -162,5 +217,33 @@ void JPos_Controller::leg_Passive(int leg){
     for (int jidx = 0; jidx < 3; ++jidx) {
         _legController->commands[leg].tauFeedForward[jidx] = 0.;
     }
+
+}
+
+void JPos_Controller::leg_CartesianPD(int leg, double stepHeight, int iter, Mat3<float> rBody, Vec3<float> position, Vec3<float> vWorld, Vec3<float> pHip) {
+//    _stateEstimator->run();
+//    auto& seResult = _stateEstimator->getResult();
+
+    _legController->commands[leg].kpCartesian = kpcMat;
+    _legController->commands[leg].kdCartesian = kdcMat;
+    int swingTime = userParameters.cycle; //ms
+    float fphase;
+    fphase =(float)( (iter*2) % swingTime)/(float)swingTime;
+    footSwingTrajectories[leg].setHeight(stepHeight);
+    footSwingTrajectories[leg].setInitialPosition(_pfoot_ini);
+    footSwingTrajectories[leg].setFinalPosition(_pfoot_ini);
+    footSwingTrajectories->computeSwingTrajectoryBezier(fphase,swingTime);
+
+    Vec3<float> pDesFootWorld = footSwingTrajectories[leg].getPosition();
+    Vec3<float> vDesFootWorld = footSwingTrajectories[leg].getVelocity();
+
+    Vec3<float> pDesLeg = rBody * (pDesFootWorld - position) - pHip;
+    Vec3<float> vDesLeg = rBody * (vDesFootWorld - vWorld);
+//    std::cout << "world foot position: " << pDesFootWorld.transpose() <<"body position"<<position.transpose()<< "hip position"<<getHipLocation(leg).transpose()<<"\n";
+//    printf("tau:(%f, %f, %f)\n",_legController->datas->tauEstimate[0],_legController->datas->tauEstimate[1],_legController->datas->tauEstimate[2]);
+
+    printf("phase: %f iter: %d swingtime: %dms pleg:(%f,%f,%f) vleg:(%f,%f,%f)\n",fphase,iter,swingTime, pDesLeg[0],pDesLeg[1],pDesLeg[2],vDesLeg[0],vDesLeg[1],vDesLeg[2]);
+    _legController->commands[leg].pDes = pDesLeg;
+    _legController->commands[leg].vDes = vDesLeg;
 
 }

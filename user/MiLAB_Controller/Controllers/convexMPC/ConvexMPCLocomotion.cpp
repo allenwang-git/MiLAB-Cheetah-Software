@@ -7,7 +7,7 @@
 #include "../../../../common/FootstepPlanner/GraphSearch.h"
 
 #include "Gait.h"
-
+#include <string>
 // Todo: maxforce(48,630), iteration_between_mpc(46), kp kd of cartesian when locomotion(321-331)
 // Todo: mpc parameters Q[12], alpha(598,603,722,727) , robot parameters(709-714)
 
@@ -69,6 +69,7 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc,
 void ConvexMPCLocomotion::initialize(){
     for(int i = 0; i < 4; i++) firstSwing[i] = true;
     firstRun = true;
+//    std::ofstream outf_data("/home/allen/MiLAB-Cheetah-Software/debug_tools/mpc_control_data.txt", std::fstream::out | std::ios_base::trunc);
 }
 
 void ConvexMPCLocomotion::recompute_timing(int iterations_per_mpc) {
@@ -78,7 +79,7 @@ void ConvexMPCLocomotion::recompute_timing(int iterations_per_mpc) {
 
 void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
     if(data._quadruped->_robotType == RobotType::MILAB) {
-        _body_height = 0.52;
+        _body_height = 0.49;
     }else if(data._quadruped->_robotType == RobotType::MINI_CHEETAH){
         _body_height = 0.29;
     }else if(data._quadruped->_robotType == RobotType::CHEETAH_3){
@@ -95,7 +96,7 @@ void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
         _yaw_turn_rate = -rc_cmd->omega_des[2];
         x_vel_cmd = rc_cmd->v_des[0];
         y_vel_cmd = rc_cmd->v_des[1] * 0.5;
-        _body_height += rc_cmd->height_variation * 0.08;
+        _body_height += rc_cmd->height_variation * 0.05;
         step_height = rc_cmd->step_height*0.1;
     }else{ //simulation gamepad
         _yaw_turn_rate = data._desiredStateCommand->rightAnalogStick[0]*1.0;
@@ -111,10 +112,129 @@ void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
     _pitch_des = 0.;
 
 }
+void ConvexMPCLocomotion::outpacket(ControlFSMData<float>& data){
+
+    std::ofstream outf_data;
+    outf_data.open("/home/allen/MiLAB-Cheetah-Software/debug_tools/mpc_control_data.txt", std::ios::app);
+    auto& state = data._stateEstimator->getResult();
+    if (!outf_data.is_open()) {
+        std::cout << "[ConvexMPC] Open mpc_control_data.txt failed!" << std::endl;
+    } else {
+//   //     LegControllerData & LegControllerCommand -36
+        for (int leg = 0; leg < 4; leg++) {
+            outf_data << " " << data._legController->datas[leg].q[0] << " " <<  data._legController->datas[leg].q[1] << " " <<  data._legController->datas[leg].q[2] << " ";
+            outf_data << " " << data._legController->datas[leg].qd[0] << " " <<  data._legController->datas[leg].qd[1] << " " <<  data._legController->datas[leg].qd[2] << " ";
+            outf_data << data._legController->datas[leg].tauEstimate[0] << " " << data._legController->datas[leg].tauEstimate[1] << " "
+                      << data._legController->datas[leg].tauEstimate[2] << " ";
+        }
+
+
+//   //  StateEstimate -37
+        outf_data << state.position[0] << " " << state.position[1] << " " << state.position[2] << " "
+                  << state.vBody[0]<< " " << state.vBody[1]<< " " << state.vBody[2]<< " "
+                  << state.orientation[0] << " " << state.orientation[1] << " " << state.orientation[2] << " " << state.orientation[3] << " "
+                  << state.omegaBody[0] << " " << state.omegaBody[1] << " " << state.omegaBody[2] << " "
+                  << state.rBody(0,0) << " " << state.rBody(0,1) << " " << state.rBody(0,2) << " "
+                  << state.rBody(1,0) << " " << state.rBody(1,1) << " " << state.rBody(1,2) << " "
+                  << state.rBody(2,0) << " " << state.rBody(2,1) << " " << state.rBody(2,2) << " "
+                  << state.rpy[0] << " " << state.rpy[1] << " " << state.rpy[2] << " "
+                  << state.omegaWorld[0] << " " << state.omegaWorld[1] << " " << state.omegaWorld[2] << " "
+                  << state.vWorld[0] << " " << state.vWorld[1] << " " << state.vWorld[2] << " "
+                  << state.aBody[0] << " " <<  state.aBody[1] << " " << state.aBody[2] << " "
+                  << state.aWorld[0] << " " << state.aWorld[1] << " " << state.aWorld[2] << " ";
+                  outf_data << std::endl;
+
+        outf_data.close();
+    }
+}
+//"/home/allen/MiLAB-Cheetah-Software/debug_tools/mpc_control_data.txt"
+void ConvexMPCLocomotion::readpacket(int iter,StateEstimate<float> state,LegController<float> *data){
+    std::ifstream inf_data("/home/robot/robot-software/build/mpc_control_data.txt", std::ios::in);
+    std::string line_info,input_result;
+    vector<std::string> vectorString;
+    if(inf_data)
+    {
+
+        for (int i = 0; i <= iter; ++i) {
+            getline (inf_data, line_info);
+        }
+
+        std::stringstream input(line_info);
+        while(input>>input_result)
+            vectorString.push_back(input_result);
+
+        Vec3<float> position; position[2] = atof(vectorString[38].c_str());
+        printf("body height %f \n",position[2]);
+
+        for (int i = 0; i < (int)vectorString.size(); ++i) {
+            if (data->datas[0].q[0]==0){}
+            if (i == 0)
+                for (int j = 0; j < 4; ++j) {
+
+                        for (int l = 0; l < 3; ++l) {
+                            data->datas[j].q[l] = atof(vectorString[9*j+l].c_str());
+                            data->datas[j].qd[l] = atof(vectorString[9*j+3*1+l].c_str());
+//                            data->datas[j].tauEstimate[l] = atof(vectorString[9*j+3*2+l].c_str());
+                        }
+
+
+                }
+            if (i == 36)
+                for (int j = 0; j < 3; ++j) {
+                    state.position[j] = atof(vectorString[36+j].c_str());
+                }
+            else if (i == 39)
+                for (int j = 0; j < 3; ++j) {
+                    state.vBody[j] = atof(vectorString[39+j].c_str());
+                }
+            else if (i == 42)
+                for (int j = 0; j < 4; ++j) {
+                    state.orientation[j] = atof(vectorString[42+j].c_str());
+                }
+            else if (i == 46)
+                for (int j = 0; j < 3; ++j) {
+                    state.omegaBody[j] = atof(vectorString[46+j].c_str());
+                }
+            else if (i == 49)
+                for (int j = 0; j < 3; ++j) {
+                    for (int k = 0; k < 3; ++k) {
+                        state.rBody(j,k) = atof(vectorString[48+3*j+k].c_str());
+                    }
+                }
+            else if (i == 58)
+                for (int j = 0; j < 3; ++j) {
+                    state.rpy[j] = atof(vectorString[58+j].c_str());
+                }
+            else if (i == 61)
+                for (int j = 0; j < 3; ++j) {
+                    state.omegaWorld[j] = atof(vectorString[61+j].c_str());
+                }
+            else if (i == 64)
+                for (int j = 0; j < 3; ++j) {
+                    state.vWorld[j] = atof(vectorString[64+j].c_str());
+                }
+            else if (i == 67)
+                for (int j = 0; j < 3; ++j) {
+                    state.aBody[j] = atof(vectorString[67+j].c_str());
+                }
+            else if (i == 70)
+                for (int j = 0; j < 3; ++j) {
+                    state.aWorld[j] = atof(vectorString[70+j].c_str());
+                }
+        }
+
+
+
+    }else {
+        std::cout << "[ConvexMPC] Read mpc_control_data.txt failed!" << std::endl;
+    }
+}
 
 template<>
 void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     bool omniMode = false;
+    //MPC test 0707
+//    outpacket(data);
 
     // Command Setup
     _SetupCommand(data);
@@ -125,7 +245,8 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     }
 
     auto& seResult = data._stateEstimator->getResult();
-//    std::cout<<seResult.vBody.transpose()<<std::endl;
+//　MPC TEST 0707
+//    readpacket(iterationCounter,seResult,data._legController);
 
     // Check if transition to standing
     if(((gaitNumber == 4) && current_gait != 4) || firstRun)
@@ -133,7 +254,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         stand_traj[0] = seResult.position[0];
         stand_traj[1] = seResult.position[1];
         if(data._quadruped->_robotType != RobotType::MINI_CHEETAH) {
-            stand_traj[2] = 0.52;
+            stand_traj[2] = 0.49;
         }else if(data._quadruped->_robotType == RobotType::MINI_CHEETAH){
             stand_traj[2] = 0.21;}
         stand_traj[3] = 0;
@@ -142,7 +263,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         world_position_desired[0] = stand_traj[0];
         world_position_desired[1] = stand_traj[1];
         // set WBC and MPC signal
-        standingMPC = true;
+//        standingMPC = true;
     }
 
     // pick gait
@@ -195,7 +316,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     }
      */
     if (data._quadruped->_robotType == RobotType::MILAB) {
-        _body_height = 0.52;
+        _body_height = 0.49;
     } else if (data._quadruped->_robotType == RobotType::MINI_CHEETAH) {
         _body_height = 0.29;
     } else if (data._quadruped->_robotType == RobotType::CHEETAH_3) {
@@ -234,7 +355,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 //std::cout<<seResult.position<<std::endl;
     if(gait != &standing) {
         world_position_desired += dt * Vec3<float>(v_des_world[0], v_des_world[1], 0);
-        standingMPC = false;
+//        standingMPC = false;
     }
 
     // some first time initialization
@@ -318,15 +439,12 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         Pf[0] +=  pfx_rel;
         Pf[1] +=  pfy_rel;
 
-        Pf[2] = -0.005;
+        Pf[2] = -0.01;
         //Pf[2] = 0.0;
         footSwingTrajectories[i].setFinalPosition(Pf);
 //        std::cout<<i<<" "<<Pf<<std::endl<<std::endl;
 
     }
-
-    // calc gait
-    iterationCounter++;
 
     Kp_swing = data.userParameters->Swing_Kp_cartesian;
     Kd_swing = data.userParameters->Swing_Kd_cartesian;
@@ -349,6 +467,8 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 
     //  StateEstimator* se = hw_i->state_estimator;
     Vec4<float> se_contactState(0,0,0,0);
+    // calc gait
+    iterationCounter++;
 
 #ifdef DRAW_DEBUG_PATH
     auto* trajectoryDebug = data.visualizationData->addPath();
@@ -445,21 +565,22 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 
             Vec3<float> pDesFootWorld = footSwingTrajectories[foot].getPosition();
             Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
+//            Vec3<float> pDesLeg = data._legController->datas[foot].p;
             Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) - data._quadruped->getHipLocation(foot);
             Vec3<float> vDesLeg = seResult.rBody * (vDesFootWorld - seResult.vWorld);
-//            std::cout << "Foot" << foot << " relative foot position: " << pDesLeg.transpose() <<"body position"<<seResult.position.transpose()<< "\n";
+            std::cout << "Foot" << foot << " relative foot position: " << pDesFootWorld.transpose() <<"body position"<<seResult.position.transpose()<<" hip pos:"<<data._quadruped->getHipLocation(foot)<< "\n";
 //            std::cout << "Foot " << foot << " relative position desired: " << vDesLeg.transpose() << "\n";
 //            std::cout << "Foot " << foot << " now position desired: " << data._legController->datas[foot].p.transpose() << "\n";
             //  only using MPC
-            if(!data.userParameters->use_wbc || standingMPC){
+            if(!data.userParameters->use_wbc){// || standingMPC){
                 data._legController->commands[foot].pDes = pDesLeg;
                 data._legController->commands[foot].vDes = vDesLeg;
                 data._legController->commands[foot].kpCartesian = Kp_stance;
                 data._legController->commands[foot].kdCartesian = 0*Kd_stance;
 
                 data._legController->commands[foot].forceFeedForward = f_ff[foot];
-                data._legController->commands[foot].kdJoint = Mat3<float>::Identity() * data.userParameters->Swing_Kd_joint[0];
-                data._legController->commands[foot].kpJoint = Mat3<float>::Identity() * data.userParameters->Swing_Kp_joint[0];
+//                data._legController->commands[foot].kdJoint = Mat3<float>::Identity() * data.userParameters->Swing_Kd_joint[0];
+//                data._legController->commands[foot].kpJoint = Mat3<float>::Identity() * data.userParameters->Swing_Kp_joint[0];
 
             }else{ // using WBC
                 data._legController->commands[foot].pDes = pDesLeg;
@@ -508,8 +629,9 @@ void ConvexMPCLocomotion::run(ControlFSMData<double>& data) {
 
 void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float> &data, bool omniMode) {
     //iterationsBetweenMPC = 30;
-    if((iterationCounter % iterationsBetweenMPC) == 0)
+    if((iterationCounter % iterationsBetweenMPC) == 1)
     {
+        printf("itercounter: %d, dtMPC: %d\n",iterationCounter,iterationsBetweenMPC);
         auto seResult = data._stateEstimator->getResult();
         float* p = seResult.position.data();
 
@@ -614,7 +736,7 @@ if (data._quadruped->_robotType == RobotType::MILAB){
     alpha = 1e-6; // cheetah 3
     memcpy(Q,Q_CH3,sizeof(Q_CH3));
 }
-//    Q R Debug:
+/*    Q R Debug:*/
 //    alpha = data.userParameters->R;
 //    std::cout<<"R: "<<alpha<<" Q: ";
 //    for (int i = 0; i < 12; ++i) {
@@ -689,7 +811,11 @@ if (data._quadruped->_robotType == RobotType::MILAB){
         Vec3<float> f;
         for(int axis = 0; axis < 3; axis++)
             f[axis] = get_solution(leg*3 + axis); //force from ground to leg in world frame
-
+        //  predefine feedforward force
+        float legForcePre = 26.*9.81/4;
+        if ( f[2]==0.f){
+          f[2] = legForcePre;
+        }
         // force from leg to ground in body frame
         f_ff[leg] = -seResult.rBody * f;
 //        printf("[%d F:] %7.3f %7.3f %7.3f\n", leg, f_ff[leg][0], f_ff[leg][1],f_ff[leg][2]);
@@ -766,7 +892,15 @@ void ConvexMPCLocomotion::initSparseMPC() {
 
 void ConvexMPCLocomotion::initMilabSparseMPC() {
     Mat3<double> baseInertia;
-    baseInertia << 0.0996, 0, 0,
+//    baseInertia << 0.1084, 0, 0,   //28kg
+//                    0, 0.834, 0,
+//                    0, 0, 0.834;
+
+//    baseInertia << 0.0891, 0, 0,   //23kg
+//                    0, 0.685, 0,
+//                    0, 0, 0.685;
+
+    baseInertia << 0.0996, 0, 0,   //25.7kg
                     0, 0.765, 0,
                     0, 0, 0.765;
     double mass = 25.7;

@@ -227,9 +227,9 @@ void sbus_packet_complete_at9s() {
 //                    else if (locomotion_stand_switch == AT9S_BOOL_UP) {
                         if (right_select == AT9S_BOOL_UP) {
                             if (left_select == AT9S_TRI_UP)
-                                gait_id = 9; // trotting
+                                gait_id = 4; // trotting
                             else if (left_select == AT9S_TRI_MIDDLE)
-                                gait_id = 5;// flying-trot
+                                gait_id = 9;// flying-trot
                             else if (left_select == AT9S_TRI_DOWN)
                                 gait_id = 8;// pacing
                         } else if (right_select == AT9S_BOOL_DOWN) {

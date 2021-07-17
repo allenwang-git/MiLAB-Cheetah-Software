@@ -6,13 +6,14 @@
 
 host_name=allen
 ip=10.0.0.3
-data_path=/robot-software/log/leg_controller_data.txt
-target_path=~/MiLAB-Cheetah-Software/debug_tools/
+data_path=~/robot-software/log/leg_controller_data.txt
+target_path=MiLAB-Cheetah-Software/debug_tools/
 
 cd
 if [ -e $data_path ] ;
 then
-  scp $data_path $host_name@$ip:target_path
+  scp $data_path $host_name@$ip:~/$target_path
+  scp $data_path $host_name@$ip:~/
 else
   echo "[Warning] The data file does not existed."
   exit 1

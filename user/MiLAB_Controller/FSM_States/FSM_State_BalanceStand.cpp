@@ -50,8 +50,8 @@ void FSM_State_BalanceStand<T>::onEnter() {
     && _ini_body_pos[2] < 0.25) {
       _ini_body_pos[2] = 0.30;
   }else if(this->_data->_quadruped->_robotType == RobotType::MILAB
-    && _ini_body_pos[2] < 0.46) {
-    _ini_body_pos[2] = 0.48;
+    && _ini_body_pos[2] > 0.50) {
+    _ini_body_pos[2] = 0.50;
   }
 
   last_height_command = _ini_body_pos[2];
@@ -80,7 +80,7 @@ void FSM_State_BalanceStand<T>::run() {
 template <typename T>
 FSM_StateName FSM_State_BalanceStand<T>::checkTransition() {
   // Get the next state
-  _iter++;
+//  _iter++;
 
   // Switch FSM control mode
   switch ((int)this->_data->controlParameters->control_mode) {
@@ -242,7 +242,7 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   _wbc_data->pBody_des = _ini_body_pos;
   _wbc_data->vBody_des.setZero();
   _wbc_data->aBody_des.setZero();
-
+//  _wbc_data->pBody_des[2] = 0.505;
   _wbc_data->pBody_RPY_des = _ini_body_ori_rpy;
   if(this->_data->controlParameters->use_rc){ // remote controller in reality
     const rc_control_settings* rc_cmd = this->_data->_desiredStateCommand->rcCommand;
@@ -260,15 +260,15 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   }else{ // in simulation
     // Orientation
     _wbc_data->pBody_RPY_des[0] = 
-      this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0];
+      this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0] * rollLimit;
      _wbc_data->pBody_RPY_des[1] = 
-      this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
+      this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0] * pitchLimit;
     _wbc_data->pBody_RPY_des[2] -= 
-      this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[1];
+      this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[1] * yawLimit;
     
     // Height
     _wbc_data->pBody_des[2] += 
-      0.12 * this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[1];
+      0.1 * this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[1];
   }
   _wbc_data->vBody_Ori_des.setZero();
 

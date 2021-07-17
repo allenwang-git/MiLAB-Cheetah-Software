@@ -6,9 +6,9 @@
 #include <SparseCMPC/SparseCMPC.h>
 #include "cppTypes.h"
 #include "Gait.h"
-
+#include<sstream>
 #include <cstdio>
-
+#include <fstream>
 using Eigen::Array4f;
 using Eigen::Array4i;
 
@@ -167,6 +167,8 @@ private:
   vectorAligned<Vec12<double>> _sparseTrajectory;
 
   SparseCMPC _sparseCMPC;
+  void outpacket(ControlFSMData<float>& data);
+  void readpacket(int iter,StateEstimate<float> state,LegController<float> *data);
 
 };
 

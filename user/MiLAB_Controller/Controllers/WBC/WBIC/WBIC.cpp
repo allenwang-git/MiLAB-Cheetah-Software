@@ -235,7 +235,19 @@ void WBIC<T>::_GetSolution(const DVec<T>& qddot, DVec<T>& cmd) {
   }
   _data->_qddot = qddot;
   cmd = tot_tau.tail(WB::num_act_joint_);
-
+  for (int i = 0; i < 4; ++i) {
+      printf("[%d leg] torque: %f,%f,%f\n", i, cmd[i * 3 + 0], cmd[i * 3 + 1], cmd[i * 3 + 2]);
+//      printf("[%d leg] torque pre: %f,%f,%f\n", i, cmd_pre[i][0],cmd_pre[i][1],cmd_pre[i][2]);
+      for (int j = 0; j < 3; ++j) {
+          if (abs(cmd[i * 3 + j]) > 1000 && j==0) {
+              if (i==0 || i ==2) cmd[i*3+j] = 5.0;
+              else cmd[i*3+j] =-5.0;
+          }else if (abs(cmd[i * 3 + j]) > 1000 && j==1)
+              cmd[i*3+j] = -0.5;
+          else if (abs(cmd[i * 3 + j]) > 1000 && j==2)
+              cmd[i*3+j] = -12.5;
+      }
+  }
   // Torque check
   // DVec<T> delta_tau = DVec<T>::Zero(WB::num_qdot_);
   // for(size_t i(0); i<_dim_floating; ++i) delta_tau[i] = z[i];

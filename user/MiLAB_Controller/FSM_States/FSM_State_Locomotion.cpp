@@ -24,7 +24,7 @@ FSM_State_Locomotion<T>::FSM_State_Locomotion(ControlFSMData<T>* _controlFSMData
     if(_controlFSMData->_quadruped->_robotType == RobotType::MILAB){
         fmax = 180;
         cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
-                33 / (1000. * _controlFSMData->controlParameters->controller_dt),
+                30 / (1000. * _controlFSMData->controlParameters->controller_dt),
                 _controlFSMData->userParameters, fmax, _controlFSMData->_quadruped->_robotType);
 
     }else if(_controlFSMData->_quadruped->_robotType == RobotType::MINI_CHEETAH){
@@ -266,7 +266,7 @@ void FSM_State_Locomotion<T>::LocomotionControlStep() {
     Kd_backup[leg] = this->_data->_legController->commands[leg].kdCartesian;
   }
 
-  if(this->_data->userParameters->use_wbc > 0.9 && !cMPCOld->standingMPC){
+  if(this->_data->userParameters->use_wbc > 0.9){// && !cMPCOld->standingMPC){
     _wbc_data->pBody_des = cMPCOld->pBody_des;
     _wbc_data->vBody_des = cMPCOld->vBody_des;
     _wbc_data->aBody_des = cMPCOld->aBody_des;
@@ -288,6 +288,17 @@ void FSM_State_Locomotion<T>::LocomotionControlStep() {
     this->_data->_legController->commands[leg].vDes = vDes_backup[leg];
     //this->_data->_legController->commands[leg].kpCartesian = Kp_backup[leg];
     this->_data->_legController->commands[leg].kdCartesian = Kd_backup[leg];
+    printf("[leg %d]  ff:(%2.2f %2.2f %2.2f) tau:(%2.2f %2.2f %2.2f) vdes:(%2.2f %2.2f %2.2f) v:(%2.2f %2.2f %2.2f)　pdes:(%2.2f %2.2f %2.2f) p:(%2.2f %2.2f %2.2f) kpc:%d kdc:%d kpj:%d kdj:%d\n",
+           leg,this->_data->_legController->commands[leg].forceFeedForward[0] ,this->_data->_legController->commands[leg].forceFeedForward[1] ,this->_data->_legController->commands[leg].forceFeedForward[2] ,
+//           this->_data->_legController->commands[leg].tauFeedForward[0] ,this->_data->_legController->commands[leg].tauFeedForward[1] ,this->_data->_legController->commands[leg].tauFeedForward[2] ,
+           this->_data->_legController->datas[leg].tauEstimate[0],this->_data->_legController->datas[leg].tauEstimate[1],this->_data->_legController->datas[leg].tauEstimate[2],
+           this->_data->_legController->commands[leg].vDes[0],this->_data->_legController->commands[leg].vDes[1],this->_data->_legController->commands[leg].vDes[2],
+           this->_data->_legController->datas[leg].v[0],this->_data->_legController->datas[leg].v[1],this->_data->_legController->datas[leg].v[2],
+           this->_data->_legController->commands[leg].pDes[0],this->_data->_legController->commands[leg].pDes[1],this->_data->_legController->commands[leg].pDes[2],
+           this->_data->_legController->datas[leg].p[0],this->_data->_legController->datas[leg].p[1],this->_data->_legController->datas[leg].p[2],
+           (int)this->_data->_legController->commands[leg].kpCartesian(0,0),(int)this->_data->_legController->commands[leg].kdCartesian(0,0),
+           (int)this->_data->_legController->commands[leg].kpJoint(0,0),(int)this->_data->_legController->commands[leg].kdJoint(0,0)
+      );
   }
 
 }
