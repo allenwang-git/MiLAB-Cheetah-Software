@@ -18,7 +18,7 @@
 #include "SimUtilities/SpineBoard.h"
 #include "SimUtilities/ti_boardcontrol.h"
 
-#define OUTPUT_LEG_DATA
+//#define OUTPUT_LEG_DATA
 /*!
  * Data sent from the control algorithm to the legs.
  */

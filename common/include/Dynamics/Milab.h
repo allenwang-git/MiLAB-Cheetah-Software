@@ -27,7 +27,7 @@ Quadruped<T> buildMilab() {
 //    mass parameters
 //  Nominal Total Mass = 25.693
 //  Real Total Mass = 22.94 (without Nvidia and outer covering and 2 heads)
-    milab._bodyMass = 13.777;//11
+    milab._bodyMass = 11;//13.777;
 //  Other Parts Mass  11.916
     milab._abadMass = 0.766;
     milab._hipMass = 1.598;

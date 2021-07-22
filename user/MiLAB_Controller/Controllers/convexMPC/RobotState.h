@@ -22,7 +22,7 @@ class RobotState
         Quaternionf q;
         fpt yaw;
         fpt m_mini = 9;
-        fpt m_milab = 25.7;
+        fpt m_milab = 23;//25.7;
         fpt m_cheetah3 = 43;
         fpt m;
         //fpt m = 50.236; //DH

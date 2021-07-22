@@ -9,7 +9,7 @@
 #define PROJECT_ROBOTRUNNER_H
 
 #define DEBUG_SHOW
-#define SIM_PATH "/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt"
+#define SIM_PATH "/home/milab/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt"
 #define REAL_PATH "/home/robot/robot-software/log/leg_controller_data.txt"
 
 #include "ControlParameters/ControlParameterInterface.h"
