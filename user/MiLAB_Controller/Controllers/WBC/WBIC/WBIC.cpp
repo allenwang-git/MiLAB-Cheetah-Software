@@ -2,6 +2,7 @@
 #include <Utilities/Timer.h>
 #include <eigen3/Eigen/LU>
 #include <eigen3/Eigen/SVD>
+#include <Dynamics/Quadruped.h>
 template <typename T>
 WBIC<T>::WBIC(size_t num_qdot, const std::vector<ContactSpec<T>*>* contact_list,
     const std::vector<Task<T>*>* task_list)
@@ -87,6 +88,12 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
 
   // pretty_print(qddot_pre, std::cout, "qddot_cmd");
   for (size_t i(0); i < _dim_floating; ++i) qddot_pre[i] += z[i];
+  for(size_t i=0;i< cheetah::dim_config;i++){
+      if(fabs(qddot_pre[i])>99999.){
+          std::cout<<"[WBIC] qddot_pre is WRONG:"<<std::endl<<qddot_pre<<std::endl;
+          qddot_pre = DVec<T>::Zero(WB::num_qdot_);
+      }
+  }
   _GetSolution(qddot_pre, cmd);
 
   _data->_opt_result = DVec<T>(_dim_opt);
@@ -237,15 +244,14 @@ void WBIC<T>::_GetSolution(const DVec<T>& qddot, DVec<T>& cmd) {
   cmd = tot_tau.tail(WB::num_act_joint_);
   for (int i = 0; i < 4; ++i) {
       printf("[%d leg] torque: %f,%f,%f\n", i, cmd[i * 3 + 0], cmd[i * 3 + 1], cmd[i * 3 + 2]);
-//      printf("[%d leg] torque pre: %f,%f,%f\n", i, cmd_pre[i][0],cmd_pre[i][1],cmd_pre[i][2]);
       for (int j = 0; j < 3; ++j) {
           if (abs(cmd[i * 3 + j]) > 1000 && j==0) {
-              if (i==0 || i ==2) cmd[i*3+j] = 5.0;
-              else cmd[i*3+j] =-5.0;
+              if (i==0 || i ==2) cmd[i*3+j] = 4.;
+              else cmd[i*3+j] =-4.;
           }else if (abs(cmd[i * 3 + j]) > 1000 && j==1)
-              cmd[i*3+j] = -0.5;
+              cmd[i*3+j] = -0.15;
           else if (abs(cmd[i * 3 + j]) > 1000 && j==2)
-              cmd[i*3+j] = -12.5;
+              cmd[i*3+j] = -10.5;
       }
   }
   // Torque check

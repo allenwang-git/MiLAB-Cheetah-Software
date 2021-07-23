@@ -198,9 +198,9 @@ void sbus_packet_complete_at9s() {
         switch (stand_switch) {
             case AT9S_TRI_UP:
                 //  select RECOVERY_STAND QP_STAND, LOCOMOTION
-                if (QP_Locomotion_switch == AT9S_TRI_UP)
+                if (QP_Locomotion_switch == AT9S_TRI_MIDDLE)
                     selected_mode = RC_mode::RECOVERY_STAND;
-                else if (QP_Locomotion_switch == AT9S_TRI_MIDDLE) {
+                else if (QP_Locomotion_switch == AT9S_TRI_UP) {
                     selected_mode = RC_mode::QP_STAND;
                     rc_control.rpy_des[0] = data.left_stick_y;
                     rc_control.rpy_des[1] = data.left_stick_x;
@@ -227,18 +227,18 @@ void sbus_packet_complete_at9s() {
 //                    else if (locomotion_stand_switch == AT9S_BOOL_UP) {
                         if (right_select == AT9S_BOOL_UP) {
                             if (left_select == AT9S_TRI_UP)
-                                gait_id = 4; // trotting
+                                gait_id = 9; // trotting
                             else if (left_select == AT9S_TRI_MIDDLE)
-                                gait_id = 9;// flying-trot
+                                gait_id = 5;// flying-trot
                             else if (left_select == AT9S_TRI_DOWN)
-                                gait_id = 8;// pacing
+                                gait_id = 4;// standing
                         } else if (right_select == AT9S_BOOL_DOWN) {
                             if (left_select == AT9S_TRI_UP)
-                                gait_id = 3; // walking
+                                gait_id = 4; // standing
                             else if (left_select == AT9S_TRI_MIDDLE)
-                                gait_id = 2; // pronking
+                                gait_id = 4; // standing
                             else if (left_select == AT9S_TRI_DOWN)
-                                gait_id = 6; // galloping
+                                gait_id = 4; // standing
                         }
 //                    }
                     rc_control.variable[0] = gait_id;

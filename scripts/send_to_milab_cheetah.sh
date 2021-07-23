@@ -5,10 +5,12 @@
 # Unlike MIT, we can select milab_cheetah's ip address and controller by options.
 # wifi ip is the default address and the milab_ctrl is the default controller if don't specify it.
 
-## Set robot's ip
+## Set robot's hostname and ip
 wifiip=10.61.6.124
-wireip=10.0.0.21
-name=robot
+#wireip=10.0.0.21
+#name=robot
+wireip=10.0.0.34
+name=user
 
 ## Create a prepare dir robot-software
 set -e
@@ -16,7 +18,7 @@ DIR="$(pwd)"
 cd ${DIR}/../mc-build/
 sudo rm -rf robot-software
 mkdir robot-software
-mkdir robot-software/build robot-software/log
+mkdir robot-software/build # robot-software/log
 
 ## Select controller
 if [ -z "$1" -o "$1" = "mpc" ]
@@ -40,13 +42,11 @@ fi
 
 ## Copy files
 
-find . -name \*.so* -exec cp {} ./robot-software/build \;
+find . -name \*.so* -not -path  "./robot-software/build/*" -exec cp {} ./robot-software/build \;
 cp ../scripts/run_milab* ./robot-software/build
-#cp ../scripts/*test*sh ./robot-software/build
-#cp ../scripts/setup_network_mc.py ./robot-software/build
 cp ../scripts/get_data_back.sh ./robot-software/build
-#cp -r ../robot robot-software
 cp -r ../config robot-software
+#cp ../scripts/*test*sh ./robot-software/build
 #cp common/test-common ./robot-software/build
 #cp rc_test/rc_test ./robot-software/build
 chmod +x ./robot-software/build/*

@@ -6,12 +6,15 @@ __collection-name__: user-parameters
 # WBIC
 # mialb
 use_wbc           : 0
-Kp_ori            : [300, 300, 300]
-Kd_ori            : [15, 15, 15]
-Kp_body           : [300, 300, 300]
+Kp_ori            : [100, 100, 100]
+Kd_ori            : [15, 20, 20]
+
+Kp_body           : [100, 100, 100]
 Kd_body           : [15, 15, 15]
+
 Kp_foot           : [500, 500, 500]
 Kd_foot           : [20, 20, 20]
+
 Kp_joint          : [5, 5, 5]
 Kd_joint          : [1, 1, 1]
 
@@ -46,8 +49,8 @@ jcqp_terminate    : 0.1
 use_jcqp          : 0
 
 # Swing leg parameters
-Swing_Kp_cartesian : [1000, 1000, 500]
-Swing_Kd_cartesian : [7,7,7]
+Swing_Kp_cartesian : [700, 700, 700]
+Swing_Kd_cartesian : [14,14,14]
 Swing_Kp_joint     : [0,0,0]
 Swing_Kd_joint     : [1, 1, 1]
 Swing_step_offset  : [0,0.05,-0.003]

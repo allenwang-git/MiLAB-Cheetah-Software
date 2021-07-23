@@ -288,17 +288,18 @@ void FSM_State_Locomotion<T>::LocomotionControlStep() {
     this->_data->_legController->commands[leg].vDes = vDes_backup[leg];
     //this->_data->_legController->commands[leg].kpCartesian = Kp_backup[leg];
     this->_data->_legController->commands[leg].kdCartesian = Kd_backup[leg];
-    printf("[leg %d]  ff:(%2.2f %2.2f %2.2f) tau:(%2.2f %2.2f %2.2f) vdes:(%2.2f %2.2f %2.2f) v:(%2.2f %2.2f %2.2f)　pdes:(%2.2f %2.2f %2.2f) p:(%2.2f %2.2f %2.2f) kpc:%d kdc:%d kpj:%d kdj:%d\n",
-           leg,this->_data->_legController->commands[leg].forceFeedForward[0] ,this->_data->_legController->commands[leg].forceFeedForward[1] ,this->_data->_legController->commands[leg].forceFeedForward[2] ,
+//    printf("[leg %d] ff:(%2.2f %2.2f %2.2f) tau:(%2.2f %2.2f %2.2f) kpc:%d kdc:%d kpj:%d kdj:%d rpy:(%2.2f %2.2f %2.2f)\n",//vdes:(%2.2f %2.2f %2.2f) v:(%2.2f %2.2f %2.2f)　pdes:(%2.2f %2.2f %2.2f) p:(%2.2f %2.2f %2.2f)
+//      leg,this->_data->_legController->commands[leg].forceFeedForward[0] ,this->_data->_legController->commands[leg].forceFeedForward[1] ,this->_data->_legController->commands[leg].forceFeedForward[2] ,
 //           this->_data->_legController->commands[leg].tauFeedForward[0] ,this->_data->_legController->commands[leg].tauFeedForward[1] ,this->_data->_legController->commands[leg].tauFeedForward[2] ,
-           this->_data->_legController->datas[leg].tauEstimate[0],this->_data->_legController->datas[leg].tauEstimate[1],this->_data->_legController->datas[leg].tauEstimate[2],
-           this->_data->_legController->commands[leg].vDes[0],this->_data->_legController->commands[leg].vDes[1],this->_data->_legController->commands[leg].vDes[2],
-           this->_data->_legController->datas[leg].v[0],this->_data->_legController->datas[leg].v[1],this->_data->_legController->datas[leg].v[2],
-           this->_data->_legController->commands[leg].pDes[0],this->_data->_legController->commands[leg].pDes[1],this->_data->_legController->commands[leg].pDes[2],
-           this->_data->_legController->datas[leg].p[0],this->_data->_legController->datas[leg].p[1],this->_data->_legController->datas[leg].p[2],
-           (int)this->_data->_legController->commands[leg].kpCartesian(0,0),(int)this->_data->_legController->commands[leg].kdCartesian(0,0),
-           (int)this->_data->_legController->commands[leg].kpJoint(0,0),(int)this->_data->_legController->commands[leg].kdJoint(0,0)
-      );
+//           this->_data->_legController->datas[leg].tauEstimate[0],this->_data->_legController->datas[leg].tauEstimate[1],this->_data->_legController->datas[leg].tauEstimate[2],
+//           this->_data->_legController->commands[leg].vDes[0],this->_data->_legController->commands[leg].vDes[1],this->_data->_legController->commands[leg].vDes[2],
+//           this->_data->_legController->datas[leg].v[0],this->_data->_legController->datas[leg].v[1],this->_data->_legController->datas[leg].v[2],
+//           this->_data->_legController->commands[leg].pDes[0],this->_data->_legController->commands[leg].pDes[1],this->_data->_legController->commands[leg].pDes[2],
+//           this->_data->_legController->datas[leg].p[0],this->_data->_legController->datas[leg].p[1],this->_data->_legController->datas[leg].p[2],
+//           (int)this->_data->_legController->commands[leg].kpCartesian(0,0),(int)this->_data->_legController->commands[leg].kdCartesian(0,0),
+//           (int)this->_data->_legController->commands[leg].kpJoint(0,0),(int)this->_data->_legController->commands[leg].kdJoint(0,0),
+//           this->_data->_stateEstimator->getResult().rpy[0],this->_data->_stateEstimator->getResult().rpy[1],this->_data->_stateEstimator->getResult().rpy[2]
+//      );
   }
 
 }

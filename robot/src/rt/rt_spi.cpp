@@ -35,7 +35,7 @@ spi_torque_t spi_torque;
 
 pthread_mutex_t spi_mutex;
 
-const float max_torque[3] = {35.f, 35.f, 35.f};
+const float max_torque[3] = {40.f, 40.f, 40.f};
 const float wimp_torque[3] = {6.f, 6.f, 6.f};
 const float disabled_torque[3] = {0.f, 0.f, 0.f};
 /*

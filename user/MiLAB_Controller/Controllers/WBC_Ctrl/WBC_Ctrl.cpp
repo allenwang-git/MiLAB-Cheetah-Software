@@ -26,8 +26,8 @@ WBC_Ctrl<T>::WBC_Ctrl(FloatingBaseModel<T> model):
   //_wbic_data->_W_floating[5] = 0.1;
   _wbic_data->_W_rf = DVec<T>::Constant(12, 1.);
 
-  _Kp_joint.resize(cheetah::num_leg_joint, 3.);
-  _Kd_joint.resize(cheetah::num_leg_joint, 0.2);
+  _Kp_joint.resize(cheetah::num_leg_joint, 5.);
+  _Kd_joint.resize(cheetah::num_leg_joint, 1.5);
 
   _state.q = DVec<T>::Zero(cheetah::num_act_joint);
   _state.qd = DVec<T>::Zero(cheetah::num_act_joint);
@@ -111,7 +111,11 @@ void WBC_Ctrl<T>::_UpdateLegCMD(ControlFSMData<T> & data){
 
         cmd[leg].kpJoint(jidx, jidx) = _Kp_joint[jidx];
         cmd[leg].kdJoint(jidx, jidx) = _Kd_joint[jidx];
-       
+
+        if(data.userParameters->cmpc_gait==1 ||data.userParameters->cmpc_gait==2 ) // bound and pronk gaits
+        {
+            cmd[leg].tauFeedForward[jidx]*=0.8;
+        }
        //if(contact[leg] > 0.){ // Contact
         //cmd[leg].kpJoint(jidx, jidx) = _Kp_joint[jidx];
         //cmd[leg].kdJoint(jidx, jidx) = _Kd_joint[jidx];

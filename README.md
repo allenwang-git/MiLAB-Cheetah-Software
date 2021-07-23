@@ -115,6 +115,8 @@ git clone https://github.com/AWang-Cabin/MiLAB-Cheetah-Software.git
 ```
 
 ## Build 
+* This project has been tested on Ubuntu16.04 (4.15-generic) and Ubuntu 18.04(5.4.0-77-generic).
+  But if you want to deploy it on Up-board (Ubuntu16.04 with 4.4.86-rt99), we recommend install 18.04 on your PC.
 * [Install all Dependencies](#dependencies) on computer.
 * To avoid error about Qt5, following settings should be add to sim/CMakeLists.txt:
     ```
@@ -168,6 +170,7 @@ This output should hopefully end with
     cd MiLAB-Cheetah-Software/build
     ./sim/sim
     ```
+  and click ***Start*** button.
 * In the another command window in the same path, run the robot controller:
     ```
     ./user/${controller_folder}/${controller_name} ${robot_name} ${target_system}
@@ -237,6 +240,19 @@ This output should hopefully end with
     mpc: MPC controller, spi: Spi connection test, jpos: Joint PD controller
     f: Load parameters from files, l: Load from LCM
     l: Print output to log file (This is an optional param)
+* Due to ubuntu version's difference, you may need update following libraries:
+    
+    [libstdc++.so.6.0.29](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/libstdc++.so.6.0.29)
+    
+    [libm.so.6](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/releases/download/v1.0.0/libm.so.6)
+    
+    If you meet problem when run controller on up-board, use above libraries to update them in up-board:
+    ```
+     sudo cp libstdc++.so.6.0.29 /usr/lib/x86_64-linux-gnu/
+     cd /usr/lib/x86_64-linux-gnu/ 
+     ln -s libstdc++.so.6 libstdc++.so.6.0.29
+     sudo cp libm.so.6 /lib/x86_64-linux-gnu/
+    ```
  * If you choose ***LCM*** mode by`./run_milab.sh jpos l`, you can simulate the real time robot in simulator. For more guide, please follow the steps below:
      * Make sure your pc has connected with robot up-board.
      * In your terminal, run `./sim/sim` and select `Robot` mode.
@@ -255,6 +271,25 @@ This output should hopefully end with
         [Graphics 3D] Uploaded data (19.823902 MB)
         ```
        It means you have connected successfully and the robot is ready to run.
+ * Autostart setup
+   
+   All autostart service needed to be run after up-board starts will be added into `/etc/rc.local`, which is a hidden file.
+   To edit it, you need to open it in command line directly:
+   ```
+   sudo vim /etc/rc.local
+   ```
+   and add following commands:
+   ```
+   # output log
+   exec 2> /tmp/rc.local.log
+   exec 1>&2
+   set -x
+   # execute auto-start
+   cd /home/robot/robot-software/build/
+   ./run_milab.sh mpc f
+    ```
+   Finally, make sure this script ending with `exit 0`
+   
  * For more guides, go to [Running Real Robot](https://github.com/AWang-Cabin/MiLAB-Cheetah-Software/blob/dev2/documentation/running_real_robot.md).
 
 ## Dependencies
@@ -297,6 +332,7 @@ This output should hopefully end with
         sudo make install
         sudo ldconfig
         ```
+      * If meet make error, check your java jdk version
     * [LCM main page](https://lcm-proj.github.io/)
 
 * Install [Eigen](http://eigen.tuxfamily.org/)
@@ -330,6 +366,8 @@ This output should hopefully end with
         sudo apt install libqt5 libqt5gamepad5
         ```
 * Install IPOPT (Recommend ipopt-3.12.7 or newer)
+    
+    **(*This library is not required now*  )**
     * Install dependency
         ```  
         sudo apt-get install cppad subversion patch wget checkinstall
@@ -371,7 +409,7 @@ This output should hopefully end with
 ## Install Linux RT Kernel for UP-board
 To keep real time performance of controller running on UP-board, the ubuntu rt kernel need to be installed.
 * Install Ubuntu System
-     * **Make sure the robot's ubuntu version matching your pc's ubuntu version.**
+     * **Make sure the robot's ubuntu version is Ubuntu16 with RT kernel.**
      * Download Ubuntu 16.04.6 ISO from the Ubuntu download page (works with desktop and server edition)
        http://releases.ubuntu.com/16.04/ubuntu-16.04.6-desktop-amd64.iso  \
        http://releases.ubuntu.com/16.04/ubuntu-16.04.6-server-amd64.iso
@@ -395,9 +433,12 @@ To keep real time performance of controller running on UP-board, the ubuntu rt k
           sudo update-grub
           reboot
           ```
-          If you want to modify GRUB configuration, 
+          After check `/boot/grub/grub.cfg`, modify grub configuration file
           ```
           sudo gedit /etc/default/grub
+          ```
+          change `GRUB_DEFAULT=0` to `GRUB_DEFAULT="1 >6"`
+          ```
           sudo update-grub
           reboot
           ```
