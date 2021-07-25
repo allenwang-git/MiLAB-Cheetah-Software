@@ -18,7 +18,7 @@ DIR="$(pwd)"
 cd ${DIR}/../mc-build/
 sudo rm -rf robot-software
 mkdir robot-software
-mkdir robot-software/build # robot-software/log
+mkdir robot-software/build robot-software/log
 
 ## Select controller
 if [ -z "$1" -o "$1" = "mpc" ]
@@ -32,6 +32,9 @@ else
   elif [ "$1" = "spi" ]; then
     echo "[INFO] Copying spi_ctrl..."
     cp ../mc-build/user/MiLAB_Spi_Controller/spi_ctrl robot-software/build
+  elif [ "$1" = "low" ]; then
+    echo "[INFO] Copying spi_ctrl..."
+    cp ../mc-build/user/MiLAB_Lowlevel_Controller/low_ctrl robot-software/build
   else
     echo "[ERROR] $1 is not a existed controller"
     echo "[USAGE] sh send_to_milab_cheetah.sh [mpc|spi|jpos| ] [ |wifi|wire]"

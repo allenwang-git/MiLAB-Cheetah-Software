@@ -39,7 +39,7 @@ void RobotState::set(flt* p_, flt* v_, flt* q_, flt* w_, flt* r_,flt yaw_)
     Matrix<fpt,3,1> Id_mini,Id_milab,Id_cheetah3;
     Id_mini << .07f, 0.26f, 0.242f;
     Id_cheetah3 << 0.41f, 2.1f, 2.1f;
-//    Id_milab << 0.0996f, 0.765f, 0.765f;//26kg
+//    Id_milab << 0.0996f, 0.765f, 0.765f;//25.7kg
     Id_milab << 0.0891f, 0.685f, 0.685f;//23kg
 //    Id_milab << 0.1084f, 0.834f, 0.834f;//28kg
     I_body_mini.diagonal() = Id_mini;

@@ -20,11 +20,6 @@ void get_rc_control_settings(void *settings) {
   pthread_mutex_unlock(&lcm_get_set_mutex);
 }
 
-//void get_rc_channels(void *settings) {
-//pthread_mutex_lock(&lcm_get_set_mutex);
-//v_memcpy(settings, &rc_channels, sizeof(rc_channels));
-//pthread_mutex_unlock(&lcm_get_set_mutex);
-//}
 
 EdgeTrigger<int> mode_edge_trigger(0);
 #ifdef TARANIS_X7
@@ -222,25 +217,21 @@ void sbus_packet_complete_at9s() {
                     data.right_stick_y = deadband(data.right_stick_y, 0.1, -1., 1.);
 
                     int gait_id = 9;
-//                    if (locomotion_stand_switch == AT9S_BOOL_DOWN)
-//                        gait_id = 4;
-//                    else if (locomotion_stand_switch == AT9S_BOOL_UP) {
-                        if (right_select == AT9S_BOOL_UP) {
-                            if (left_select == AT9S_TRI_UP)
-                                gait_id = 9; // trotting
-                            else if (left_select == AT9S_TRI_MIDDLE)
-                                gait_id = 5;// flying-trot
-                            else if (left_select == AT9S_TRI_DOWN)
-                                gait_id = 4;// standing
-                        } else if (right_select == AT9S_BOOL_DOWN) {
-                            if (left_select == AT9S_TRI_UP)
-                                gait_id = 4; // standing
-                            else if (left_select == AT9S_TRI_MIDDLE)
-                                gait_id = 4; // standing
-                            else if (left_select == AT9S_TRI_DOWN)
-                                gait_id = 4; // standing
-                        }
-//                    }
+                    if (right_select == AT9S_BOOL_UP) {
+                        if (left_select == AT9S_TRI_UP)
+                            gait_id = 9; // trotting
+                        else if (left_select == AT9S_TRI_MIDDLE)
+                            gait_id = 5;// flying-trot
+                        else if (left_select == AT9S_TRI_DOWN)
+                            gait_id = 4;// standing
+                    } else if (right_select == AT9S_BOOL_DOWN) {
+                        if (left_select == AT9S_TRI_UP)
+                            gait_id = 4; // standing
+                        else if (left_select == AT9S_TRI_MIDDLE)
+                            gait_id = 4; // standing
+                        else if (left_select == AT9S_TRI_DOWN)
+                            gait_id = 4; // standing
+                    }
                     rc_control.variable[0] = gait_id;
                     rc_control.v_des[0] =
                             data.right_stick_x > 0 ? v_scale * data.right_stick_x : v_scale / 2.0 * data.right_stick_x;

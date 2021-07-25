@@ -13,7 +13,7 @@
 
 //#define DRAW_DEBUG_SWINGS
 //#define DRAW_DEBUG_PATH
-
+//#define ABANDONED
 
 ////////////////////
 // Controller
@@ -69,7 +69,9 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc,
 void ConvexMPCLocomotion::initialize(){
     for(int i = 0; i < 4; i++) firstSwing[i] = true;
     firstRun = true;
-//    std::ofstream outf_data("/home/allen/MiLAB-Cheetah-Software/debug_tools/mpc_control_data.txt", std::fstream::out | std::ios_base::trunc);
+#ifdef ABANDONED
+    std::ofstream outf_data("/home/allen/MiLAB-Cheetah-Software/debug_tools/mpc_control_data.txt", std::fstream::out | std::ios_base::trunc);
+#endif
 }
 
 void ConvexMPCLocomotion::recompute_timing(int iterations_per_mpc) {
@@ -112,6 +114,7 @@ void ConvexMPCLocomotion::_SetupCommand(ControlFSMData<float> & data){
     _pitch_des = 0.;
 
 }
+#ifdef ABANDONED
 void ConvexMPCLocomotion::outpacket(ControlFSMData<float>& data){
 
     std::ofstream outf_data;
@@ -229,12 +232,13 @@ void ConvexMPCLocomotion::readpacket(int iter,StateEstimate<float> state,LegCont
         std::cout << "[ConvexMPC] Read mpc_control_data.txt failed!" << std::endl;
     }
 }
-
+#endif
 template<>
 void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     bool omniMode = false;
-    //MPC test 0707
-//    outpacket(data);
+#ifdef ABANDONED
+    outpacket(data);
+#endif
 
     // Command Setup
     _SetupCommand(data);
@@ -243,11 +247,11 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         gaitNumber -= 10;
         omniMode = true;
     }
-
     auto& seResult = data._stateEstimator->getResult();
-//　MPC TEST 0707
-//    readpacket(iterationCounter,seResult,data._legController);
 
+#ifdef ABANDONED
+    readpacket(iterationCounter,seResult,data._legController);
+#endif
     // Check if transition to standing
     if(((gaitNumber == 4) && current_gait != 4) || firstRun)
     {
@@ -262,8 +266,6 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         stand_traj[5] = seResult.rpy[2];
         world_position_desired[0] = stand_traj[0];
         world_position_desired[1] = stand_traj[1];
-        // set WBC and MPC signal
-//        standingMPC = true;
     }
 
     // pick gait
@@ -288,33 +290,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 
     gait->setIterations(iterationsBetweenMPC, iterationCounter);
     recompute_timing(default_iterations_between_mpc);
-    /*
-     * JUMPING IS NOT CONSIDERED NOW
-     *
-    jumping.setIterations(iterationsBetweenMPC, iterationCounter);
 
-
-    jumping.setIterations(27/2, iterationCounter);
-
-    //printf("[%d] [%d]\n", jumping.get_current_gait_phase(), gait->get_current_gait_phase());
-    // check jump trigger
-    jump_state.trigger_pressed(jump_state.should_jump(jumping.getCurrentGaitPhase()),
-        data._desiredStateCommand->trigger_pressed);
-
-
-    // bool too_high = seResult.position[2] > 0.29;
-    // check jump action
-    if(jump_state.should_jump(jumping.getCurrentGaitPhase())) {
-      gait = &jumping;
-      recompute_timing(27/2);
-      _body_height = _body_height_jumping;
-      currently_jumping = true;
-
-    } else {
-      recompute_timing(default_iterations_between_mpc);
-      currently_jumping = false;
-    }
-     */
     if (data._quadruped->_robotType == RobotType::MILAB) {
         _body_height = 0.49;
     } else if (data._quadruped->_robotType == RobotType::MINI_CHEETAH) {
@@ -349,13 +325,11 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     for(int i = 0; i < 4; i++) {
         pFoot[i] = seResult.position + seResult.rBody.transpose() * (data._quadruped->getHipLocation(i)
                    + data._legController->datas[i].p);
-//        std::cout<<seResult.position[2]<<data._legController->datas[i].p[2]<<"\n";
-//        std::cout<<i<<" "<<pFoot[i].transpose()<<std::endl;
     }
-//std::cout<<seResult.position<<std::endl;
+
     if(gait != &standing) {
         world_position_desired += dt * Vec3<float>(v_des_world[0], v_des_world[1], 0);
-//        standingMPC = false;
+
     }
 
     // some first time initialization
@@ -394,7 +368,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         } else {
             swingTimeRemaining[i] -= dt;
         }
-        //if(firstSwing[i]) {
+
         footSwingTrajectories[i].setHeight(step_height);
 
         Vec3<float> offset;
@@ -421,10 +395,8 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         des_vel[1] = _y_vel_des;
         des_vel[2] = 0.0;
 
-        Vec3<float> Pf = seResult.position + seResult.rBody.transpose() * (pYawCorrected
-                                                                           + des_vel * swingTimeRemaining[i]);
-//        std::cout<<i<<" "<<Pf<<std::endl<<std::endl;
-        //+ seResult.vWorld * swingTimeRemaining[i];
+        Vec3<float> Pf = seResult.position +
+                         seResult.rBody.transpose() * (pYawCorrected + des_vel * swingTimeRemaining[i]);
 
         //float p_rel_max = 0.35f;
         float p_rel_max = 0.3f;
@@ -442,12 +414,9 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         pfy_rel = fminf(fmaxf(pfy_rel, -p_rel_max), p_rel_max);
         Pf[0] +=  pfx_rel;
         Pf[1] +=  pfy_rel;
-
         Pf[2] = -0.01;
-        //Pf[2] = 0.0;
-        footSwingTrajectories[i].setFinalPosition(Pf);
-//        std::cout<<i<<" "<<Pf<<std::endl<<std::endl;
 
+        footSwingTrajectories[i].setFinalPosition(Pf);
     }
     // calc gait
     iterationCounter++;
@@ -532,11 +501,6 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 #endif
             footSwingTrajectories[foot].computeSwingTrajectoryBezier(swingState, swingTimes[foot]);
 
-
-            //      footSwingTrajectories[foot]->updateFF(hw_i->leg_controller->leg_datas[foot].q,
-            //                                          hw_i->leg_controller->leg_datas[foot].qd, 0); // velocity dependent friction compensation todo removed
-            //hw_i->leg_controller->leg_datas[foot].qd, fsm->main_control_settings.variable[2]);
-
             Vec3<float> pDesFootWorld = footSwingTrajectories[foot].getPosition();
             Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
             Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position)
@@ -574,7 +538,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 //            std::cout << "Foot" << foot << " relative foot position: " << pDesFootWorld.transpose() <<"body position"<<seResult.position.transpose()<<" hip pos:"<<data._quadruped->getHipLocation(foot)<< "\n";
 
             //  only using MPC
-            if(!data.userParameters->use_wbc){// || standingMPC){
+            if(!data.userParameters->use_wbc){
                 data._legController->commands[foot].pDes = pDesLeg;
                 data._legController->commands[foot].vDes = vDesLeg;
                 data._legController->commands[foot].kpCartesian = 0*Kp_stance;
@@ -616,7 +580,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     vBody_Ori_des[2] = _yaw_turn_rate;
 
     contact_state = gait->getContactState();
-//    Fix wbc bug
+//    Fix wbc bug --WYN
     if (gaitNumber == 4)
         for (int i = 0; i < 4; ++i) {
             contact_state[i] = true;
@@ -643,8 +607,6 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float>
 
         Vec3<float> v_des_robot(_x_vel_des, _y_vel_des,0);
         Vec3<float> v_des_world = omniMode ? v_des_robot : seResult.rBody.transpose() * v_des_robot;
-        //float trajInitial[12] = {0,0,0, 0,0,.25, 0,0,0,0,0,0};
-
 
         //printf("Position error: %.3f, integral %.3f\n", pxy_err[0], x_comp_integral);
 
@@ -652,11 +614,11 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float>
         {
             float trajInitial[12] = {
                     _roll_des,
-                    _pitch_des /*-hw_i->state_estimator->se_ground_pitch*/,
-                    (float)stand_traj[5]/*+(float)stateCommand->data.stateDes[11]*/,
-                    (float)stand_traj[0]/*+(float)fsm->main_control_settings.p_des[0]*/,
-                    (float)stand_traj[1]/*+(float)fsm->main_control_settings.p_des[1]*/,
-                    (float)_body_height/*fsm->main_control_settings.p_des[2]*/,
+                    _pitch_des,
+                    (float)stand_traj[5],
+                    (float)stand_traj[0],
+                    (float)stand_traj[1],
+                    (float)_body_height,
                     0,0,0,0,0,0};
 
             for(int i = 0; i < horizonLength; i++)
@@ -699,8 +661,6 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float>
 
                 if(i == 0) // start at current position  TODO consider not doing this
                 {
-                    //trajAll[3] = hw_i->state_estimator->se_pBody[0];
-                    //trajAll[4] = hw_i->state_estimator->se_pBody[1];
                     trajAll[2] = seResult.rpy[2];
                 }
                 else
@@ -742,7 +702,7 @@ if (data._quadruped->_robotType == RobotType::MILAB){
     alpha = 1e-6; // cheetah 3
     memcpy(Q,Q_CH3,sizeof(Q_CH3));
 }
-/*    Q R Debug:*/
+/*    Q R Debugger:*/
 //    alpha = data.userParameters->R;
 //    std::cout<<"R: "<<alpha<<" Q: ";
 //    for (int i = 0; i < 12; ++i) {
@@ -778,7 +738,6 @@ if (data._quadruped->_robotType == RobotType::MILAB){
 
     Vec3<float> pxy_act(p[0], p[1], 0);
     Vec3<float> pxy_des(world_position_desired[0], world_position_desired[1], 0);
-    //Vec3<float> pxy_err = pxy_act - pxy_des;
     float pz_err = p[2] - _body_height;
     Vec3<float> vxy(seResult.vWorld[0], seResult.vWorld[1], 0);
 
@@ -865,13 +824,12 @@ void ConvexMPCLocomotion::solveSparseMPC(int *mpcTable, ControlFSMData<float> &d
 
     for(u32 foot = 0; foot < 4; foot++) {
         Vec3<float> force(resultForce[foot*3], resultForce[foot*3 + 1], resultForce[foot*3 + 2]);
-        //printf("[%d] %7.3f %7.3f %7.3f\n", foot, force[0], force[1], force[2]);
         f_ff[foot] = -seResult.rBody * force;
         Fr_des[foot] = force;
     }
 }
 
-void ConvexMPCLocomotion::initSparseMPC() {
+void ConvexMPCLocomotion::initSparseMPC() { // For MINI Cheetah
     Mat3<double> baseInertia;
     baseInertia << 0.07, 0, 0,
             0, 0.26, 0,
@@ -896,7 +854,7 @@ void ConvexMPCLocomotion::initSparseMPC() {
     _sparseTrajectory.resize(horizonLength);
 }
 
-void ConvexMPCLocomotion::initMilabSparseMPC() {
+void ConvexMPCLocomotion::initMilabSparseMPC() { //For Milab robot
     Mat3<double> baseInertia;
 //    baseInertia << 0.1084, 0, 0,   //28kg
 //                    0, 0.834, 0,

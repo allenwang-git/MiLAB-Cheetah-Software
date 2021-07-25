@@ -239,10 +239,8 @@ void JPos_Controller::leg_CartesianPD(int leg, double stepHeight, int iter, Mat3
 
     Vec3<float> pDesLeg = rBody * (pDesFootWorld - position) - pHip;
     Vec3<float> vDesLeg = rBody * (vDesFootWorld - vWorld);
-//    std::cout << "world foot position: " << pDesFootWorld.transpose() <<"body position"<<position.transpose()<< "hip position"<<getHipLocation(leg).transpose()<<"\n";
-//    printf("tau:(%f, %f, %f)\n",_legController->datas->tauEstimate[0],_legController->datas->tauEstimate[1],_legController->datas->tauEstimate[2]);
 
-    printf("phase: %f iter: %d swingtime: %dms pleg:(%f,%f,%f) vleg:(%f,%f,%f)\n",fphase,iter,swingTime, pDesLeg[0],pDesLeg[1],pDesLeg[2],vDesLeg[0],vDesLeg[1],vDesLeg[2]);
+//    printf("phase: %f iter: %d swingtime: %dms pleg:(%f,%f,%f) vleg:(%f,%f,%f)\n",fphase,iter,swingTime, pDesLeg[0],pDesLeg[1],pDesLeg[2],vDesLeg[0],vDesLeg[1],vDesLeg[2]);
     _legController->commands[leg].pDes = pDesLeg;
     _legController->commands[leg].vDes = vDesLeg;
 

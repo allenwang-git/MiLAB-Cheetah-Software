@@ -18,7 +18,9 @@
 #include "SimUtilities/SpineBoard.h"
 #include "SimUtilities/ti_boardcontrol.h"
 
+// Uncomment following line if you need to print leg data
 //#define OUTPUT_LEG_DATA
+
 /*!
  * Data sent from the control algorithm to the legs.
  */

@@ -110,11 +110,6 @@ void ControlFSM<T>::runFSM() {
     } else if(rc_mode == RC_mode::QP_STAND){
       data.controlParameters->control_mode = K_BALANCE_STAND;
 
-//    } else if(rc_mode == RC_mode::VISION){
-//      data.controlParameters->control_mode = K_VISION;
-//
-//    } else if(rc_mode == RC_mode::BACKFLIP || rc_mode == RC_mode::BACKFLIP_PRE){
-//      data.controlParameters->control_mode = K_BACKFLIP;
     } else if(rc_mode == RC_mode::SQUAT_DOWN){
         data.controlParameters->control_mode = K_SQUAT_DOWN;
 
@@ -122,8 +117,6 @@ void ControlFSM<T>::runFSM() {
         data.controlParameters->control_mode = K_STAND_UP;
     }
 
-      //data.controlParameters->control_mode = K_FRONTJUMP;
-    //std::cout<< "control mode: "<<data.controlParameters->control_mode<<std::endl;
   }
 
   // Run the robot control code if operating mode is not unsafe
@@ -322,7 +315,7 @@ void ControlFSM<T>::printInfo(int opt) {
         } else if (operatingMode == FSM_OperatingMode::ESTOP) {
           std::cout << "Operating Mode: ESTOP\n";
         }
-        std::cout << "Gait Type: " << data._gaitScheduler->gaitData.gaitName
+        std::cout << "Gait Type: " << data.userParameters->cmpc_gait
                   << "\n";
         std::cout << std::endl;
 

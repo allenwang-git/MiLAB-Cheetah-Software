@@ -26,6 +26,7 @@
 //#define SPI_DEBUG_SHOW
 //#define JPOS_CTRL
 //#define SPI_CTRL
+//#define LOWLEVEL_CTRL
 #define CMPC_CTRL
 
 /*!
@@ -666,6 +667,11 @@ void MilabHardwareBridge::run() {
                 #ifdef SPI_CTRL
                 _userControlParameters->initializeFromYamlFile(THIS_COM "config/no-parameters.yaml");
                 std::string yamlName = "no-parameters.yaml";
+                printf("[Hardware Bridge] Loaded user parameters from yaml file: %s\n", yamlName.c_str());
+                #endif
+                #ifdef LOWLEVEL_CTRL
+                _userControlParameters->initializeFromYamlFile(THIS_COM "config/lowlevel-user-parameters.yaml");
+                std::string yamlName = "lowlevel-user-parameters.yaml";
                 printf("[Hardware Bridge] Loaded user parameters from yaml file: %s\n", yamlName.c_str());
                 #endif
             } catch(std::exception& e) {

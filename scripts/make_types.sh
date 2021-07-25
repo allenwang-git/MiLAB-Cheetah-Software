@@ -28,6 +28,7 @@ mv *.hpp cpp
 
 mkdir -p python
 mv *.py python
+#cp python/lowlevel*.py ../user/MiLAB_Lowlevel_Controller/
 
 FILES=$(ls */*.class)
 echo ${FILES} > file_list.txt

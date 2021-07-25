@@ -117,13 +117,6 @@ FSM_StateName FSM_State_StandUp<T>::checkTransition() {
       this->nextStateName = FSM_StateName::BALANCE_STAND;
       break;
 
-//    case K_LOCOMOTION:
-//      this->nextStateName = FSM_StateName::LOCOMOTION;
-//      break;
-
-//    case K_VISION:
-//      this->nextStateName = FSM_StateName::VISION;
-//      break;
 
     case K_RECOVERY_STAND:
       this->nextStateName = FSM_StateName::RECOVERY_STAND;
@@ -172,15 +165,6 @@ TransitionData<T> FSM_State_StandUp<T>::transition() {
     case FSM_StateName::RECOVERY_STAND:
       this->transitionData.done = true;
       break;
-
-//    case FSM_StateName::LOCOMOTION:
-//      this->transitionData.done = true;
-//      break;
-//
-//    case FSM_StateName::VISION:
-//      this->transitionData.done = true;
-//      break;
-
 
     default:
       std::cout << "[CONTROL FSM] Something went wrong in transition"

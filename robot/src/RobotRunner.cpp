@@ -280,11 +280,11 @@ void RobotRunner::cleanup() {}
 void RobotRunner::debugPrint(LegController<float>* legs, StateEstimate<float> states){
     if (_iterations==100){
         for (int i = 0; i < 4; ++i) {
-            if (std::abs(legs->datas[i].q[0]) > 0.19 || std::abs(legs->datas[i].q[0]) < 0.04)
+            if (std::abs(legs->datas[i].q[0]) > 0.2 || std::abs(legs->datas[i].q[0]) < 0.02)
                 motorError = true;
-            if (legs->datas[i].q[1] > -1.25 || legs->datas[i].q[1] < -1.35)
+            if (legs->datas[i].q[1] > -1.2 || legs->datas[i].q[1] < -1.4)
                 motorError = true;
-            if (legs->datas[i].q[2] > 2.92 || legs->datas[i].q[2] < 2.80)
+            if (legs->datas[i].q[2] > 2.99 || legs->datas[i].q[2] < 2.80)
                 motorError = true;
         }
     }

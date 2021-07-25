@@ -27,36 +27,6 @@ FSM_State_RecoveryStand<T>::FSM_State_RecoveryStand(ControlFSMData<T>* _controlF
 
   zero_vec3.setZero();
   // goal configuration
-/*                 // Folding
-      fold_jpos[0] << -0.0f, -1.5f, 2.6f;
-      fold_jpos[1] << 0.0f, -1.5f, 2.6f;
-      fold_jpos[2] << -0.0f, -1.5f, 2.6f;
-      fold_jpos[3] << 0.0f, -1.5f, 2.6f;
-      // Stand Up
-      for(size_t i(0); i<4; ++i){
-          stand_jpos[i] << 0.f, -0.96f, 1.6f;
-      }
-      // Rolling
-      rolling_jpos[0] << -1.5f, 1.6f, -2.77f;
-      rolling_jpos[1] << -1.3f, 3.1f, -2.77f;
-      rolling_jpos[2] << -1.5f, 1.6f, -2.77f;
-      rolling_jpos[3] << -1.3f, 3.1f, -2.77f;
-      ========================================
-      // Folding
-      fold_jpos[0] << -0.0f, 1.5f, -2.6f;
-      fold_jpos[1] << 0.0f, 1.5f, -2.6f;
-      fold_jpos[2] << -0.0f, 1.5f, -2.6f;
-      fold_jpos[3] << 0.0f, 1.5f, -2.6f;
-      // Stand Up
-      for(size_t i(0); i<4; ++i){
-          stand_jpos[i] << 0.f, 0.92f, -1.62f;
-      }
-      // Rolling
-      rolling_jpos[0] << -1.5f, 1.6f, -2.77f;
-      rolling_jpos[1] << -1.3f, 3.1f, -2.77f;
-      rolling_jpos[2] << -1.5f, 1.6f, -2.77f;
-      rolling_jpos[3] << -1.3f, 3.1f, -2.77f;
-    }*/
   if (this->_data->_quadruped->_robotType == RobotType::MILAB){
       // Folding
       fold_jpos[0] << -0.0f, -1.6f, 2.55f;
@@ -171,10 +141,6 @@ void FSM_State_RecoveryStand<T>::run() {
                 break;
         }
     }
-//    for(int i = 0; i < 4; i++){
-//        std::cout<<i<<" "<<(this->_data->_legController->datas[i].p).transpose() <<std::endl;
-//        std::cout<<i<<" "<<(this->_data->_legController->datas[i].q).transpose() <<std::endl;
-//    }
  ++_state_iter;
 }
 
@@ -198,16 +164,6 @@ void FSM_State_RecoveryStand<T>::_SetJPosInterPts(
     // do control
     this->jointPDControl(leg, inter_pos, zero_vec3);
 
-    //if(curr_iter == 0){ 
-      //printf("flag:%d, curr iter: %lu, state iter: %llu, motion start iter: %d\n", 
-        //_flag, curr_iter, _state_iter, _motion_start_iter); 
-      //printf("inter pos: %f, %f, %f\n", inter_pos[0], inter_pos[1], inter_pos[2]);
-    //}
-    //if(curr_iter == max_iter){ 
-      //printf("flag:%d, curr iter: %lu, state iter: %llu, motion start iter: %d\n", 
-        //_flag, curr_iter, _state_iter, _motion_start_iter); 
-      //printf("inter pos: %f, %f, %f\n", inter_pos[0], inter_pos[1], inter_pos[2]);
-    //}
 }
 
 template <typename T>
@@ -383,17 +339,6 @@ FSM_StateName FSM_State_RecoveryStand<T>::checkTransition() {
       this->nextStateName = FSM_StateName::BALANCE_STAND;
       break;
 
-/*    case K_BACKFLIP:
-      this->nextStateName = FSM_StateName::BACKFLIP;
-      break;
-
-    case K_FRONTJUMP:
-      this->nextStateName = FSM_StateName::FRONTJUMP;
-      break;
-
-    case K_VISION:
-      this->nextStateName = FSM_StateName::VISION;
-      break;*/
 
     default:
       std::cout << "[CONTROL FSM] Bad Request: Cannot transition from "
@@ -434,18 +379,6 @@ TransitionData<T> FSM_State_RecoveryStand<T>::transition() {
     case FSM_StateName::STAND_UP:
        this->transitionData.done = true;
        break;
-
-/*    case FSM_StateName::BACKFLIP:
-      this->transitionData.done = true;
-      break;
-
-    case FSM_StateName::FRONTJUMP:
-      this->transitionData.done = true;
-      break;
-
-    case FSM_StateName::VISION:
-      this->transitionData.done = true;
-      break;*/
 
     default:
       std::cout << "[CONTROL FSM] Something went wrong in transition"

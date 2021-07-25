@@ -30,9 +30,7 @@ FSM_State_Locomotion<T>::FSM_State_Locomotion(ControlFSMData<T>* _controlFSMData
     }else if(_controlFSMData->_quadruped->_robotType == RobotType::MINI_CHEETAH){
         fmax = 120;
         cMPCOld = new ConvexMPCLocomotion(_controlFSMData->controlParameters->controller_dt,
-        //30 / (1000. * _controlFSMData->controlParameters->controller_dt),
-        //22 / (1000. * _controlFSMData->controlParameters->controller_dt),
-        27 / (1000. * _controlFSMData->controlParameters->controller_dt),
+        30 / (1000. * _controlFSMData->controlParameters->controller_dt),
         _controlFSMData->userParameters,fmax, _controlFSMData->_quadruped->_robotType);
 
   }else if(_controlFSMData->_quadruped->_robotType == RobotType::CHEETAH_3){
@@ -113,20 +111,12 @@ FSM_StateName FSM_State_Locomotion<T>::checkTransition() {
         this->transitionDuration = 0.0;
         break;
 
-     /* case K_STAND_UP:
-        this->nextStateName = FSM_StateName::STAND_UP;
-        this->transitionDuration = 0.;
-        break;*/
 
       case K_RECOVERY_STAND:
         this->nextStateName = FSM_StateName::RECOVERY_STAND;
         this->transitionDuration = 0.;
         break;
 
-      /*case K_VISION:
-        this->nextStateName = FSM_StateName::VISION;
-        this->transitionDuration = 0.;
-        break;*/
 
       default:
         std::cout << "[CONTROL FSM] Bad Request: Cannot transition from "
@@ -171,17 +161,11 @@ TransitionData<T> FSM_State_Locomotion<T>::transition() {
       this->transitionData.done = true;
       break;
 
-//    case FSM_StateName::STAND_UP:
-//      this->transitionData.done = true;
-//      break;
 
     case FSM_StateName::RECOVERY_STAND:
       this->transitionData.done = true;
       break;
 
-//    case FSM_StateName::VISION:
-//      this->transitionData.done = true;
-//      break;
 
     default:
       std::cout << "[CONTROL FSM] Something went wrong in transition"
@@ -284,9 +268,7 @@ void FSM_State_Locomotion<T>::LocomotionControlStep() {
     _wbc_ctrl->run(_wbc_data, *this->_data);
   }
   for(int leg(0); leg<4; ++leg){
-    //this->_data->_legController->commands[leg].pDes = pDes_backup[leg];
     this->_data->_legController->commands[leg].vDes = vDes_backup[leg];
-    //this->_data->_legController->commands[leg].kpCartesian = Kp_backup[leg];
     this->_data->_legController->commands[leg].kdCartesian = Kd_backup[leg];
 //    printf("[leg %d] ff:(%2.2f %2.2f %2.2f) tau:(%2.2f %2.2f %2.2f) kpc:%d kdc:%d kpj:%d kdj:%d rpy:(%2.2f %2.2f %2.2f)\n",//vdes:(%2.2f %2.2f %2.2f) v:(%2.2f %2.2f %2.2f)　pdes:(%2.2f %2.2f %2.2f) p:(%2.2f %2.2f %2.2f)
 //      leg,this->_data->_legController->commands[leg].forceFeedForward[0] ,this->_data->_legController->commands[leg].forceFeedForward[1] ,this->_data->_legController->commands[leg].forceFeedForward[2] ,

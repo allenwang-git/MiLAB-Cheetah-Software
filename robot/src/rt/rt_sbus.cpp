@@ -40,21 +40,21 @@ uint16_t channel_data[18];
 /* Uncomment when setting AT9S channel range */
 //#define Show_RT9S_Celebration
 /* Modify when setting AT9S channel range */
-#define Left_Stick_LRight_Max 1670//1716
-#define Left_Stick_LRight_Min 284//330
-#define Left_Stick_LRight_Zero 950//1000
+#define Left_Stick_LRight_Max 1670
+#define Left_Stick_LRight_Min 284
+#define Left_Stick_LRight_Zero 950
 
 #define Left_Stick_FBack_Max 1670
-#define Left_Stick_FBack_Min 328//335
-#define Left_Stick_FBack_Zero 1043//1000
+#define Left_Stick_FBack_Min 328
+#define Left_Stick_FBack_Zero 1043
 
-#define Right_Stick_FBack_Max 1677//1715
-#define Right_Stick_FBack_Min 346//377
-#define Right_Stick_FBack_Zero 947//982
+#define Right_Stick_FBack_Max 1677
+#define Right_Stick_FBack_Min 346
+#define Right_Stick_FBack_Zero 947
 
-#define Right_Stick_LRight_Max 1732//1670
-#define Right_Stick_LRight_Min 346//284
-#define Right_Stick_LRight_Zero 1063//1001
+#define Right_Stick_LRight_Max 1732
+#define Right_Stick_LRight_Min 346
+#define Right_Stick_LRight_Zero 1063
 
 static int show_rt9s_times=0;
 /*!
@@ -326,7 +326,6 @@ void update_at9s(AT9s_data *data) {
     data->SWG = map_switch_tri(channel_data[5],'G');
     // locomotion mode
     data->SWA = map_switch_bool(channel_data[6],'A');
-//    data->SWB = map_switch_bool(channel_data[7],'B');
     // step height
     data->varB = (channel_data[7] - 1000) / 700.0; // 300~1700 => -1 ~1
     // gait type

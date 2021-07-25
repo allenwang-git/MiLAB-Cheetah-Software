@@ -88,7 +88,6 @@ public:
 
   template<typename T>
   void run(ControlFSMData<T>& data);
-  bool currently_jumping = false;
 
   Vec3<float> pBody_des;
   Vec3<float> vBody_des;
@@ -103,7 +102,6 @@ public:
 
   Vec3<float> Fr_des[4];
   Vec4<float> contact_state;
-  bool standingMPC = false;
 
 private:
   void _SetupCommand(ControlFSMData<float> & data);
@@ -118,14 +116,10 @@ private:
   float _x_vel_des = 0.;
   float _y_vel_des = 0.;
 
-  // High speed running
-  //float _body_height = 0.34;
   float _body_height;
   float step_height;
-//  const float _milab_body_height = 0.42;
   bool milab_flag = false;
-  float _body_height_running = 0.29;
-  float _body_height_jumping = 0.36;
+
 
   void recompute_timing(int iterations_per_mpc);
   void updateMPCIfNeeded(int* mpcTable, ControlFSMData<float>& data, bool omniMode);

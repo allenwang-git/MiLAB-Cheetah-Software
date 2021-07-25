@@ -100,33 +100,6 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
   for (size_t i(0); i < _dim_opt; ++i) {
     _data->_opt_result[i] = z[i];
   }
-
-  // std::cout << "f: " << f << std::endl;
-  //std::cout << "x: " << z << std::endl;
-
-  // DVec<T> check_eq = _dyn_CE * _data->_opt_result + _dyn_ce0;
-  // pretty_print(check_eq, std::cout, "equality constr");
-  // std::cout << "cmd: "<<cmd<<std::endl;
-  // pretty_print(qddot_pre, std::cout, "qddot_pre");
-  // pretty_print(JcN, std::cout, "JcN");
-  // pretty_print(Nci_, std::cout, "Nci");
-  // DVec<T> eq_check = dyn_CE * data_->opt_result_;
-  // pretty_print(dyn_ce0, std::cout, "dyn ce0");
-  // pretty_print(eq_check, std::cout, "eq_check");
-
-  // pretty_print(Jt, std::cout, "Jt");
-  // pretty_print(JtDotQdot, std::cout, "Jtdotqdot");
-  // pretty_print(xddot, std::cout, "xddot");
-
-  // printf("CE:\n");
-  // std::cout<<CE<<std::endl;
-  // printf("ce0:\n");
-  // std::cout<<ce0<<std::endl;
-
-  // printf("CI:\n");
-  // std::cout<<CI<<std::endl;
-  // printf("ci0:\n");
-  // std::cout<<ci0<<std::endl;
 }
 
 template <typename T>
@@ -254,15 +227,6 @@ void WBIC<T>::_GetSolution(const DVec<T>& qddot, DVec<T>& cmd) {
               cmd[i*3+j] = -10.5;
       }
   }
-  // Torque check
-  // DVec<T> delta_tau = DVec<T>::Zero(WB::num_qdot_);
-  // for(size_t i(0); i<_dim_floating; ++i) delta_tau[i] = z[i];
-  // pretty_print(tot_tau, std::cout, "tot tau original");
-  // tot_tau += delta_tau;
-  // pretty_print(tot_tau, std::cout, "tot tau result");
-  // pretty_print(qddot, std::cout, "qddot");
-  // pretty_print(_data->_Fr, std::cout, "Fr");
-  // pretty_print(_Fr_des, std::cout, "Fr des");
 }
 
 template <typename T>

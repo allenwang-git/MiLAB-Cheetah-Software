@@ -49,7 +49,7 @@ const float knee_side_sign[4] = {-1.f, 1.f, -1.f, 1.f};
 //mini-cheetah 1:1.55 in knee
 //const float knee_side_sign[4] = {-.6429f, .6429f, -.6429f, .6429f};
 
-// only used for actual robot
+// Only used for actual robot
 // Zero Position for actual motor!! Offsets are calculated from actual zero to sim zero.
 const float abad_offset[4] = {0.f, 0.f, 0.f, 0.f};
 const float hip_offset[4]  = {-HIP_OFFSET_POS,  HIP_OFFSET_POS,  -HIP_OFFSET_POS,  HIP_OFFSET_POS};
@@ -210,11 +210,6 @@ int spi_driver_iterations = 0;
  * convert spi command to spine_cmd_t
  */
 void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
-    //    exchange forward and backward legs
-/*
-    if (leg_0==0) leg_0=2;
-    else if (leg_0==2) leg_0=0;
-*/
 
     for (int i = 0; i < 2; i++) {
 
@@ -273,12 +268,8 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
 /*!
  * convert spine_data_t to spi data
  */
-void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) { //leg_0 means spi_board number = 0,2
-//    exchange forward and backward legs
-/*
-    if (leg_0==0) leg_0=2;
-    else if (leg_0==2) leg_0=0;
-*/
+void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) {
+    //leg_0 means spi_board number = 0,2
 
   for (int i = 0; i < 2; i++) {
     data->q_abad[i + leg_0] = (spine_data->q_abad[i] - abad_offset[i + leg_0]) *
@@ -293,7 +284,6 @@ void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) { //leg
     data->qd_hip[i + leg_0] = spine_data->qd_hip[i] * hip_side_sign[i + leg_0];
     data->qd_knee[i + leg_0] =
         spine_data->qd_knee[i] * knee_side_sign[i + leg_0];
-//    printf("LEG %d current: %f\n", leg_0+i, spine_data->qd_knee[i]);
     data->flags[i + leg_0] = spine_data->flags[i];
   }
 
@@ -340,7 +330,6 @@ void spi_send_receive(spi_command_t *command, spi_data_t *data) {
     // copy into tx buffer flipping bytes
     for (int i = 0; i < K_WORDS_PER_MESSAGE; i++){
         tx_buf[i] = (cmd_d[i] >> 8) + ((cmd_d[i] & 0xff) << 8);
-//        printf("tx[%d]: %u\n",i,tx_buf[i]);
     }
 
     // tx_buf[i] = __bswap_16(cmd_d[i]);
