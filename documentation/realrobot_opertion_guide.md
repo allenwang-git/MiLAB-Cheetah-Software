@@ -26,8 +26,8 @@ JOYSTICK: Left Stick, Right Stick
             MID--StandUp Mode (0.35m)
             DWN--SquartDown Mode (0.18m)
 
-* Switch G: UP-- RecoveryStand Mode
-            MID--BalanceStand Mode
+* Switch G: UP-- BalanceStand Mode
+            MID--RecoveryStand Mode
             DWN--Locomotion Mode (0.50m)
 
 * Switch C: UP-- Trotting gait    /  Walking gait
@@ -60,7 +60,7 @@ SwA = DWN
 SwC = UP
 SwD = UP
 SwE = UP
-SwG = UP
+SwG = MID
 ```
 
 * Trans To BalanceStand Mode
@@ -72,7 +72,7 @@ SwA = DWN
 SwC = UP
 SwD = UP
 SwE = UP
-SwG = MID
+SwG = UP
 ```
 
 * Trans To Locomotion Mode
