@@ -1,0 +1,31 @@
+# Generated on 04/23/2021 by WANG YINUO
+__collection-name__: user-parameters
+# Parameters for JOINT PD CONTROL
+
+max_tau : 45.
+max_iter : 10000
+#　motor move param
+move_range : 0.15
+move_offset : 0.0
+# motor selection
+leg_enable : [1,0,0,0]
+joint_enable : [0,0,1]
+# control params
+#kpj : [350,350,350]
+#kdj : [15,25,25]
+kpj : [400,400,400]
+kdj : [15,15,15]
+tau_ff : 0.0
+
+zero : 0
+calibrate : 0
+
+
+# Cartesian
+step_height : 0.05
+cycle : 300
+#kpc : [700,700,250]
+#kdc : [7,7,7]
+kpc : [2000,2000,2000]
+kdc : [70,70,70]
+# Tip: Jpos controller can not run normally when milab-robot-parameter cheater_mode = 1 !! keep it = 0

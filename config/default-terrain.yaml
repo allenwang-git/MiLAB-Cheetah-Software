@@ -1,0 +1,156 @@
+## There are 5 different terrain types defined in this project -- mesh, box, stairs, slopes, random.
+#
+## For "mesh" terrain, the grid size, mesh location and heightmap file name need to be specified.
+## For "box" terrain, the box size(l,w,h) and box location need to be specified.
+## For "stairs" terrain, the number of stair steps, step height, step depth, stair width and stair location need to be specified.
+## For "slopes" terrain, the slope degrees, slope width, slope length and slope location need to be specified.
+## For "random" terrain, the area range of it, the size range of obstacles and terrain location need to be specified.
+#
+## In addition, more complicated terrain can be created by combining above 5 basic terrain elements.
+## For example, Stair-bridge can be built by using box and 2 stairs, and Slope-bridge can be founded by using box and 2 slopes.
+
+ground-plane:
+    type: "infinite-plane"
+    mu: 0.5
+    restitution: 0.0
+    #height: -0.5
+    height: 0.0
+    graphicsSize: [20,20] # how large the plane appears
+    checkers: [40,40]     # how many checkers are on the plane
+
+#mesh-1:
+    type: "mesh"
+    mu: 0.7
+    restitution: 0
+    transparent: 0     # 0：不透明，1：透明
+    #grid: 0.005
+    grid: 0.02
+    #left_corner_loc: [-3.33, -3.33, -0]
+    left_corner_loc: [-3, -3, -0]
+    heightmap_file: true
+    #heightmap_file: false
+    #heightmap_file_name: "heightmap_demo.txt"
+    #heightmap_file_name: "heightmap.txt"
+
+#box-1:
+    type: "box"
+    mu: 0.7
+    restitution: 0
+    depth: 0.45
+    width: 0.6
+    height: .1
+    position:  [1.175, 0, 0.48]
+    orientation: [0,.0,0]  # roll pitch yaw
+    transparent: 1
+
+#stairs-1:
+    type: "stairs"
+    steps: 8
+    rise: 0.1778 # 7 inches
+    run: 0.2794 # 11 inches
+    width: 1.2
+    mu: .7
+    restitution: 0
+    position: [1,-2,0.]
+    orientation: [0,0, 1.57]
+    transparent: 0
+
+#slopes-1:
+    type: "slopes"
+    length: 2
+    width: 1.2
+    slope: 30
+#    direction: 90
+    direction: 0
+    mu: .7
+    restitution: 0
+    position: [1.5,0,0]
+    transparent: 0
+
+#random-1:
+    type: "random"
+    length: 2
+    width: 2
+    num: 100
+    size: [0.2,0.2,0.10]
+    mu: 0.7
+    restitution: 0
+    position: [1.5,-1,0]
+    orientation: [0,0,0]
+    transparent: 0
+
+
+####stair-bridge####
+## 25cm
+#box-22:
+    type: "box"
+    mu: 0.7
+    restitution: 0
+    depth: 0.6
+    width: 1.2
+    height: .0625
+    #position:  [1.5, 0, 0.025]
+    position:  [3, 0., 0.275]
+    orientation: [0,.0,0]  # roll pitch yaw
+    transparent: 0
+
+#stairs-21:
+    type: "stairs"
+    steps: 3
+    rise: 0.1 #0.1778 # 7 inches
+    run: 0.28 # 11 inches
+    width: 1.2
+    mu: .7
+    restitution: 0
+    #position: [0.5, 0, -0.52]
+    position: [2.0, 0, 0.0]
+    orientation: [0, 0, 0]
+    transparent: 0
+
+#stairs-22:
+    type: "stairs"
+    steps: 3
+    rise: 0.1 #0.1778 # 7 inches
+    run: 0.28 # 11 inches
+    width: 1.2
+    mu: .7
+    restitution: 0
+    #position: [0.5, 0, -0.52]
+    position: [4, 0, 0.0]
+    orientation: [0, 0, 3.14]
+    transparent: 0
+
+####slope-bridge####
+##  25cm
+#box-32:
+    type: "box"
+    mu: 0.7
+    restitution: 0
+    depth: 1.
+    width: 1.5
+    height: .05
+    position:  [2.25, 0., 0.235]
+    orientation: [0,.0,0]
+    transparent: 0
+
+#slopes-31:
+    type: "slopes"
+    length: 0.6
+    width: 1.5
+    slope: 25
+    direction: 0
+    mu: 1.
+    restitution: 0
+    position: [1.5,0,0]
+    transparent: 0
+
+#slopes-32:
+    type: "slopes"
+    length: 0.6
+    width: 1.5
+    slope: 25
+    direction: 180
+    mu: .8
+    restitution: 0
+    position: [3,0,0]
+    transparent: 0

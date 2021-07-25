@@ -1,0 +1,67 @@
+# Generated on Tues Mar 9 10:42:08 2021
+# Modified on mc-mit-ctrl-user-parameters.yaml
+# Author: Yinuo Wang
+__collection-name__: user-parameters
+
+# WBIC
+# mialb
+use_wbc           : 0
+Kp_ori            : [100, 100, 100]
+Kd_ori            : [15, 20, 20]
+
+Kp_body           : [100, 100, 100]
+Kd_body           : [15, 15, 15]
+
+Kp_foot           : [500, 500, 500]
+Kd_foot           : [20, 20, 20]
+
+Kp_joint          : [5, 5, 5]
+Kd_joint          : [1, 1, 1]
+
+# minicheetah
+#Kp_body           : [100, 100, 100]
+#Kd_body           : [10, 10, 10]
+
+#Kp_foot           : [500, 500, 500]
+#Kd_foot           : [10, 10, 10]
+
+#Kp_ori            : [100, 100, 100]
+#Kd_ori            : [10, 10, 10]
+
+#Kd_joint          : [1, 0.2, 0.2]
+#Kp_joint          : [3, 3, 3]
+
+# cMPC
+cmpc_gait         : 9
+Q_pos             : [1, 1, 50]
+Q_vel             : [1, 1, 1]
+Q_ori             : [0, 0, 1]
+Q_ang             : [1, 1, 1]
+R                 : 1e-05
+cmpc_x_drag       : 3
+cmpc_use_sparse   : 0
+cmpc_bonus_swing  : 0
+jcqp_alpha        : 1.5
+jcqp_max_iter     : 10000
+jcqp_rho          : 1e-07
+jcqp_sigma        : 1e-08
+jcqp_terminate    : 0.1
+use_jcqp          : 0
+
+# Swing leg parameters
+Swing_Kp_cartesian : [700, 700, 700]
+Swing_Kd_cartesian : [14,14,14]
+Swing_Kp_joint     : [0,0,0]
+Swing_Kd_joint     : [1, 1, 1]
+Swing_step_offset  : [0,0.05,-0.003]
+Swing_traj_height  : 0.05
+Swing_use_tau_ff   : 0
+
+# Gait parameters
+gait_type             : 4
+gait_period_time      : 0.5
+gait_switching_phase  : 0.5
+gait_override         : 4
+gait_max_leg_angle    : 15
+gait_max_stance_time  : 0.25
+gait_min_stance_time  : 0.1

@@ -1,0 +1,19 @@
+struct lowlevel_state {
+
+    float q[12];
+    float qd[12];
+    float p[12];
+    float v[12];
+    float tau_est[12];
+
+    float rpy[3];
+    float position[3];
+    float vWorld[3];
+    float vBody[3];
+    float aWorld[3];
+    float aBody[3];
+    float omegaBody[3];
+    float omegaWorld[3];
+    float quat[4];
+
+}
