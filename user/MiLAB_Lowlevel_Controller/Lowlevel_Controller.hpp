@@ -3,17 +3,22 @@
 
 #include <RobotController.h>
 #include "LowLevelUserParameters.h"
+#include <lcm/lcm-cpp.hpp>
+#include "lowlevel_cmd.hpp"
+#include "lowlevel_state.hpp"
+#include <Controllers/LegController.h>
+#include <thread>
+#include <mutex>
 
-////#define JPOS_TEST
-//#define JPOS_UP_DOWN
 class Lowlevel_Controller:public RobotController{
   public:
-    Lowlevel_Controller():RobotController(){ }
-    void leg_Interpolation(const size_t & curr_iter, size_t max_iter, int leg,
-                           const Vec3<float> & ini, const Vec3<float> & fin);
-    void leg_JointPD(int leg, Vec3<float> qDes, Vec3<float> qdDes);
-    void leg_Passive(int leg);
+    Lowlevel_Controller():RobotController(), _lcm(getLcmUrl(255)) {
+        _lcmThread = std::thread([&](){for(;;) _lcm.handle();});
+    }
 
+    void all_Passive();
+    void pub_sub_lcm();
+    void handleLowlevelCmdLCM(const lcm::ReceiveBuffer *rbuf, const std::string &chan, const lowlevel_cmd *msg);
     virtual ~Lowlevel_Controller(){}
 
     virtual void initializeController();
@@ -23,26 +28,13 @@ class Lowlevel_Controller:public RobotController{
       return &userParameters;
     }
   protected:
-    Vec3<float> _jpos_ini[4];
-    Vec3<float> _jpos_fold[4];
-    Vec3<float> _jpos_stand[4];
-    Vec3<float> _jpos_pre_off[4];
     Vec3<float> zero_vec3;
     LowLevelUserParameters userParameters;
   private:
-    Mat3<float> kpMat;
-    Mat3<float> kdMat;
-    const int fold_iter = 500;
-    const int stand_iter = 500;
-    const int squad_iter = 500;
-    const int wait_iter = 1000;
-    const int keep_iter = 5000;
-    static const int FOLDLEG =0;
-    static const int STANDUP =1;
-    static const int SQUAD =2;
-    int flag = FOLDLEG;
-    long j_iter=0;
+    long l_iter=0;
     int motion_iter=0;
+    lcm::LCM _lcm;
+    std::thread _lcmThread;
 };
 
 #endif

@@ -2,9 +2,9 @@
 
 /*
  * This is a low level (joint level) controller interface of Milab robot, which is designed to communicate with python by LCM.
- * As a high level controller, you can send desired joint position, joint velocity, joint feedforward torque to robot and get states
- * including current joint position, joint velocity, robot's rpy, angular velocity, linear velocity.
- * and leg_enable param in jpos-user-parameters.yaml. KP, KD, feedforward-torque can also be tuned in that file.
+ * As a high level controller (Python), you can send desired joint position, joint velocity, joint kp/kd, joint feedforward torque, foot position, foot velocity, cartesian kp/kd, foot feedforward force to robot and get states
+ * including current joint position, joint velocity, foot position, foot velocity, estimated joint torque and robot's RPY, Quaternion, angular velocity, linear velocity, linear acceleration.
+
  * By modifying this file, the robot motion logic can be changed as you need.
  *
  * Wang Yinuo, 04/24/2021, dbdxwyn@163.com
@@ -14,156 +14,101 @@ void Lowlevel_Controller::initializeController(){
     _legController->_maxTorque = userParameters.max_tau;
     _legController->_legsEnabled = true;
 
-    if(userParameters.calibrate > 0.4) {  // This param is only used in TI board in Cheetah3
-        _legController->_calibrateEncoders = userParameters.calibrate;
-    } else {
-        if (userParameters.zero > 0.5) {  //　This param is only used in TI board in Cheetah3
-            _legController->_zeroEncoders = true;
-        } else {
-            _legController->_zeroEncoders = false;
+}
+
+void Lowlevel_Controller::runController() {
+
+    ++l_iter;
+
+    if (l_iter % 5000 == 0 && l_iter < userParameters.max_iter)
+        printf("[LowLevel_Ctrl] INFO: Control iteration is %ld now ...\n\n", l_iter);
+
+    if (userParameters.calibrate <= 0.4 && !_legController->_zeroEncoders) {
+//      Main Loop
+        if (l_iter >= 100 && l_iter <= userParameters.max_iter) {
+            pub_sub_lcm();
+        }else{
+            all_Passive();
         }
+    }
+}
+
+/*
+ *  Unable all motors to stop the robot
+ * */
+void Lowlevel_Controller::all_Passive(){
+
+    for (int leg = 0; leg < 4; ++leg) {
+        _legController->commands[leg].kpJoint.setZero();
+        _legController->commands[leg].kdJoint.setZero();
+        _legController->commands[leg].kpCartesian.setZero();
+        _legController->commands[leg].kdCartesian.setZero();
+        for (int jidx = 0; jidx < 3; ++jidx) {
+            _legController->commands[leg].tauFeedForward[jidx] = 0.;
+        }
+    }
+}
+/*
+ * Handle commands from Python
+ * */
+void Lowlevel_Controller::handleLowlevelCmdLCM(const lcm::ReceiveBuffer *rbuf,
+                                             const std::string &chan,
+                                             const lowlevel_cmd *msg) {
+    (void)rbuf;
+    (void)chan;
+    //    Subscribe Commands
+    for (int leg = 0; leg < 4; ++leg) {
+        for (int i = 0; i < 3; ++i) {
+            _legController->commands[leg].forceFeedForward[i] = msg->f_ff[3*leg+i];
+            _legController->commands[leg].tauFeedForward[i] = msg->tau_ff[3*leg+i];
+            _legController->commands[leg].qDes[i] = msg->q_des[3*leg+i];
+            _legController->commands[leg].qdDes[i] = msg->qd_des[3*leg+i];
+            _legController->commands[leg].kpJoint(i,i) = msg->kp_joint[3*leg+i];
+            _legController->commands[leg].kdJoint(i,i) = msg->kd_joint[3*leg+i];
+            _legController->commands[leg].pDes[i] = msg->p_des[3*leg+i];
+            _legController->commands[leg].vDes[i] = msg->v_des[3*leg+i];
+            _legController->commands[leg].kpCartesian(i,i) = msg->kp_cartesian[3*leg+i];
+            _legController->commands[leg].kdCartesian(i,i) = msg->kd_cartesian[3*leg+i];
+            if (_legController->commands[leg].tauFeedForward[i] > userParameters.max_tau){
+                printf("[LowLevel Ctrl] Torque has exceeded the max torque limitation, modify %f to %f",
+                       _legController->commands[leg].tauFeedForward[i],userParameters.max_tau);
+                _legController->commands[leg].tauFeedForward[i] = userParameters.max_tau;
+            }
+        }
+    }
+}
+/*
+ * Subs commands from Python Controller and send it to robot
+ * Publish states to Python Controller
+ * */
+void Lowlevel_Controller::pub_sub_lcm() {
+    lowlevel_state low_state_lcmt;
+//    Publish States
+    memset(&low_state_lcmt, 0, sizeof(low_state_lcmt));
+    auto& seResult = _stateEstimator->getResult();
+    for (int i = 0; i < 3; ++i) {
+        low_state_lcmt.rpy[i] = seResult.rpy[i];
+        low_state_lcmt.position[i] = seResult.position[i];
+        low_state_lcmt.vBody[i] = seResult.vBody[i];
+        low_state_lcmt.omegaBody[i] = seResult.omegaBody[i];
+        low_state_lcmt.vWorld[i] = seResult.vWorld[i];
+        low_state_lcmt.omegaWorld[i] = seResult.omegaWorld[i];
+        low_state_lcmt.aBody[i] = seResult.aBody[i];
+        low_state_lcmt.aWorld[i] = seResult.aWorld[i];
     }
     for (int leg = 0; leg < 4; ++leg) {
-        _jpos_fold[leg] << 0.f, -1.65f, 2.6f;
-        _jpos_stand[leg] << 0.f, -0.92f, 1.6f;
-        _jpos_pre_off[leg] << 0.f, -1.45f, 2.78f;
-    }
-}
-
-void Lowlevel_Controller::runController(){
-
-    kpMat << userParameters.kp[0], 0, 0, 0,  userParameters.kp[1], 0, 0, 0,  userParameters.kp[2];
-    kdMat << userParameters.kd[0], 0, 0, 0, userParameters.kd[1], 0, 0, 0, userParameters.kd[2];
-
-    ++j_iter;
-    // Get robot initial joint position
-    if(j_iter < 100){
-        for(int leg(0); leg<4; ++leg){
-            for(int jidx(0); jidx<3; ++jidx){
-                _jpos_ini[leg][jidx] = _legController->datas[leg].q[jidx];
-            }
+        low_state_lcmt.quat[leg] = seResult.orientation[leg];
+        for (int i = 0; i < 3; ++i) {
+            low_state_lcmt.tau_est[leg*3+i] = _legController->datas[leg].tauEstimate[i];
+            low_state_lcmt.q[leg*3+i] = _legController->datas[leg].q[i];
+            low_state_lcmt.qd[leg*3+i] = _legController->datas[leg].qd[i];
+            low_state_lcmt.p[leg*3+i] = _legController->datas[leg].p[i];
+            low_state_lcmt.v[leg*3+i] = _legController->datas[leg].v[i];
         }
     }
-//    std::cout<<_jpos_ini[0]<<std::endl;
-    if (j_iter%5000 == 0 && j_iter < userParameters.max_iter)
-        printf("[Jpos_Ctrl] INFO: Control iteration is %ld now ...\n\n", j_iter);
+    _lcm.publish("low_level_states",&low_state_lcmt);
 
-    if(userParameters.calibrate <= 0.4 && !_legController->_zeroEncoders) {
-        /*
-         * This is a test code which used to control any legs or any joints dependently to move a sine trajectory
-         * */
-        #ifdef JPOS_TEST
-        if (j_iter>= 100 && j_iter <= userParameters.max_iter){
-            for(int leg(0); leg<4; ++leg){
-                if (userParameters.leg_enable[leg]){ // check leg enable state
-                    for(int jidx(0); jidx<3; ++jidx){
-                        float pos = std::sin(.001f * (j_iter-100));
-
-                        if (userParameters.joint_enable[jidx]){ //check joint enable state
-                            if (jidx == 0)
-                                _legController->commands[leg].qDes[jidx] = _jpos_ini[leg][jidx];
-//                                        userParameters.move_range * pos + _jpos_ini[leg][jidx] - userParameters.move_offset;
-                            else
-                                _legController->commands[leg].qDes[jidx] = userParameters.move_range * pos + _jpos_ini[leg][jidx];
-                            _legController->commands[leg].qdDes[jidx] = 0.;
-                            _legController->commands[leg].tauFeedForward[jidx] = userParameters.tau_ff;
-                        }else{
-                            _legController->commands[leg].tauFeedForward[jidx] = 0.;
-                            kpMat(jidx,jidx) = 0.;
-                            kdMat(jidx,jidx) = 0.;
-                        }
-                    }
-                    _legController->commands[leg].kpJoint = kpMat;
-                    _legController->commands[leg].kdJoint = kdMat;
-                }else{
-                    leg_Passive(leg);
-                }
-            }
-        }
-        else{
-            for (int leg = 0; leg < 4; ++leg) {
-                leg_Passive(leg);
-            }
-
-        }
-#endif
-#ifdef JPOS_UP_DOWN
-
-        motion_iter++;
-//          fold legs
-        if (j_iter>= 100 && flag == FOLDLEG){
-            for (int leg = 0; leg < 4; ++leg) {
-                if (motion_iter >= fold_iter+wait_iter){
-                    motion_iter =0;
-                    flag = STANDUP;
-                }
-                else if (motion_iter > fold_iter && motion_iter < fold_iter+wait_iter)
-                    leg_JointPD(leg, _jpos_fold[leg], zero_vec3);
-                else
-                    leg_Interpolation(motion_iter,fold_iter,leg,_jpos_ini[leg],_jpos_fold[leg]);
-            }
-
-//            stand up and keep standing
-        } else if (flag == STANDUP){
-            for (int leg = 0; leg < 4; ++leg) {
-                if (motion_iter >= stand_iter+keep_iter){
-                    motion_iter =0;
-                    flag = SQUAD;
-                }
-                else if (motion_iter > stand_iter && motion_iter < stand_iter+keep_iter)
-                    leg_JointPD(leg, _jpos_stand[leg], zero_vec3);
-                else
-                    leg_Interpolation(motion_iter,stand_iter,leg,_jpos_fold[leg],_jpos_stand[leg]);
-            }
-//            squad down and motor switch down
-        } else if (flag == SQUAD) {
-            for (int leg = 0; leg < 4; ++leg) {
-                if (motion_iter >= squad_iter + wait_iter)
-                    leg_Passive(leg);
-                else if (motion_iter > squad_iter && motion_iter < squad_iter + wait_iter)
-                    leg_JointPD(leg, _jpos_pre_off[leg], zero_vec3);
-                else
-                    leg_Interpolation(motion_iter, squad_iter, leg, _jpos_stand[leg], _jpos_pre_off[leg]);
-            }
-        }
-#endif
-    }
-}
-
-void Lowlevel_Controller::leg_Interpolation(const size_t & curr_iter, size_t max_iter, int leg,
-                                        const Vec3<float> & ini, const Vec3<float> & fin){
-
-    float a(0.f);
-    float b(1.f);
-
-    // interpolating
-    if(curr_iter <= max_iter) {
-      b = (float)curr_iter/(float)max_iter;
-      a = 1.f - b;
-    }
-
-    // compute setpoints
-    Vec3<float> inter_pos = a * ini + b * fin;
-
-    // send control commands
-    leg_JointPD(leg, inter_pos, zero_vec3);
-}
-
-void Lowlevel_Controller::leg_JointPD(int leg, Vec3<float> qDes, Vec3<float> qdDes) {
-
-    _legController->commands[leg].kpJoint = kpMat;
-    _legController->commands[leg].kdJoint = kdMat;
-
-    _legController->commands[leg].qDes = qDes;
-    _legController->commands[leg].qdDes = qdDes;
-}
-
-void Lowlevel_Controller::leg_Passive(int leg){
-
-    _legController->commands[leg].kpJoint.setZero();
-    _legController->commands[leg].kdJoint.setZero();
-    for (int jidx = 0; jidx < 3; ++jidx) {
-        _legController->commands[leg].tauFeedForward[jidx] = 0.;
-    }
+//    Send Commands to Robot
+    _lcm.subscribe("low_level_cmds",&Lowlevel_Controller::handleLowlevelCmdLCM,this);
 
 }
