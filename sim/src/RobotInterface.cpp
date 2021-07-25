@@ -44,7 +44,7 @@ RobotInterface::RobotInterface(RobotType robotType, Graphics3D *gfx,
   } else{
       _robotID =  gfx->setupCheetah3(robotColor, true, false);
   }
-  printf("draw list has %lu items\n", _gfx->_drawList._kinematicXform.size());
+  printf("[RobotInterface] Draw list has %lu items\n", _gfx->_drawList._kinematicXform.size());
   _gfx->_drawList._visualizationData = &_visualizationData;
   Checkerboard checker(10, 10, 10, 10);
   uint64_t floorID = _gfx->_drawList.addCheckerboard(checker, true);
@@ -127,8 +127,9 @@ void RobotInterface::sendControlParameter(const std::string &name,
     strcpy((char *)_parameter_request_lcmt.name, name.c_str());
     memcpy(_parameter_request_lcmt.value, &value, sizeof(value));
     _parameter_request_lcmt.parameterKind = (s8)kind;
-    printf("set %s to %s (%d)\n", name.c_str(),
-           controlParameterValueToString(value, kind).c_str(), iteration);
+    if (iteration==TIMES_TO_RESEND_CONTROL_PARAM-1)
+        printf("[RobotInterface] Set parameter %s to %s\n", name.c_str(),
+           controlParameterValueToString(value, kind).c_str());
 
     // send
     _lcm.publish("interface_request", &_parameter_request_lcmt);

@@ -59,7 +59,7 @@ template struct GaitData<float>;
  * Constructor to automatically setup a basic gait
  */
 template <typename T>
-GaitScheduler<T>::GaitScheduler(MIT_UserParameters* _userParameters, float _dt) {
+GaitScheduler<T>::GaitScheduler(MiLAB_UserParameters* _userParameters, float _dt) {
   initialize();
   userParameters = _userParameters;
   dt = _dt;

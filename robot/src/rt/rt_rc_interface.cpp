@@ -20,13 +20,9 @@ void get_rc_control_settings(void *settings) {
   pthread_mutex_unlock(&lcm_get_set_mutex);
 }
 
-//void get_rc_channels(void *settings) {
-//pthread_mutex_lock(&lcm_get_set_mutex);
-//v_memcpy(settings, &rc_channels, sizeof(rc_channels));
-//pthread_mutex_unlock(&lcm_get_set_mutex);
-//}
 
 EdgeTrigger<int> mode_edge_trigger(0);
+#ifdef TARANIS_X7
 EdgeTrigger<TaranisSwitchState> backflip_prep_edge_trigger(SWITCH_UP);
 EdgeTrigger<TaranisSwitchState> experiment_prep_edge_trigger(SWITCH_UP);
 TaranisSwitchState initial_mode_go_switch = SWITCH_DOWN;
@@ -170,6 +166,101 @@ if(trigger || selected_mode == RC_mode::OFF || selected_mode == RC_mode::RECOVER
 }
 
 }
+#endif
+
+#ifdef RC_AT9S
+void sbus_packet_complete_at9s() {
+    AT9s_data data;
+    update_at9s(&data);
+    float v_scale = 1.5;
+    float w_scale = v_scale;
+
+    auto estop_switch = data.SWA;
+    auto stand_switch = data.SWE;
+    auto QP_Locomotion_switch = data.SWG;
+//    auto locomotion_stand_switch = data.SWB;
+
+    auto left_select = data.SWC;
+    auto right_select = data.SWD;
+
+    auto roll_show = 0.0;
+    auto step_height = data.varB + 1.0; // 0~1
+    int selected_mode = 0;
+
+    if (estop_switch == AT9S_BOOL_UP)
+        selected_mode = RC_mode::OFF;
+    else if (estop_switch == AT9S_BOOL_DOWN) {
+        switch (stand_switch) {
+            case AT9S_TRI_UP:
+                //  select RECOVERY_STAND QP_STAND, LOCOMOTION
+                if (QP_Locomotion_switch == AT9S_TRI_MIDDLE)
+                    selected_mode = RC_mode::RECOVERY_STAND;
+                else if (QP_Locomotion_switch == AT9S_TRI_UP) {
+                    selected_mode = RC_mode::QP_STAND;
+                    rc_control.rpy_des[0] = data.left_stick_y;
+                    rc_control.rpy_des[1] = data.left_stick_x;
+                    rc_control.rpy_des[2] = data.right_stick_y;
+
+                    rc_control.height_variation = data.right_stick_x;
+
+                    rc_control.omega_des[0] = 0;
+                    rc_control.omega_des[1] = 0;
+                    rc_control.omega_des[2] = 0;
+
+                }
+                else if (QP_Locomotion_switch == AT9S_TRI_DOWN) {
+                    selected_mode = RC_mode::LOCOMOTION;
+                    // Deadband
+                    data.left_stick_x = deadband(data.left_stick_x, 0.1, -1., 1.);
+                    data.left_stick_y = deadband(data.left_stick_y, 0.1, -1., 1.);
+                    data.right_stick_x = deadband(data.right_stick_x, 0.1, -1., 1.);
+                    data.right_stick_y = deadband(data.right_stick_y, 0.1, -1., 1.);
+
+                    int gait_id = 9;
+                    if (right_select == AT9S_BOOL_UP) {
+                        if (left_select == AT9S_TRI_UP)
+                            gait_id = 9; // trotting
+                        else if (left_select == AT9S_TRI_MIDDLE)
+                            gait_id = 5;// flying-trot
+                        else if (left_select == AT9S_TRI_DOWN)
+                            gait_id = 4;// standing
+                    } else if (right_select == AT9S_BOOL_DOWN) {
+                        if (left_select == AT9S_TRI_UP)
+                            gait_id = 4; // standing
+                        else if (left_select == AT9S_TRI_MIDDLE)
+                            gait_id = 4; // standing
+                        else if (left_select == AT9S_TRI_DOWN)
+                            gait_id = 4; // standing
+                    }
+                    rc_control.variable[0] = gait_id;
+                    rc_control.v_des[0] =
+                            data.right_stick_x > 0 ? v_scale * data.right_stick_x : v_scale / 2.0 * data.right_stick_x;
+                    rc_control.v_des[1] = -1.0 * data.right_stick_y;
+                    rc_control.v_des[2] = 0;
+
+                    rc_control.omega_des[0] = 0;
+                    rc_control.omega_des[1] = data.left_stick_x;  //pitch
+                    rc_control.omega_des[2] = w_scale * data.left_stick_y; //yaw
+
+                    rc_control.rpy_des[0] = roll_show;
+                    rc_control.step_height = step_height;
+                }
+                break;
+
+            case AT9S_TRI_MIDDLE:
+                selected_mode = RC_mode::STAND_UP;
+                break;
+
+            case AT9S_TRI_DOWN:
+                selected_mode = RC_mode::SQUAT_DOWN;
+                break;
+        }
+    }
+
+    rc_control.mode = selected_mode;
+}
+
+#endif
 
 void *v_memcpy(void *dest, volatile void *src, size_t n) {
   void *src_2 = (void *)src;

@@ -10,15 +10,18 @@ class rc_control_settings {
     double     mode;
     double     p_des[2]; // (x, y) -1 ~ 1
     double     height_variation; // -1 ~ 1
-    double     v_des[3]; // -1 ~ 1 * (scale 0.5 ~ 1.5)
+    double     v_des[3]; // -1 ~ 1 * (v_scale)
     double     rpy_des[3]; // -1 ~ 1
-    double     omega_des[3]; // -1 ~ 1
+    double     omega_des[3]; // -1 ~ 1 * (w_scale)
     double     variable[3];
+    double     step_height; //foot step height 0~2 WYN
 };
 
 
 namespace RC_mode{
   constexpr int OFF = 0;
+  constexpr int STAND_UP =1;
+  constexpr int SQUAT_DOWN = 2;
   constexpr int QP_STAND = 3;
   constexpr int BACKFLIP_PRE = 4;
   constexpr int BACKFLIP = 5;
@@ -32,6 +35,7 @@ namespace RC_mode{
 };
 
 void sbus_packet_complete();
+void sbus_packet_complete_at9s(); //WYN
 
 void get_rc_control_settings(void* settings);
 //void get_rc_channels(void* settings);

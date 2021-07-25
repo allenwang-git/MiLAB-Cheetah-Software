@@ -9,18 +9,14 @@
 #include <unistd.h>
 
 #include "RobotRunner.h"
-#include "Controllers/ContactEstimator.h"
 #include "Controllers/OrientationEstimator.h"
 #include "Dynamics/Cheetah3.h"
 #include "Dynamics/MiniCheetah.h"
 #include "Dynamics/Milab.h"
-#include "Utilities/Utilities_print.h"
 #include "ParamHandler.hpp"
-#include "Utilities/Timer.h"
 #include "Controllers/PositionVelocityEstimator.h"
 #include <fstream>
-
-//#include "rt/rt_interface_lcm.h"
+bool flagSimReal;
 
 RobotRunner::RobotRunner(RobotController* robot_ctrl, 
     PeriodicTaskManager* manager, 
@@ -37,9 +33,18 @@ RobotRunner::RobotRunner(RobotController* robot_ctrl,
  */
 void RobotRunner::init() {
   printf("[RobotRunner] initialize\n");
+#ifdef OUTPUT_LEG_DATA
   //clear debug Data file
-  std::ofstream fs("/home/allen/MiLAB-Cheetah-Software/debug_data/leg_controller_data.txt", std::fstream::out | std::ios_base::trunc);
-  fs.close();
+  if (flagSimReal) {
+      std::ofstream fs(SIM_PATH, std::fstream::out | std::ios_base::trunc);
+      fs.close();
+      printf("[RobotRunner] Init sim file\n");
+  }else {
+      std::ofstream fr(REAL_PATH, std::fstream::out | std::ios_base::trunc);
+      fr.close();
+      printf("[RobotRunner] Init real file\n");
+  }
+#endif
   // Build the appropriate Quadruped object
   if (robotType == RobotType::MINI_CHEETAH) {
     _quadruped = buildMiniCheetah<float>();
@@ -111,12 +116,17 @@ void RobotRunner::run() {
   } else {
     _legController->setEnabled(true);
 
-    if( (rc_control.mode == 0) && controlParameters->use_rc ) {
-      if(count_ini%10000 ==0)   printf("[RobotRunner]] use_rc = 1, turn it to 0 to start controller\n");
+    if( rc_control.mode == 0 && controlParameters->use_rc ) {
+//    if(0){
+      if(count_ini%1000 ==0) {
+              printf("[RobotRunner] ESTOP mode && use_rc = 1, wait to start...\n");
+      }
       for (int leg = 0; leg < 4; leg++) {
         _legController->commands[leg].zero();
       }
       _robot_ctrl->Estop();
+//      rc motor test command
+        _legController->setEnabled(false);
     }else {
       // Controller
       /*
@@ -181,11 +191,11 @@ void RobotRunner::run() {
  */
 void RobotRunner::setupStep() {
   // Update the leg data
-  if (robotType == RobotType::MINI_CHEETAH) {
+  if (robotType == RobotType::MILAB) {
     _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateData(tiBoardData);
-  } else if (robotType == RobotType::MILAB) {
+  } else if (robotType == RobotType::MINI_CHEETAH) {
       _legController->updateData(spiData);
   } else {
     assert(false);
@@ -219,11 +229,11 @@ void RobotRunner::setupStep() {
  * After the user code, send leg commands, update state estimate, and publish debug data
  */
 void RobotRunner::finalizeStep() {
-  if (robotType == RobotType::MINI_CHEETAH) {
+  if (robotType == RobotType::MILAB) {
     _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     _legController->updateCommand(tiBoardCommand);
-  } else if (robotType == RobotType::MILAB) {
+  } else if (robotType == RobotType::MINI_CHEETAH) {
       _legController->updateCommand(spiCommand);
   } else {
     assert(false);
@@ -233,6 +243,10 @@ void RobotRunner::finalizeStep() {
   _lcm.publish("leg_control_command", &leg_control_command_lcm);
   _lcm.publish("leg_control_data", &leg_control_data_lcm);
   _lcm.publish("state_estimator", &state_estimator_lcm);
+  //  print leg cmd and data, state estimation output.
+  #ifdef DEBUG_SHOW
+  debugPrint(_legController,_stateEstimate);
+  #endif
   _iterations++;
 }
 
@@ -262,3 +276,57 @@ RobotRunner::~RobotRunner() {
 }
 
 void RobotRunner::cleanup() {}
+
+void RobotRunner::debugPrint(LegController<float>* legs, StateEstimate<float> states){
+    if (_iterations==100){
+        for (int i = 0; i < 4; ++i) {
+            if (std::abs(legs->datas[i].q[0]) > 0.2 || std::abs(legs->datas[i].q[0]) < 0.02)
+                motorError = true;
+            if (legs->datas[i].q[1] > -1.2 || legs->datas[i].q[1] < -1.4)
+                motorError = true;
+            if (legs->datas[i].q[2] > 2.99 || legs->datas[i].q[2] < 2.80)
+                motorError = true;
+        }
+    }
+
+    if (_iterations%10000==0)
+    {
+        if (motorError && !flagSimReal){
+            printf("\033[1;33m**************************************************\n");
+            printf("**************************************************\n");
+            printf("******\033[0m            \033[1;31mFATAL ERROR\033[0m               \033[1;33m******\n");
+            printf("******\033[0m \033[1;31mMotor Zero Initialization Is Wrong!\033[0m  \033[1;33m******\n");
+            printf("******\033[0m     \033[1;31mRestart Motors And Controller!\033[0m   \033[1;33m******\n");
+            printf("**************************************************\n");
+            printf("**************************************************\033[0m\n");
+        }
+        printf("Iteration Stamp:\t%d\n",(int)_iterations);
+        printf("--------------------STATE-------------------------\n");
+        printf("POS = [%f, %f, %f]\n", states.position[0],states.position[1],states.position[2]);
+//        printf("RPY = [%f, %f, %f]\n", states.rpy[0],states.rpy[1],states.rpy[2]);
+//        printf("VEL = [%f, %f, %f]\n", states.vWorld[0],states.vWorld[1],states.vWorld[2]);
+//        printf("OMG = [%f, %f, %f]\n", states.omegaWorld[0],states.omegaWorld[1],states.omegaWorld[2]);
+//        printf("CONTACT = [%f, %f, %f, %f]\n", states.contactEstimate[0],states.contactEstimate[1],states.contactEstimate[2], states.contactEstimate[3]);
+        printf("--------------------DATA--------------------------\n");
+        printf("ABAD Q = [%f, %f, %f, %f]\n", legs->datas[0].q[0],legs->datas[1].q[0],legs->datas[2].q[0],legs->datas[3].q[0]);
+        printf("HIP  Q = [%f, %f, %f, %f]\n", legs->datas[0].q[1],legs->datas[1].q[1],legs->datas[2].q[1],legs->datas[3].q[1]);
+        printf("KNEE Q = [%f, %f, %f, %f]\n", legs->datas[0].q[2],legs->datas[1].q[2],legs->datas[2].q[2],legs->datas[3].q[2]);
+//        printf("ABAD QD = [%f, %f, %f, %f]\n", legs->datas[0].qd[0],legs->datas[1].qd[0],legs->datas[2].qd[0],legs->datas[3].qd[0]);
+//        printf("HIP  QD = [%f, %f, %f, %f]\n", legs->datas[0].qd[1],legs->datas[1].qd[1],legs->datas[2].qd[1],legs->datas[3].qd[1]);
+//        printf("KNEE QD = [%f, %f, %f, %f]\n", legs->datas[0].qd[2],legs->datas[1].qd[2],legs->datas[2].qd[2],legs->datas[3].qd[2]);
+//        printf("-------------------COMMAND------------------------\n");
+//        printf("ABAD DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[0],legs->commands[1].qDes[0],legs->commands[2].qDes[0],legs->commands[3].qDes[0]);
+//        printf("HIP  DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[1],legs->commands[1].qDes[1],legs->commands[2].qDes[1],legs->commands[3].qDes[1]);
+//        printf("KNEE DES Q = [%f, %f, %f, %f]\n", legs->commands[0].qDes[2],legs->commands[1].qDes[2],legs->commands[2].qDes[2],legs->commands[3].qDes[2]);
+//        printf("KP A= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(0,0),legs->commands[1].kpJoint(0,0),legs->commands[2].kpJoint(0,0),legs->commands[3].kpJoint(0,0));
+//        printf("KP H= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(1,1),legs->commands[1].kpJoint(1,1),legs->commands[2].kpJoint(1,1),legs->commands[3].kpJoint(1,1));
+//        printf("KP K= [%f, %f, %f, %f]\n", legs->commands[0].kpJoint(2,2),legs->commands[1].kpJoint(2,2),legs->commands[2].kpJoint(2,2),legs->commands[3].kpJoint(2,2));
+//        printf("KD A= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(0,0),legs->commands[1].kdJoint(0,0),legs->commands[2].kdJoint(0,0),legs->commands[3].kdJoint(0,0));
+//        printf("KD H= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(1,1),legs->commands[1].kdJoint(1,1),legs->commands[2].kdJoint(1,1),legs->commands[3].kdJoint(1,1));
+//        printf("KD K= [%f, %f, %f, %f]\n", legs->commands[0].kdJoint(2,2),legs->commands[1].kdJoint(2,2),legs->commands[2].kdJoint(2,2),legs->commands[3].kdJoint(2,2));
+//        printf("ABAD DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[0],legs->commands[1].tauFeedForward[0],legs->commands[2].tauFeedForward[0],legs->commands[3].tauFeedForward[0]);
+//        printf("HIP  DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[1],legs->commands[1].tauFeedForward[1],legs->commands[2].tauFeedForward[1],legs->commands[3].tauFeedForward[1]);
+//        printf("KNEE DES T = [%f, %f, %f, %f]\n", legs->commands[0].tauFeedForward[2],legs->commands[1].tauFeedForward[2],legs->commands[2].tauFeedForward[2],legs->commands[3].tauFeedForward[2]);
+        printf("--------------------------------------------------\n");
+    }
+}

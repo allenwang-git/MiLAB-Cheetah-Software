@@ -1,5 +1,5 @@
 #include "MiniCheetahDebug.h"
-#include "../build/sim/ui_MiniCheetahDebug.h"
+#include "ui_MiniCheetahDebug.h"
 
 
 constexpr float KP_MAX = 10;

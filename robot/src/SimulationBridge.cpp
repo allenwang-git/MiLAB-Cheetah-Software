@@ -264,7 +264,7 @@ void SimulationBridge::run_sbus() {
     if (port > 0) {
       int x = receive_sbus(port);
       if (x) {
-        sbus_packet_complete();
+        sbus_packet_complete_at9s();
       }
     }
     usleep(5000);

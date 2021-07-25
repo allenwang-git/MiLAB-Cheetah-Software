@@ -22,9 +22,9 @@ MasterConfig gMasterConfig;
 void printUsage() {
   printf(
       "Usage: robot [robot-id] [sim-or-robot] [parameters-from-file]\n"
-      "\twhere robot-id:     i for milab robot, 3 for cheetah 3, m for mini-cheetah\n"
+      "\twhere robot-id:     i for milab cheetah, 3 for cheetah 3, m for mini-cheetah\n"
       "\t      sim-or-robot: s for sim, r for robot\n"
-      "\t      param-file:   f for loading parameters from file, l (or nothing) for LCM\n"
+      "\t      param-file:   f for loading parameters from file, l (default option if no input) for LCM\n"
       "                      this option can only be used in robot mode\n");
 }
 
@@ -36,12 +36,13 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
     printUsage();
     return EXIT_FAILURE;
   }
+
   if (argv[1][0] == 'i') {
-      gMasterConfig._robot = RobotType::MILAB;
-  } else if (argv[1][0] == '3') {
-    gMasterConfig._robot = RobotType::CHEETAH_3;
+    gMasterConfig._robot = RobotType::MILAB;
   } else if (argv[1][0] == 'm') {
     gMasterConfig._robot = RobotType::MINI_CHEETAH;
+  } else if (argv[1][0] == '3') {
+      gMasterConfig._robot = RobotType::CHEETAH_3;
   } else {
     printUsage();
     return EXIT_FAILURE;
@@ -55,19 +56,19 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
     printUsage();
     return EXIT_FAILURE;
   }
+  flagSimReal = gMasterConfig.simulated;
 
   if(argc == 4 && argv[3][0] == 'f') {
     gMasterConfig.load_from_file = true;
-    printf("Load parameters from file\n");
+    printf("[main] Load parameters from file\n");
   } else {
     gMasterConfig.load_from_file = false;
-    printf("Load parameters from network\n");
+    printf("[main] Load parameters from network\n");
   }
 
   printf("[Quadruped] Cheetah Software\n");
   printf("        Quadruped:  %s\n",
-         gMasterConfig._robot == RobotType::MINI_CHEETAH ? "Mini Cheetah"
-                                                         : "Milab Robot");
+         gMasterConfig._robot == RobotType::MILAB ? "Milab Robot" : "MIT Cheetah");
   printf("        Driver: %s\n", gMasterConfig.simulated
                                      ? "Development Simulation Driver"
                                      : "Quadruped Driver");
@@ -98,11 +99,11 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
     if (gMasterConfig._robot == RobotType::MILAB) {
         MilabHardwareBridge hw(ctrl, gMasterConfig.load_from_file);
         hw.run();
-        printf("[Quadruped] SimDriver run() has finished!\n");
-    }else if (gMasterConfig._robot == RobotType::MINI_CHEETAH) {
-      MiniCheetahHardwareBridge hw(ctrl, gMasterConfig.load_from_file);
-      hw.run();
-      printf("[Quadruped] SimDriver run() has finished!\n");
+        printf("[Quadruped] HardwareDriver run() has finished!\n");
+//    } else if (gMasterConfig._robot == RobotType::MINI_CHEETAH) {
+//      MiniCheetahHardwareBridge hw(ctrl, gMasterConfig.load_from_file);
+//      hw.run();
+//      printf("[Quadruped] HardwareDriver run() has finished!\n");
     } else if (gMasterConfig._robot == RobotType::CHEETAH_3) {
       Cheetah3HardwareBridge hw(ctrl);
       hw.run();

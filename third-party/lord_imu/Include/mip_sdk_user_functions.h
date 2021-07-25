@@ -61,6 +61,8 @@ typedef unsigned char Byte;
 #define MIP_USER_FUNCTION_OK    0
 #define MIP_USER_FUNCTION_ERROR 1
 #define MIP_COM_PORT_BUFFER_SIZE 0x200
+//#define USE_LordIMU
+#define USE_SelfIMU
 
 
 ////////////////////////////////////////////////////////////////////////////////

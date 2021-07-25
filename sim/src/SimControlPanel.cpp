@@ -10,7 +10,7 @@
 #include <QMessageBox>
 #include <ParamHandler.hpp>
 #include <leg_control_command_lcmt.hpp>
-#include "../build/sim/ui_SimControlPanel.h"
+#include "ui_SimControlPanel.h"
 #include "JoystickTest.h"
 
 // Todo: the Milab robot default joint angles for go-home button (883)
@@ -379,7 +379,7 @@ void SimControlPanel::on_startButton_clicked() {
   printf("[SimControlPanel] Initialize Graphics...\n");
   _graphicsWindow = new Graphics3D();
   _graphicsWindow->show();
-  _graphicsWindow->resize(800, 600);
+  _graphicsWindow->resize(1000, 800);
 
   if (_simulationMode) {
     // run a simulation
@@ -874,20 +874,22 @@ void SimControlPanel::on_saveUserButton_clicked() {
  * Reset robot state to default joint angles
  */
 void SimControlPanel::on_goHomeButton_clicked() {
-  printf("go home\n");
+
   FBModelState<double> homeState;
   homeState.bodyOrientation << 1, 0, 0, 0;
-  homeState.bodyPosition = Vec3<double>(0, 0, 0.4);
+  homeState.bodyPosition = Vec3<double>(0, 0, 0.5);
   homeState.bodyVelocity = SVec<double>::Zero();
   homeState.q = DVec<double>(12);
 
-  if(_simulation->_robot == RobotType::MILAB){ std::cout<<"milab"<<std::endl;
-      homeState.q << -0., 1., -1.7, 0., 1., -1.7, -0., 1., -1.7, 0., 1., -1.7;
+  if(_simulation->_robot == RobotType::MILAB){
+      printf("[Simulation] MILAB ROBOT ");
+      homeState.q << -0., -0.96, 1.6, 0., -0.96, 1.6, -0., -0.96, 1.6, 0., -0.96, 1.6;
   }else{
+      printf("[Simulation] MIT CHEETAH ");
       homeState.q << -0.05, -0.8, 1.7, 0.05, -0.8, 1.7, -0.05, -0.8, 1.7, 0.05, -0.8, 1.7;
   }
   homeState.qd = homeState.q;
-
+  printf("Go Home\n");
   _simulation->setRobotState(homeState);
 }
 /*!

@@ -24,7 +24,6 @@
 
 #include <termios.h>
 
-//#include "rt/rt_interface_lcm.h"
 #include "rt/rt_sbus.h"
 #include "rt/rt_serial.h"
 
@@ -35,9 +34,29 @@ uint16_t channel_data[18];
 
 /**@brief Name of SBUS serial port in simulator*/
 #define K_SBUS_PORT_SIM "/dev/ttyUSB0"
-/**@brief Name of SBUS serial port on the mini cheetah*/
+/**@brief Name of SBUS serial port on the real robot*/
 #define K_SBUS_PORT_MC "/dev/ttyS4"
 
+/* Uncomment when setting AT9S channel range */
+//#define Show_RT9S_Celebration
+/* Modify when setting AT9S channel range */
+#define Left_Stick_LRight_Max 1670
+#define Left_Stick_LRight_Min 284
+#define Left_Stick_LRight_Zero 950
+
+#define Left_Stick_FBack_Max 1670
+#define Left_Stick_FBack_Min 328
+#define Left_Stick_FBack_Zero 1043
+
+#define Right_Stick_FBack_Max 1677
+#define Right_Stick_FBack_Min 346
+#define Right_Stick_FBack_Zero 947
+
+#define Right_Stick_LRight_Max 1732
+#define Right_Stick_LRight_Min 346
+#define Right_Stick_LRight_Zero 1063
+
+static int show_rt9s_times=0;
 /*!
  * Unpack sbus message into channels
  */
@@ -79,17 +98,29 @@ void unpack_sbus_data(uint8_t sbus_data[], uint16_t *channels_) {
     //printf("\n\n");
     pthread_mutex_unlock(&sbus_data_m);
 
-    // for(int i = 0; i < 18; i++) {
-    //   printf("[%2d] %04d ", i, channel_data[i]);
-    // }
-    // printf("\n");
-    // for(int i = 0; i < 24; i++) {
-    //   printf("[%2d] %04d ", i, sbus_data[i]);
-    // }
-    // printf("\n\n");
+    show_rt9s_times++;
+//    printf("%d\n",show_rt9s_times);
+    #ifdef Show_RT9S_Celebration
+    if(show_rt9s_times%10==0)
+    {
+        printf("Iteration stamp:\t%d\n",show_rt9s_times);
+        printf("------------------------------------------\n");
+        printf("Left_LR =\t%d\n",channel_data[0]);
+        printf("Left_FB =\t%d\n",channel_data[1]);
+        printf("Right_FB =\t%d\n",channel_data[2]);
+        printf("Right_LR =\t%d\n",channel_data[3]);
+        printf("SWA =\t%d\n",channel_data[6]);
+        printf("SWC =\t%d\n",channel_data[8]);
+        printf("SWD =\t%d\n",channel_data[9]);
+        printf("SWE =\t%d\n",channel_data[4]);
+        printf("SWG =\t%d\n",channel_data[5]);
+        printf("VRB =\t%f\n",(channel_data[7]-1000) / 700.0);
+        printf("------------------------------------------\n");
+    }
+    #endif
 
   } else {
-    // printf("Bad Packet\n");
+     printf("Bad Packet\n");
   }
 }
 
@@ -142,7 +173,7 @@ int receive_sbus(int port) {
   if (x) {
     unpack_sbus_data((uint8_t *)read_buff, channels);
   } else {
-    printf("SBUS tried read 50 bytes without seeing a packet\n");
+    printf("[RT SBUS] SBUS tried read 50 bytes without seeing a packet\n");
   }
   return x;
 }
@@ -158,23 +189,24 @@ int init_sbus(int is_simulator) {
   } else {
     port1 = K_SBUS_PORT_MC;
   }
-
+  printf("[RT SBUS] sbus port: %s\n", port1.c_str());
   if (pthread_mutex_init(&sbus_data_m, NULL) != 0) {
     printf("Failed to initialize sbus data mutex.\n");
   }
 
   int fd1 = open(port1.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   if (fd1 < 0) {
-    printf("[Warning: RemoteCommander] Opening %s: %s%d\n", port1.c_str(), strerror(errno),fd1);
+    printf("[RemoteCommander] Error Opening %s: %s%d\n", port1.c_str(), strerror(errno),fd1);
   } else {
     init_serial_for_sbus(fd1, 100000);
 #ifdef linux
     //set_interface_attribs_custom_baud(fd1, 100000, 0, 0);
 #endif
   }
+  printf("[RT SBUS] SBUS init OK!\n");
   return fd1;
 }
-
+#ifdef TARANIS_X7
 static float scale_joystick(uint16_t in) {
   return (in - 172) * 2.f / (1811.f - 172.f) - 1.f;
 }
@@ -211,3 +243,96 @@ void update_taranis_x7(Taranis_X7_data* data) {
 
   pthread_mutex_unlock(&sbus_data_m);
 }
+#endif
+
+#ifdef RC_AT9S
+
+static AT9s_SwitchStateBool map_switch_bool(uint16_t in, char sw) {
+    switch (in) {
+        case 305:
+        case 306:
+            return AT9s_SwitchStateBool::AT9S_BOOL_UP; //0511wyn
+        case 307:
+//            return AT9s_SwitchStateBool::AT9S_BOOL_UP;
+        case 1694:
+            return AT9s_SwitchStateBool::AT9S_BOOL_DOWN;
+        default:
+            printf("[SBUS] Bool switch %c returned bad value %d\n", sw, in);
+            return AT9s_SwitchStateBool::AT9S_BOOL_DOWN;
+    }
+}
+
+static AT9s_SwitchStateTri map_switch_tri(uint16_t in, char sw) {
+    switch (in) {
+        case 305:
+        case 306:
+            return AT9s_SwitchStateTri::AT9S_TRI_UP; //0511wyn
+        case 307:
+//            return AT9s_SwitchStateTri::AT9S_TRI_UP;
+        case 1000:
+            return AT9s_SwitchStateTri::AT9S_TRI_MIDDLE;
+        case 1694:
+            return AT9s_SwitchStateTri::AT9S_TRI_DOWN;
+        default:
+            printf("[SBUS] Tri switch %c returned bad value %d\n", sw, in);
+            return AT9s_SwitchStateTri::AT9S_TRI_UP;
+    }
+}
+
+void update_at9s(AT9s_data *data) {
+    pthread_mutex_lock(&sbus_data_m);
+//  LEFT Y (-1~1)
+    if (channel_data[0] < (Left_Stick_LRight_Zero - 2))
+        data->left_stick_y = -1.0 + (channel_data[0] - Left_Stick_LRight_Min) * 1.0 /
+                                    (Left_Stick_LRight_Zero - Left_Stick_LRight_Min);
+    else if (channel_data[0] > (Left_Stick_LRight_Zero + 2))
+        data->left_stick_y = 1.0 - (Left_Stick_LRight_Max - channel_data[0]) * 1.0 /
+                                   (Left_Stick_LRight_Max - Left_Stick_LRight_Zero);
+    else
+        data->left_stick_y = 0;
+
+//  LEFT X (-1~1)
+    if (channel_data[1] > (Left_Stick_FBack_Zero + 2))
+        data->left_stick_x =
+                -1.0 - (channel_data[1] - Left_Stick_FBack_Max) * 1.0 / (Left_Stick_FBack_Max - Left_Stick_FBack_Zero);
+    else if (channel_data[1] < (Left_Stick_FBack_Zero - 2))
+        data->left_stick_x =
+                1.0 - (channel_data[1] - Left_Stick_FBack_Min) * 1.0 / (Left_Stick_FBack_Zero - Left_Stick_FBack_Min);
+    else
+        data->left_stick_x = 0;
+
+//  RIGHT X (-1~1)
+    if (channel_data[2] > (Right_Stick_FBack_Zero + 5))
+        data->right_stick_x = -1.0 - (channel_data[2] - Right_Stick_FBack_Max) * 1.0 /
+                                     (Right_Stick_FBack_Max - Right_Stick_FBack_Zero);
+    else if (channel_data[2] < (Right_Stick_FBack_Zero - 5))
+        data->right_stick_x = 1.0 - (channel_data[2] - Right_Stick_FBack_Min) * 1.0 /
+                                    (Right_Stick_FBack_Zero - Right_Stick_FBack_Min);
+    else
+        data->right_stick_x = 0.0;
+
+//  RIGHT Y (-1~1)
+    if (channel_data[3] < (Right_Stick_LRight_Zero - 5))
+        data->right_stick_y = -1.0 + (channel_data[3] - Right_Stick_LRight_Min) * 1.0 /
+                                     (Right_Stick_LRight_Zero - Right_Stick_LRight_Min);//
+    else if (channel_data[3] > (Right_Stick_LRight_Zero + 5))
+        data->right_stick_y = 1.0 - (Right_Stick_LRight_Max - channel_data[3]) * 1.0 /
+                                    (Right_Stick_LRight_Max - Right_Stick_LRight_Zero);
+    else
+        data->right_stick_y = 0;
+
+//  Switch
+    data->SWE = map_switch_tri(channel_data[4],'E');
+    data->SWG = map_switch_tri(channel_data[5],'G');
+    // locomotion mode
+    data->SWA = map_switch_bool(channel_data[6],'A');
+    // step height
+    data->varB = (channel_data[7] - 1000) / 700.0; // 300~1700 => -1 ~1
+    // gait type
+    data->SWC = map_switch_tri(channel_data[8],'C');
+    data->SWD = map_switch_bool(channel_data[9],'D');
+
+    pthread_mutex_unlock(&sbus_data_m);
+}
+
+#endif

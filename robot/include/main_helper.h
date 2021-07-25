@@ -10,6 +10,7 @@
 #include "RobotController.h"
 
 extern MasterConfig gMasterConfig;
+extern bool flagSimReal;
 int main_helper(int argc, char** argv, RobotController* ctrl);
 
 #endif  // ROBOT_MAIN_H

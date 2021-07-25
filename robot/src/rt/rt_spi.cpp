@@ -3,9 +3,7 @@
  * @brief SPI communication to spine board
  */
 #ifdef linux
-
-#include <byteswap.h>
-#include <math.h>
+// TODO: finally modify the joint offsets(55-57)
 #include <pthread.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,6 +12,10 @@
 #include "rt/rt_spi.h"
 #include <lcm/lcm-cpp.hpp>
 
+#define HIP_OFFSET_POS 4.189f
+#define KNEE_OFFSET_POS 2.897f
+//#define SPI_STATUS
+//#define SPI_CAN
 unsigned char spi_mode = SPI_MODE_0;
 unsigned char spi_bits_per_word = 8;
 unsigned int spi_speed = 6000000;
@@ -33,20 +35,29 @@ spi_torque_t spi_torque;
 
 pthread_mutex_t spi_mutex;
 
-const float max_torque[3] = {17.f, 17.f, 26.f};  // TODO CHECK WITH BEN
-const float wimp_torque[3] = {6.f, 6.f, 6.f};    // TODO CHECK WITH BEN
+const float max_torque[3] = {40.f, 40.f, 40.f};
+const float wimp_torque[3] = {6.f, 6.f, 6.f};
 const float disabled_torque[3] = {0.f, 0.f, 0.f};
-
+/*
+ * actual joint angles = (sim joint angles * side sign) + joint offsets
+ * sim joint angles = (actual joint angles - joint offsets) * side sign
+ * */
 // only used for actual robot
 const float abad_side_sign[4] = {-1.f, -1.f, 1.f, 1.f};
-const float hip_side_sign[4] = {-1.f, 1.f, -1.f, 1.f};
-const float knee_side_sign[4] = {-.6429f, .6429f, -.6429f, .6429f};
+const float hip_side_sign[4]  = {-1.f, 1.f, -1.f, 1.f};
+const float knee_side_sign[4] = {-1.f, 1.f, -1.f, 1.f};
+//mini-cheetah 1:1.55 in knee
+//const float knee_side_sign[4] = {-.6429f, .6429f, -.6429f, .6429f};
 
-// only used for actual robot
+// Only used for actual robot
+// Zero Position for actual motor!! Offsets are calculated from actual zero to sim zero.
 const float abad_offset[4] = {0.f, 0.f, 0.f, 0.f};
-const float hip_offset[4] = {M_PI / 2.f, -M_PI / 2.f, -M_PI / 2.f, M_PI / 2.f};
-const float knee_offset[4] = {K_KNEE_OFFSET_POS, -K_KNEE_OFFSET_POS,
-                              -K_KNEE_OFFSET_POS, K_KNEE_OFFSET_POS};
+const float hip_offset[4]  = {-HIP_OFFSET_POS,  HIP_OFFSET_POS,  -HIP_OFFSET_POS,  HIP_OFFSET_POS};
+const float knee_offset[4] = {KNEE_OFFSET_POS, -KNEE_OFFSET_POS, KNEE_OFFSET_POS, -KNEE_OFFSET_POS};
+// mini-cheetah
+//const float hip_offset[4]  = {M_PI / 2.f, -M_PI / 2.f, -M_PI / 2.f, M_PI / 2.f};
+//const float knee_offset[4] = {K_KNEE_OFFSET_POS, -K_KNEE_OFFSET_POS,
+//                              -K_KNEE_OFFSET_POS, K_KNEE_OFFSET_POS};
 
 /*!
  * Compute SPI message checksum
@@ -199,13 +210,9 @@ int spi_driver_iterations = 0;
  * convert spi command to spine_cmd_t
  */
 void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
-  for (int i = 0; i < 2; i++) {
-    // spine_cmd->q_des_abad[i] = (cmd->q_des_abad[i+leg_0] +
-    // abad_offset[i+leg_0]) * abad_side_sign[i+leg_0]; spine_cmd->q_des_hip[i]
-    // = (cmd->q_des_hip[i+leg_0] + hip_offset[i+leg_0]) *
-    // hip_side_sign[i+leg_0]; spine_cmd->q_des_knee[i] =
-    // (cmd->q_des_knee[i+leg_0] + knee_offset[i+leg_0]) /
-    // knee_side_sign[i+leg_0];
+
+    for (int i = 0; i < 2; i++) {
+
     spine_cmd->q_des_abad[i] =
         (cmd->q_des_abad[i + leg_0] * abad_side_sign[i + leg_0]) +
         abad_offset[i + leg_0];
@@ -213,7 +220,7 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
         (cmd->q_des_hip[i + leg_0] * hip_side_sign[i + leg_0]) +
         hip_offset[i + leg_0];
     spine_cmd->q_des_knee[i] =
-        (cmd->q_des_knee[i + leg_0] / knee_side_sign[i + leg_0]) +
+        (cmd->q_des_knee[i + leg_0] * knee_side_sign[i + leg_0]) +
         knee_offset[i + leg_0];
 
     spine_cmd->qd_des_abad[i] =
@@ -221,7 +228,7 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
     spine_cmd->qd_des_hip[i] =
         cmd->qd_des_hip[i + leg_0] * hip_side_sign[i + leg_0];
     spine_cmd->qd_des_knee[i] =
-        cmd->qd_des_knee[i + leg_0] / knee_side_sign[i + leg_0];
+        cmd->qd_des_knee[i + leg_0] * knee_side_sign[i + leg_0];
 
     spine_cmd->kp_abad[i] = cmd->kp_abad[i + leg_0];
     spine_cmd->kp_hip[i] = cmd->kp_hip[i + leg_0];
@@ -238,6 +245,21 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
     spine_cmd->tau_knee_ff[i] =
         cmd->tau_knee_ff[i + leg_0] * knee_side_sign[i + leg_0];
 
+    if (spine_cmd->tau_abad_ff[i] > max_torque[0])
+        spine_cmd->tau_abad_ff[i] = max_torque[0];
+    if (spine_cmd->tau_abad_ff[i] < -max_torque[0])
+        spine_cmd->tau_abad_ff[i] = -max_torque[0];
+
+    if (spine_cmd->tau_hip_ff[i] > max_torque[1])
+        spine_cmd->tau_hip_ff[i] = max_torque[1];
+    if (spine_cmd->tau_hip_ff[i] < -max_torque[1])
+        spine_cmd->tau_hip_ff[i] = -max_torque[1];
+
+    if (spine_cmd->tau_knee_ff[i] > max_torque[2])
+        spine_cmd->tau_knee_ff[i] = max_torque[2];
+    if (spine_cmd->tau_knee_ff[i] < -max_torque[2])
+        spine_cmd->tau_knee_ff[i] = -max_torque[2];
+
     spine_cmd->flags[i] = cmd->flags[i + leg_0];
   }
   spine_cmd->checksum = xor_checksum((uint32_t *)spine_cmd, 32);
@@ -247,6 +269,8 @@ void spi_to_spine(spi_command_t *cmd, spine_cmd_t *spine_cmd, int leg_0) {
  * convert spine_data_t to spi data
  */
 void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) {
+    //leg_0 means spi_board number = 0,2
+
   for (int i = 0; i < 2; i++) {
     data->q_abad[i + leg_0] = (spine_data->q_abad[i] - abad_offset[i + leg_0]) *
                               abad_side_sign[i + leg_0];
@@ -260,14 +284,24 @@ void spine_to_spi(spi_data_t *data, spine_data_t *spine_data, int leg_0) {
     data->qd_hip[i + leg_0] = spine_data->qd_hip[i] * hip_side_sign[i + leg_0];
     data->qd_knee[i + leg_0] =
         spine_data->qd_knee[i] * knee_side_sign[i + leg_0];
-
     data->flags[i + leg_0] = spine_data->flags[i];
   }
 
   uint32_t calc_checksum = xor_checksum((uint32_t *)spine_data, 14);
   if (calc_checksum != (uint32_t)spine_data->checksum)
-    printf("SPI ERROR BAD CHECKSUM GOT 0x%hx EXPECTED 0x%hx\n", calc_checksum,
+      printf("SPI %d ERROR BAD CHECKSUM GOT 0x%hx EXPECTED 0x%hx\n",leg_0,  calc_checksum,
            spine_data->checksum);
+#ifdef SPI_STATUS
+  else
+      printf("SPI %d WORKS NORMAL\n",leg_0);
+#endif
+#ifdef SPI_CAN
+    for (int j = 0; j < 4; ++j) {
+//        if ((data->flags[j])==1 && data->flags[j]!=57005 && data->flags[j]!=48879)
+            printf("CAN%d STATUS ERROR:%d\n",j,data->flags[j]);
+    }
+
+#endif
 }
 
 /*!
@@ -294,8 +328,10 @@ void spi_send_receive(spi_command_t *command, spi_data_t *data) {
     memset(rx_buf, 0, K_WORDS_PER_MESSAGE * sizeof(uint16_t));
 
     // copy into tx buffer flipping bytes
-    for (int i = 0; i < K_WORDS_PER_MESSAGE; i++)
-      tx_buf[i] = (cmd_d[i] >> 8) + ((cmd_d[i] & 0xff) << 8);
+    for (int i = 0; i < K_WORDS_PER_MESSAGE; i++){
+        tx_buf[i] = (cmd_d[i] >> 8) + ((cmd_d[i] & 0xff) << 8);
+    }
+
     // tx_buf[i] = __bswap_16(cmd_d[i]);
 
     // each word is two bytes long
@@ -315,12 +351,14 @@ void spi_send_receive(spi_command_t *command, spi_data_t *data) {
       spi_message[i].len = word_len * 66;
       spi_message[i].rx_buf = (uint64_t)rx_buf;
       spi_message[i].tx_buf = (uint64_t)tx_buf;
+//      printf("tx: %llu \nrx:  %llu \nlen: %d\nbits: %d\n",spi_message[0].tx_buf,spi_message[0].rx_buf,spi_message[0].len,spi_message[0].bits_per_word);
     }
 
     // do spi communication
     int rv = ioctl(spi_board == 0 ? spi_1_fd : spi_2_fd, SPI_IOC_MESSAGE(1),
                    &spi_message);
     (void)rv;
+    if (rv < 0) printf("[ERROR] SPI %d COMMUNICATION FAILED(%d).\n", spi_board,rv);
 
     // flip bytes the other way
     for (int i = 0; i < 30; i++)

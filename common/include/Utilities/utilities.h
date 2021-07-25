@@ -299,7 +299,50 @@ Vec3<T> stringToVec3(const std::string& str) {
   v[2] = stringToNumber<T>(str.substr(start, i - start));
   return v;
 }
+/*!
+ * Convert from string to Vec4.
+ */
+template <typename T>
+Vec4<T> stringToVec4(const std::string& str) {
+    Vec4<T> v;
+    size_t i = 0;
 
+    // seek past whitespace
+    while (str.at(i) == ' ') i++;
+
+    if (str.at(i) == '[') {
+        i++;
+    } else {
+        throw std::runtime_error("stringToVec4 didn't find open bracket");
+    }
+
+    // seek past whitespace
+    while (str.at(i) == ' ') i++;
+    size_t start = i;
+
+    // seek to end of first number
+    while (str.at(i) != ',') i++;
+    v[0] = stringToNumber<T>(str.substr(start, i - start));
+    i++;
+
+    while (str.at(i) == ' ') i++;
+    start = i;
+    while (str.at(i) != ',') i++;
+    v[1] = stringToNumber<T>(str.substr(start, i - start));
+    i++;
+
+    while (str.at(i) == ' ') i++;
+    start = i;
+    while (str.at(i) != ',') i++;
+    v[2] = stringToNumber<T>(str.substr(start, i - start));
+    i++;
+
+    while (str.at(i) == ' ') i++;
+    start = i;
+    while (str.at(i) != ']') i++;
+    v[3] = stringToNumber<T>(str.substr(start, i - start));
+    return v;
+}
 std::string getLcmUrl(s64 ttl);
 
 #endif  // PROJECT_UTILITIES_H

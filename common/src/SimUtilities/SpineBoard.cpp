@@ -3,7 +3,7 @@
  */
 
 #include <stdio.h>
-
+#include "iostream"
 #include "SimUtilities/SpineBoard.h"
 
 /*!
@@ -68,7 +68,7 @@ void SpineBoard::resetCommand() {
 /*!
  * Run spine board control
  */
-void SpineBoard::run() {
+void SpineBoard::run(bool milab) {
   iter_counter++;
   if (cmd == nullptr || data == nullptr) {
     printf(
@@ -79,14 +79,28 @@ void SpineBoard::run() {
     torque_out[2] = 0.f;
     return;
   }
+  if (milab){
+      for (int i = 0; i < 3; ++i) {
+          max_torque[i] = milab_max_torque[i];
+          q_limit_upper[i] = milab_q_limit_upper[i];
+          q_limit_low[i] = milab_q_limit_low[i];
+      }
+      kp_softstop = milab_kp_softstop;
+      kd_softstop = milab_kd_softstop;
 
+      //  MiLAB robot's abad limitations is different for left and right legs
+      if (board_num == 1 || board_num == 3){  //left[-0.75,1.5]
+          q_limit_upper[0] = -milab_q_limit_low[0];
+          q_limit_low[0] = -milab_q_limit_upper[0];
+      }
+  }
   /// Check abad softstop ///
-  if (data->q_abad[board_num] > q_limit_p[0]) {
-    torque_out[0] = kp_softstop * (q_limit_p[0] - data->q_abad[board_num]) -
+  if (data->q_abad[board_num] > q_limit_upper[0]) {
+    torque_out[0] = kp_softstop * (q_limit_upper[0] - data->q_abad[board_num]) -
                     kd_softstop * (data->qd_abad[board_num]) +
                     cmd->tau_abad_ff[board_num];
-  } else if (data->q_abad[board_num] < q_limit_n[0]) {
-    torque_out[0] = kp_softstop * (q_limit_n[0] - data->q_abad[board_num]) -
+  } else if (data->q_abad[board_num] < q_limit_low[0]) {
+    torque_out[0] = kp_softstop * (q_limit_low[0] - data->q_abad[board_num]) -
                     kd_softstop * (data->qd_abad[board_num]) +
                     cmd->tau_abad_ff[board_num];
   } else {
@@ -98,12 +112,12 @@ void SpineBoard::run() {
   }
 
   /// Check hip softstop ///
-  if (data->q_hip[board_num] > q_limit_p[1]) {
-    torque_out[1] = kp_softstop * (q_limit_p[1] - data->q_hip[board_num]) -
+  if (data->q_hip[board_num] > q_limit_upper[1]) {
+    torque_out[1] = kp_softstop * (q_limit_upper[1] - data->q_hip[board_num]) -
                     kd_softstop * (data->qd_hip[board_num]) +
                     cmd->tau_hip_ff[board_num];
-  } else if (data->q_hip[board_num] < q_limit_n[1]) {
-    torque_out[1] = kp_softstop * (q_limit_n[1] - data->q_hip[board_num]) -
+  } else if (data->q_hip[board_num] < q_limit_low[1]) {
+    torque_out[1] = kp_softstop * (q_limit_low[1] - data->q_hip[board_num]) -
                     kd_softstop * (data->qd_hip[board_num]) +
                     cmd->tau_hip_ff[board_num];
   } else {
@@ -114,17 +128,30 @@ void SpineBoard::run() {
                     cmd->tau_hip_ff[board_num];
   }
 
-  /// No knee softstop right now ///
-  torque_out[2] = cmd->kp_knee[board_num] *
-                      (cmd->q_des_knee[board_num] - data->q_knee[board_num]) +
-                  cmd->kd_knee[board_num] *
-                      (cmd->qd_des_knee[board_num] - data->qd_knee[board_num]) +
-                  cmd->tau_knee_ff[board_num];
+  /// Check knee softstop ///
+    if (data->q_knee[board_num] > q_limit_upper[2]) {
+        torque_out[2] = kp_softstop * (q_limit_upper[2] - data->q_knee[board_num]) -
+                        kd_softstop * (data->qd_knee[board_num]) +
+                        cmd->tau_knee_ff[board_num];
+
+//            std::cout<<board_num<<" "<<torque_out[2]<<kp_softstop<<std::endl;
+    } else if (data->q_knee[board_num] < q_limit_low[2]) {
+        torque_out[2] = kp_softstop * (q_limit_low[2] - data->q_knee[board_num]) -
+                        kd_softstop * (data->qd_knee[board_num]) +
+                        cmd->tau_knee_ff[board_num];
+    } else {
+        torque_out[2] = cmd->kp_knee[board_num] *
+                        (cmd->q_des_knee[board_num] - data->q_knee[board_num]) +
+                        cmd->kd_knee[board_num] *
+                        (cmd->qd_des_knee[board_num] - data->qd_knee[board_num]) +
+                        cmd->tau_knee_ff[board_num];
+    }
+
 
   const float* torque_limits = disabled_torque;
-
-  if (cmd->flags[board_num] & 0b1) {
-    if (cmd->flags[board_num] & 0b10)
+// flags=1 leg enable/ 0 leg unable
+  if (cmd->flags[board_num] & 0b1) { //1&1
+    if (cmd->flags[board_num] & 0b10) //1&2
       torque_limits = wimp_torque;
     else
       torque_limits = max_torque;

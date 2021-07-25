@@ -543,15 +543,15 @@ void Graphics3D::paintGL() {
   }
 
   _MeshObstacleDrawing();
-
+// Left-top info window settings
   glDisable(GL_DEPTH_TEST);
-  painter2.setPen(QColor(100, 100, 100, 255));
-  painter2.fillRect(QRect(30, 30, 400, 200), QColor(100, 100, 100, 220));
-  QFont font("Monospace", 20);
-  painter2.setPen(QColor(210, 100, 100));
+  painter2.setPen(QColor(100, 100, 100, 255)); // set box color
+  painter2.fillRect(QRect(0, 0, 300, 107), QColor(150, 150, 150, 220));// set box location
+  QFont font("Monospace", 13); // set text size and font
+  painter2.setPen(QColor(255, 50, 50)); //set text color
   painter2.setFont(font);
-  painter2.drawText(QRect(30, 30, 1000, 1000), Qt::AlignLeft,
-                    QString(infoString));
+  painter2.drawText(QRect(4, 0, 1000, 1000), Qt::AlignLeft,
+                    QString(infoString)); // set text location
   painter2.end();
 
   ++_frame;
@@ -959,7 +959,7 @@ void Graphics3D::setHideRobot(bool x) {
 void Graphics3D::_DrawContactForce() {
   glLineWidth(2.0);
   // double scale(0.02);
-  double scale(0.0025);
+  double scale(0.001);
 
   glPushAttrib(GL_COLOR_BUFFER_BIT);
   glEnable(GL_BLEND);

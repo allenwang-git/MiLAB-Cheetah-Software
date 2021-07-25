@@ -18,6 +18,9 @@
 #include "SimUtilities/SpineBoard.h"
 #include "SimUtilities/ti_boardcontrol.h"
 
+// Uncomment following line if you need to print leg data
+//#define OUTPUT_LEG_DATA
+
 /*!
  * Data sent from the control algorithm to the legs.
  */
@@ -43,7 +46,7 @@ struct LegControllerData {
   void setQuadruped(Quadruped<T>& quad) { quadruped = &quad; }
 
   void zero();
-
+  Mat6<T> JJ;
   Vec3<T> q, qd, p, v;
   Mat3<T> J;
   Vec3<T> tauEstimate;
@@ -87,5 +90,7 @@ class LegController {
 template <typename T>
 void computeLegJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat3<T>* J,
                                    Vec3<T>* p, int leg);
-
+template <typename T>
+void computeMilabJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat6<T>* JJ,
+                                     Vec3<T>* p, int leg);
 #endif  // PROJECT_LEGCONTROLLER_H

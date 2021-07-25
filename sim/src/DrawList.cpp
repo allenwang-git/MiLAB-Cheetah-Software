@@ -32,7 +32,7 @@ void DrawList::loadFiles() {
                     debugRedColor[0], debugRedColor[1], debugRedColor[2]);
     } else if (name == "cube.obj") {
       setSolidColor(_colorData.back(), _vertexData.back().size(),
-                    disgustingGreen[0], disgustingGreen[1], disgustingGreen[2]);
+                    debugRedColor[0], debugRedColor[1], debugRedColor[2]);
     } else {
       setSolidColor(_colorData.back(), _vertexData.back().size(),
                     defaultRobotColor[0], defaultRobotColor[1],
@@ -457,8 +457,8 @@ void DrawList::addBox(double depth, double width, double height,
     _kinematicXform.push_back(offset);
 
     SolidColor boxColor;
-    boxColor.rgba = Vec4<float>(disgustingGreen[0], disgustingGreen[1],
-                                disgustingGreen[2], 1.f);
+    boxColor.rgba = Vec4<float>(terrainColor[0], terrainColor[1],
+                                terrainColor[2], 1.f);
     boxColor.useSolidColor = true;
     _instanceColor.push_back(boxColor);
 

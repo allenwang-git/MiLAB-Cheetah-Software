@@ -8,4 +8,4 @@ python ./setup_network_mc.py
 # configure libraries
 sudo LD_LIBRARY_PATH=. ldconfig
 #sudo LD_LIBRARY_PATH=. ldd ./robot
-sudo LD_LIBRARY_PATH=. $1 m r
+sudo LD_LIBRARY_PATH=. $1 m r f

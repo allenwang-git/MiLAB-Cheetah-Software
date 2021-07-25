@@ -1,7 +1,7 @@
 /*! @file LegController.cpp
  *  @brief Common Leg Control Interface
  *
- *  Implements low-level leg control for Mini Cheetah and Cheetah 3 Robots
+ *  Implements low-level leg control for Milab Robot, Mini Cheetah and Cheetah 3
  *  Abstracts away the difference between the SPIne and the TI Boards
  *  All quantities are in the "leg frame" which has the same orientation as the
  * body frame, but is shifted so that 0,0,0 is at the ab/ad pivot (the "hip
@@ -11,14 +11,18 @@
 #include "Controllers/LegController.h"
 #include <fstream>
 using namespace std;
-
+bool flagSimReal;
 /*
  * Bdebug plot
  */
 template <typename T>
 void LegController<T>::output2File(){
         ofstream leg_data;
-        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_data/leg_controller_data.txt", ios::app);
+    if (flagSimReal) {
+        leg_data.open("/home/allen/MiLAB-Cheetah-Software/debug_tools/leg_controller_data.txt", ios::app);
+    } else {
+        leg_data.open("/home/robot/robot-software/log/leg_controller_data.txt", ios::app);
+    }
         if (!leg_data.is_open()) {
             cout << "[LegController] Open leg_control_data.txt failed!" << endl;
         } else {
@@ -78,6 +82,7 @@ void LegControllerData<T>::zero() {
   p = Vec3<T>::Zero();
   v = Vec3<T>::Zero();
   J = Mat3<T>::Zero();
+  JJ = Mat6<T>::Zero();
   tauEstimate = Vec3<T>::Zero();
 }
 
@@ -136,12 +141,25 @@ void LegController<T>::updateData(const SpiData* spiData) {
     datas[leg].qd(1) = spiData->qd_hip[leg];
     datas[leg].qd(2) = spiData->qd_knee[leg];
 
-    // J and p
-    computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
-                                     &(datas[leg].p), leg);
-    // v
-    datas[leg].v = datas[leg].J * datas[leg].qd;
-  }
+//        if (_quadruped._robotType == RobotType::MILAB){
+//            // J and p
+//            computeMilabJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].JJ),
+//                                               &(datas[leg].p), leg);
+//            // v
+//            Vec6<T> V,QD;
+//            QD << 0,0,datas[leg].qd[0],datas[leg].qd[1],datas[leg].qd[2],0;
+//            V = datas[leg].JJ.transpose() * QD;
+//            for (int i = 0; i < 3; ++i) {
+//                datas[leg].v[i] = V[i];
+//            }
+//        }else{
+            computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
+                                             &(datas[leg].p), leg);
+
+            // v
+            datas[leg].v = datas[leg].J * datas[leg].qd;
+//        }
+    }
 }
 
 /*!
@@ -185,7 +203,17 @@ void LegController<T>::updateCommand(SpiCommand* spiCommand) {
         commands[leg].kdCartesian * (commands[leg].vDes - datas[leg].v);
 
     // Torque
-    legTorque += datas[leg].J.transpose() * footForce;
+//    if (_quadruped._robotType == RobotType::MILAB){
+//        Vec6<T> F,Tau;
+//        F << footForce[0],footForce[1],footForce[2],0,0,0;
+//        Tau += datas[leg].JJ.transpose() * F;
+//        for (int i = 0; i < 3; ++i) {
+//            legTorque[i] = Tau[i+2];
+//        }
+//    }else{
+        legTorque += datas[leg].J.transpose() * footForce;
+//    }
+
 
     // set command:
     spiCommand->tau_abad_ff[leg] = legTorque(0);
@@ -251,7 +279,7 @@ void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
               commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
     }
 
-    // please only send 1 or 0 here or the robot will explode.
+    // please only send 1 or 0 here or the robot will explode.max
     tiBoardCommand[leg].enable = _legsEnabled ? 1 : 0;
     tiBoardCommand[leg].max_torque = _maxTorque;
     tiBoardCommand[leg].zero = _zeroEncoders ? 1 : 0;
@@ -271,9 +299,12 @@ void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
  */
 template<typename T>
 void LegController<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_command_lcmt *lcmCommand, u64 iter) {
+
     // Output leg commands and datas to file
     if (iter%10 == 0)
+        #ifdef OUTPUT_LEG_DATA
         output2File();
+        #endif
     for(int leg = 0; leg < 4; leg++) {
         for(int axis = 0; axis < 3; axis++) {
             int idx = leg*3 + axis;
@@ -348,7 +379,81 @@ void computeLegJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat3<T>* J,
     p->operator()(2) = (l1+l4) * sideSign * s1 - l3 * (c1 * c23) - l2 * c1 * c2;
   }
 }
+/*!
+ * Compute the position of the foot and its Jacobian.  This is done in the local
+ * leg coordinate system. If J/p are NULL, the calculation will be skipped.
+ */
+template <typename T>
+void computeMilabJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat6<T>* JJ,
+                                   Vec3<T>* p, int leg) {
+    T l1 = quad._abadLinkLength;
+    T l2 = quad._hipLinkLength;
+    T l3 = quad._kneeLinkLength;
+    T sideSign = quad.getSideSign(leg);
 
+    T s1 = std::sin(q(0));
+    T s2 = std::sin(q(1));
+    T s3 = std::sin(q(2));
+
+    T c1 = std::cos(q(0));
+    T c2 = std::cos(q(1));
+    T c3 = std::cos(q(2));
+
+    T c23 = c2 * c3 - s2 * s3;
+    T s23 = s2 * c3 + c2 * s3;
+
+    if (JJ) {
+        JJ->operator()(0, 0) = -l3 * s1 * c23 - l2 * s1 * c2 + l1 * sideSign * c1;
+        JJ->operator()(0, 1) = -l3 * s1 * c23 - l2 * s1 * c2 + l1 * sideSign * c1;
+        JJ->operator()(0, 2) = 0;
+        JJ->operator()(0, 3) = -l3 * c23 + l2 * c2 * (c1-s1);
+        JJ->operator()(0, 4) = -l3 * c23;
+        JJ->operator()(0, 5) = 0;
+
+        JJ->operator()(1, 0) = -l3 * s23 - l2 * s2;
+        JJ->operator()(1, 1) = -l3 * s23 - l2 * s2;
+        JJ->operator()(1, 2) = l3 * c1 * c23 + l1 * sideSign *s1 - l2 * c1 * c2;
+        JJ->operator()(1, 3) = -l3 * s1 * s23 - l2 * s1 * s2 ;
+        JJ->operator()(1, 4) = -l3 * s1 * s23;
+        JJ->operator()(1, 5) = 0;
+
+        JJ->operator()(2, 0) = 0;
+        JJ->operator()(2, 1) = 0;
+        JJ->operator()(2, 2) = l3 * s1 * c23 - l1 * sideSign * c1 + l2 * c2 * s1;
+        JJ->operator()(2, 3) = l3 * s1 * c23 + l2 * c1 * s2;
+        JJ->operator()(2, 4) = l3 * c1 * s23;
+        JJ->operator()(2, 5) = 0;
+
+        JJ->operator()(3, 0) = 0;
+        JJ->operator()(3, 1) = 0;
+        JJ->operator()(3, 2) = 1;
+        JJ->operator()(3, 3) = 0;
+        JJ->operator()(3, 4) = 0;
+        JJ->operator()(3, 5) = 0;
+
+        JJ->operator()(4, 0) = 0;
+        JJ->operator()(4, 1) = 0;
+        JJ->operator()(4, 2) = 0;
+        JJ->operator()(4, 3) = c1;
+        JJ->operator()(4, 4) = c1;
+        JJ->operator()(4, 5) = c1;
+
+        JJ->operator()(5, 0) = 1;
+        JJ->operator()(5, 1) = 1;
+        JJ->operator()(5, 2) = 0;
+        JJ->operator()(5, 3) = s1;
+        JJ->operator()(5, 4) = s1;
+        JJ->operator()(5, 5) = s1;
+    }
+    // fk
+    if (p) {
+        p->operator()(0) = - l3 * s23 - l2 * s2;
+        p->operator()(1) = l1 * sideSign * c1 + l3 * (s1 * c23) + l2 * c2 * s1;
+        p->operator()(2) = l1 * sideSign * s1 - l3 * (c1 * c23) - l2 * c1 * c2;
+    }
+
+
+}
 template void computeLegJacobianAndPosition<double>(Quadruped<double>& quad,
                                                     Vec3<double>& q,
                                                     Mat3<double>* J,

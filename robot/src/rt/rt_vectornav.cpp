@@ -18,7 +18,7 @@
 #include "rt/rt_vectornav.h"
 #include "vectornav_lcmt.hpp"
 
-#define K_MINI_CHEETAH_VECTOR_NAV_SERIAL "/dev/ttyS0"
+#define K_CHEETAH_VECTOR_NAV_SERIAL "/dev/ttyS0"
 
 //#define PRINT_VECTORNAV_DEBUG
 
@@ -37,12 +37,12 @@ vn_sensor vn;
 
 static lcm::LCM* vectornav_lcm;
 vectornav_lcmt vectornav_lcm_data;
-static VectorNavData* g_vn_data = nullptr;
+static ImuData* g_vn_data = nullptr;
 
 /*!
  * Initialize Vectornav communication and set up sensor
  */
-bool init_vectornav(VectorNavData* vn_data) {
+bool init_vectornav(ImuData* vn_data) {
   g_vn_data = vn_data;
   printf("[Simulation] Setup LCM...\n");
   vectornav_lcm = new lcm::LCM(getLcmUrl(255));
@@ -54,7 +54,7 @@ bool init_vectornav(VectorNavData* vn_data) {
   VnError error;
   VpeBasicControlRegister vpeReg;
   ImuFilteringConfigurationRegister filtReg;
-  const char SENSOR_PORT[] = K_MINI_CHEETAH_VECTOR_NAV_SERIAL;
+  const char SENSOR_PORT[] = K_CHEETAH_VECTOR_NAV_SERIAL;
   const uint32_t SENSOR_BAUDRATE = 115200;
   char modelNumber[30];
   char strConversions[50];

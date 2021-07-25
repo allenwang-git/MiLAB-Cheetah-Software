@@ -3,7 +3,7 @@
  *  These are designed to be updated infrequently.  For high frequency data,
  * consider using Driver Inputs or adding to the Robot Debug Data instead.
  *
- * ControlParameter: a single value, either a double, float, vec3, or s64.  Each
+ * ControlParameter: a single value, either a double, float, vec3, vec4 or s64.  Each
  * control parameter must have a unique name Control parameters know their type
  * as well as if they've been initialized or not ControlParameters must be
  * initialized, either from reading from a file, reading from LCM, or some other
@@ -36,7 +36,8 @@ enum class ControlParameterValueKind : u64 {
   DOUBLE = 1,
   S64 = 2,
   VEC3_DOUBLE = 3,
-  VEC3_FLOAT = 4
+  VEC3_FLOAT = 4,
+  VEC4_FLOAT = 5
 };
 
 ControlParameterValueKind getControlParameterValueKindFromString(const std::string& str);
@@ -52,6 +53,7 @@ union ControlParameterValuePtr {
   double* d;
   s64* i;
   float* vec3f;
+  float* vec4f;
   double* vec3d;
 };
 
@@ -63,6 +65,7 @@ union ControlParameterValue {
   double d;
   s64 i;
   float vec3f[3];
+  float vec4f[4];
   double vec3d[3];
 };
 
@@ -204,7 +207,23 @@ class ControlParameter {
     _kind = ControlParameterValueKind::VEC3_FLOAT;
     collection.addParameter(this, name);
   }
-
+  /*!
+   * Construct control parameter for a list of 4 floats
+   * @param name : name of parameter
+   * @param value : reference to value
+   * @param collection : collection to add to
+   * @param units : name of units
+   */
+  ControlParameter(const std::string& name, Vec4<float>& value,
+                   ControlParameterCollection& collection,
+                   const std::string& units = "") {
+    _name = name;
+    truncateName();
+    _units = units;
+    _value.vec4f = value.data();
+    _kind = ControlParameterValueKind::VEC4_FLOAT;
+    collection.addParameter(this, name);
+  }
   /*!
    * Construct control parameter for a list of 3 doubles
    * @param name : name of parameter
@@ -307,6 +326,22 @@ class ControlParameter {
    * Set initial value of the control parameter.
    * Checks to see that the types are correct
    */
+  void initializeVec4f(const Vec4<float>& v) {
+      if (_kind != ControlParameterValueKind::VEC4_FLOAT) {
+          throw std::runtime_error("Tried to initialize control parameter " +
+                                   _name + " as a vector4f");
+      }
+      _set = true;
+      _value.vec4f[0] = v[0];
+      _value.vec4f[1] = v[1];
+      _value.vec4f[2] = v[2];
+      _value.vec4f[3] = v[3];
+  }
+
+  /*!
+   * Set initial value of the control parameter.
+   * Checks to see that the types are correct
+   */
   void initializeVec3d(const Vec3<double>& v) {
     if (_kind != ControlParameterValueKind::VEC3_DOUBLE) {
       throw std::runtime_error("Tried to initialize control parameter " +
@@ -342,6 +377,12 @@ class ControlParameter {
         _value.vec3f[0] = value.vec3f[0];
         _value.vec3f[1] = value.vec3f[1];
         _value.vec3f[2] = value.vec3f[2];
+        break;
+      case ControlParameterValueKind::VEC4_FLOAT:
+        _value.vec4f[0] = value.vec4f[0];
+        _value.vec4f[1] = value.vec4f[1];
+        _value.vec4f[2] = value.vec4f[2];
+        _value.vec4f[3] = value.vec4f[3];
         break;
       case ControlParameterValueKind::VEC3_DOUBLE:
         _value.vec3d[0] = value.vec3d[0];
@@ -380,6 +421,12 @@ class ControlParameter {
         value.vec3f[1] = _value.vec3f[1];
         value.vec3f[2] = _value.vec3f[2];
         break;
+      case ControlParameterValueKind::VEC4_FLOAT:
+          value.vec4f[0] = _value.vec4f[0];
+          value.vec4f[1] = _value.vec4f[1];
+          value.vec4f[2] = _value.vec4f[2];
+          value.vec4f[3] = _value.vec4f[3];
+          break;
       case ControlParameterValueKind::VEC3_DOUBLE:
         value.vec3d[0] = _value.vec3d[0];
         value.vec3d[1] = _value.vec3d[1];
@@ -412,6 +459,13 @@ class ControlParameter {
         result += numberToString(_value.vec3f[1]) + ", ";
         result += numberToString(_value.vec3f[2]) + "]";
         break;
+      case ControlParameterValueKind::VEC4_FLOAT:
+          result += "[";
+          result += numberToString(_value.vec4f[0]) + ", ";
+          result += numberToString(_value.vec4f[1]) + ", ";
+          result += numberToString(_value.vec4f[2]) + ", ";
+          result += numberToString(_value.vec3f[3]) + "]";
+          break;
       case ControlParameterValueKind::VEC3_DOUBLE:
         result += "[";
         result += numberToString(_value.vec3d[0]) + ", ";
@@ -449,6 +503,13 @@ class ControlParameter {
         _value.vec3f[0] = v[0];
         _value.vec3f[1] = v[1];
         _value.vec3f[2] = v[2];
+      } break;
+      case ControlParameterValueKind::VEC4_FLOAT: {
+          Vec4<float> v = stringToVec4<float>(value);
+          _value.vec4f[0] = v[0];
+          _value.vec4f[1] = v[1];
+          _value.vec4f[2] = v[2];
+          _value.vec4f[3] = v[3];
       } break;
       case ControlParameterValueKind::VEC3_DOUBLE: {
         Vec3<double> v = stringToVec3<double>(value);
@@ -527,6 +588,15 @@ class ControlParameters {
   void initializeVec3f(const std::string& name, Vec3<float>& v) {
     collection.lookup(name).initializeVec3f(v);
   }
+
+  /*!
+   * Directly initialize a given control parameter by name.
+   * @param name : name of parameter to initialize
+   * @param v : list of 4 floats value to initialize with
+   */
+   void initializeVec4f(const std::string& name, Vec4<float>& v) {
+      collection.lookup(name).initializeVec4f(v);
+   }
 
   /*!
    * Directly initialize a given control parameter by name.
