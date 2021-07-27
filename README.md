@@ -3,7 +3,7 @@
 *Current Maintainer: Wang Yinuo* \
 *Email: dbdxwyn@163.com*
 
-<img src="https://user-images.githubusercontent.com/69251304/127164203-0aa4ed0c-18ef-40b2-81e9-acc8fd85b2a3.jpg" width="600" height="400"/><br/>
+<img src="https://user-images.githubusercontent.com/69251304/127165829-c2b51046-ca98-43e0-8378-b4b7109c117a.jpg" width="600" height="400"/><br/>
 
 ## Contents
 1. [Introduction](#Introduction)
