@@ -20,6 +20,7 @@
 14. [Writing New Controller](#Writing-New-Controller)
 15. [Change Log](#Change-Log)
 
+![IMG_20210725_194947](https://user-images.githubusercontent.com/69251304/127164203-0aa4ed0c-18ef-40b2-81e9-acc8fd85b2a3.jpg)
 
 ## Introduction
 Based on [MIT-Cheetah-Software](https://github.com/mit-biomimetics/Cheetah-Software) open-source project, we developed this repository which contains the Robot and Simulation software for our MiLAB quadruped robot.
