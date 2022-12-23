@@ -1,7 +1,7 @@
 # MiLAB-Cheetah-Software 
 *Creation Date: 2021.03.01* \
 *Current Maintainer: Wang, Yinuo* \
-*Email: dbdxwyn@163.com*
+*Email: allen.yinuo.wang@gmail.com*
 
 <img src="https://user-images.githubusercontent.com/69251304/127165829-c2b51046-ca98-43e0-8378-b4b7109c117a.jpg" width="600" height="400"/><br/>
 
